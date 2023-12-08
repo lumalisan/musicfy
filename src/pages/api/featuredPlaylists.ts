@@ -8,13 +8,13 @@ export async function GET({
   params: Params;
   request: Request;
 }) {
-  mongoose
-    .connect(
-      `mongodb+srv://${import.meta.env.DB_USER}:${
-        import.meta.env.DB_PASSWORD
-      }@musicfydb.kv7vvkt.mongodb.net/?retryWrites=true&w=majority`
-    )
-    .then(() => console.log('Connected!'));
+  // mongoose
+  //   .connect(
+  //     `mongodb+srv://${import.meta.env.DB_USER}:${
+  //       import.meta.env.DB_PASSWORD
+  //     }@musicfydb.kv7vvkt.mongodb.net/?retryWrites=true&w=majority`
+  //   )
+  //   .then(() => console.log('Connected!'));
 
   // mongoose.get()
 
