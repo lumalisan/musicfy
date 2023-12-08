@@ -1,0 +1,7 @@
+# Ignore artifacts:
+node_modules
+.vscode
+public
+.gitignore
+pnpm-lock.yaml
+README.md

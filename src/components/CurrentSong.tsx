@@ -1,0 +1,22 @@
+interface Props {
+  image?: string;
+  title?: string;
+  artists?: string[];
+}
+
+const CurrentSong = ({ image, title, artists }: Props) => {
+  return (
+    <div className='relative flex items-center gap-5 overflow-hidden'>
+      <picture className='h-16 w-16 overflow-hidden rounded-md bg-accent/80 shadow-lg'>
+        <img src={image} alt={title} />
+      </picture>
+
+      <div className='flex flex-col text-accent'>
+        <h3 className='block font-bold'>{title}</h3>
+        <span className='text-xs opacity-80'>{artists?.join(', ')}</span>
+      </div>
+    </div>
+  );
+};
+
+export default CurrentSong;

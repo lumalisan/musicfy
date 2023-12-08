@@ -1,0 +1,74 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { playlists, songs } from '@/lib/data';
+import { calculateTotalMinutes } from '@/utils/calcTotalPlaylistMinutes';
+import SongsTable from '@/components/SongsTable';
+import PlayButton from '@/components/PlayButton';
+
+const { id } = Astro.params;
+const numericId = Number.parseInt(id ?? '0')
+
+const playlist = playlists.find((playlist) => playlist.id === numericId);
+const playListSongs = songs.filter(
+  (song) => song.playlistId === playlist?.id
+);
+---
+
+<Layout title='Spotify Clone'>
+  <div
+    id='playlist-container'
+    class='relative flex flex-col h-full bg-primary overflow-x-hidden'
+    transition:name=`playlist ${numericId} box`
+  >
+    <div class=`relative pb-10 bg-[${playlist?.color}] z-10`>
+      <header class='flex flex-row gap-8 px-6 pt-12'>
+        <picture class='aspect-square w-52 h-52 flex-none'>
+          <img
+            src={playlist?.cover}
+            alt={`Cover of ${playlist?.title}`}
+            class='object-cover w-full h-full shadow-lg'
+            transition:name=`playlist ${playlist?.id} image`
+          />
+        </picture>
+
+        <div class='flex flex-col justify-between'>
+          <h2 class='flex flex-1 items-end'>Playlist</h2>
+          <div>
+            <h1 class='text-5xl font-bold block text-accent'>
+              {playlist?.title}
+              <span transition:name=`playlist ${playlist?.id} title`></span>
+            </h1>
+          </div>
+
+          <div class='flex-1 flex items-end'>
+            <div class='text-sm text-accent font-normal'>
+              <div transition:name=`playlist ${playlist?.id} artists`>
+                <span>{playlist?.artists.join(', ')}</span>
+              </div>
+              <p class='mt-1'>
+                {playListSongs.length} songs
+                <span class='opacity-70'
+                  >, {calculateTotalMinutes(playListSongs)} mins aprox.</span
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+
+      </header>
+      
+      <div class='pl-6 pt-6'>
+        <PlayButton id={numericId} size='large' client:load transition:name="play-button" />
+      </div>
+      
+      <div
+        class='absolute inset-0 bg-gradient-to-t from-primary via-primary/50 -z-[1]'
+      >
+      </div>
+    </div>
+
+    <section class='p-6'>
+      <SongsTable playlist={playlist!} songs={playListSongs} client:load />
+    </section>
+  </div>
+</Layout>
