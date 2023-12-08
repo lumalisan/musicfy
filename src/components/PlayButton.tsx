@@ -13,11 +13,13 @@ const PlayButton = ({ id, size }: Props) => {
   const { isPlaying, currentMusic, setIsPlaying, setCurrentMusic } =
     usePlayerStore((state) => state);
 
-  const [isPlayingPlaylist, setIsPlayingPlaylist] = useState(isPlaying && currentMusic.playlist?.id === id)
+  const [isPlayingPlaylist, setIsPlayingPlaylist] = useState(
+    isPlaying && currentMusic.playlist?.id === id
+  );
 
   useEffect(() => {
-    setIsPlayingPlaylist(isPlaying && currentMusic.playlist?.id === id)
-  }, [isPlaying, currentMusic])
+    setIsPlayingPlaylist(isPlaying && currentMusic.playlist?.id === id);
+  }, [isPlaying, currentMusic]);
 
   const handleClick = () => {
     if (isPlayingPlaylist) {
