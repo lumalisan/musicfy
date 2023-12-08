@@ -60,8 +60,30 @@ const Player = () => {
     };
   }, [currentMusic]);
 
-  const handleClick = () => {
+  const handlePlayClick = () => {
     setIsPlaying(!isPlaying);
+  };
+
+  const handleBackwardClick = () => {
+    const { song, songs } = currentMusic;
+
+    if (song?.id !== songs[0].id) {
+      setCurrentMusic({
+        ...currentMusic,
+        song: songs[songs.indexOf(song!) - 1],
+      });
+    }
+  };
+
+  const handleForwardClick = () => {
+    const { song, songs } = currentMusic;
+
+    if (song?.id !== songs[songs.length - 1].id) {
+      setCurrentMusic({
+        ...currentMusic,
+        song: songs[songs.indexOf(song!) + 1],
+      });
+    }
   };
 
   return (
@@ -75,23 +97,23 @@ const Player = () => {
       </div>
 
       <div className='grid flex-1 place-content-center'>
-        <div className='flex flex-col items-center justify-center gap-2'>
-          <div className='flex items-center justify-center gap-6'>
+        <div className='flex flex-col items-center justify-center gap-1'>
+          <div className='flex items-center justify-center gap-4'>
             {/* Backward button */}
-            <button className='text-xl'>
+            <button className='p-2 text-xl text-accent/70 transition duration-300 hover:text-accent' onClick={handleBackwardClick}>
               <FontAwesomeIcon icon={faBackwardStep} />
             </button>
 
             {/* Play button */}
             <button
-              className='flex h-9 w-9 items-center justify-center rounded-full bg-accent/80 p-2 text-lg text-secondary transition duration-300 hover:bg-accent'
-              onClick={handleClick}
+              className='flex h-9 w-9 items-center justify-center rounded-full bg-accent/80 p-2 text-lg text-secondary transition duration-300 hover:bg-accent hover:scale-105'
+              onClick={handlePlayClick}
             >
               <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
             </button>
 
             {/* Forward button */}
-            <button className='text-xl'>
+            <button className='p-2 text-xl text-accent/70 transition duration-300 hover:text-accent' onClick={handleForwardClick}>
               <FontAwesomeIcon icon={faForwardStep} />
             </button>
           </div>
