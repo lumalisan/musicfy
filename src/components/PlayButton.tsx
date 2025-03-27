@@ -45,8 +45,8 @@ const PlayButton = ({ id, size }: Props) => {
     <button
       className={classNames(
         size === 'large' ? 'h-14 w-14 text-2xl' : 'h-10 w-10 text-base',
-        'flex items-center justify-center rounded-full bg-accent/80 text-black',
-        'transition duration-300 hover:scale-105 hover:bg-accent'
+        'bg-accent/80 flex items-center justify-center rounded-full text-black',
+        'hover:bg-accent transition duration-300 hover:scale-105'
       )}
       onClick={handleClick}
     >

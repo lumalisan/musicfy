@@ -26,7 +26,7 @@ const VolumeController = () => {
   };
 
   return (
-    <div className='flex justify-center gap-x-2 text-accent'>
+    <div className='text-accent flex justify-center gap-x-2'>
       <button
         className='w-5 text-left opacity-70 transition duration-300 hover:opacity-100'
         onClick={handleVolumeIconClick}

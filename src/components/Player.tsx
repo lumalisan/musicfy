@@ -93,8 +93,8 @@ const Player = () => {
   };
 
   return (
-    <div className="z-50 flex w-full flex-row justify-between px-4 pt-2">
-      <div className="flex flex-1 basis-0 justify-start">
+    <div className='z-50 flex w-full flex-row justify-between px-4 pt-2'>
+      <div className='flex flex-1 basis-0 justify-start'>
         <CurrentSong
           image={currentMusic.song?.image}
           title={currentMusic.song?.title}
@@ -102,12 +102,12 @@ const Player = () => {
         />
       </div>
 
-      <div className="grid flex-1 place-content-center">
-        <div className="flex flex-col items-center justify-center gap-1">
-          <div className="flex items-center justify-center gap-4">
+      <div className='grid flex-1 place-content-center'>
+        <div className='flex flex-col items-center justify-center gap-1'>
+          <div className='flex items-center justify-center gap-4'>
             {/* Backward button */}
             <button
-              className="p-2 text-xl text-accent/70 transition duration-300 hover:text-accent"
+              className='text-accent/70 hover:text-accent p-2 text-xl transition duration-300'
               onClick={handleBackwardClick}
             >
               <FontAwesomeIcon icon={faBackwardStep} />
@@ -115,7 +115,7 @@ const Player = () => {
 
             {/* Play/Pause button */}
             <button
-              className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/80 p-2 text-lg text-secondary transition duration-300 hover:bg-accent hover:scale-105"
+              className='bg-accent/80 text-secondary hover:bg-accent flex h-9 w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105'
               onClick={handlePlayClick}
             >
               <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
@@ -123,7 +123,7 @@ const Player = () => {
 
             {/* Forward button */}
             <button
-              className="p-2 text-xl text-accent/70 transition duration-300 hover:text-accent"
+              className='text-accent/70 hover:text-accent p-2 text-xl transition duration-300'
               onClick={handleForwardClick}
             >
               <FontAwesomeIcon icon={faForwardStep} />
@@ -135,7 +135,7 @@ const Player = () => {
         </div>
       </div>
 
-      <div className="flex flex-1 basis-0 justify-end">
+      <div className='flex flex-1 basis-0 justify-end'>
         <VolumeController />
       </div>
 

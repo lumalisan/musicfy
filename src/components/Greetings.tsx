@@ -10,7 +10,7 @@ const Greetings = () => {
     greetings = 'Good Afternoon';
   }
 
-  return <h1 className='text-3xl font-bold text-secondary'>{greetings}</h1>;
+  return <h1 className='text-secondary text-3xl font-bold'>{greetings}</h1>;
 };
 
 export default Greetings;

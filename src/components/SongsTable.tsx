@@ -10,9 +10,9 @@ interface Props {
 
 const SongsTable = ({ playlist, songs }: Props) => {
   return (
-    <table className='min-w-full table-auto divide-y divide-accent/50 text-left'>
+    <table className='divide-accent/50 min-w-full table-auto divide-y text-left'>
       <thead>
-        <tr className='text-sm text-accent'>
+        <tr className='text-accent text-sm'>
           <th className='px-4 py-2'>#</th>
           <th className='px-4 py-2'>Title</th>
           <th className='px-4 py-2'>Album</th>
