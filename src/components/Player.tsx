@@ -66,7 +66,7 @@ const Player = () => {
     return () => {
       audioRef.current?.removeEventListener('ended', handleSongEnded);
     };
-  }, [currentMusic, setCurrentMusic, setIsPlaying, volume]);
+  }, [currentMusic, setCurrentMusic, setIsPlaying]);
 
   const handlePlayClick = () => {
     setIsPlaying(!isPlaying);
