@@ -16,11 +16,14 @@ const Player = () => {
     usePlayerStore((state) => state);
 
   const audioRef = useRef<HTMLAudioElement>(null);
+  const isFirstRender = useRef(true);
 
+  // Control play/pause based on isPlaying state changes
   useEffect(() => {
     isPlaying ? audioRef.current?.play() : audioRef.current?.pause();
   }, [isPlaying]);
 
+  // Update audio volume when volume state changes
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = volume;
@@ -30,24 +33,29 @@ const Player = () => {
   useEffect(() => {
     const { song, songs, playlist } = currentMusic;
 
-    // When the song changes, use this one and play
     if (song && audioRef.current) {
       const src = `/music/${playlist?.id}/${song.id}.mp3`;
       audioRef.current.src = src;
       audioRef.current.volume = volume;
-      audioRef.current?.play();
-      setIsPlaying(true);
+
+      // Auto-play if the song change is triggered after the initial render
+      if (!isFirstRender.current) {
+        audioRef.current.play();
+        setIsPlaying(true);
+      } else {
+        // Prevent auto-play on page load
+        isFirstRender.current = false;
+      }
     } else {
       setIsPlaying(false);
     }
 
-    // When the song ends, move on to the next one,
-    // if is the last one, just pause player
+    // When the song ends, move on to the next one or pause if it is the last song
     const handleSongEnded = () => {
-      if (song?.id !== songs[songs.length - 1].id) {
+      if (song && songs.length && song.id !== songs[songs.length - 1].id) {
         setCurrentMusic({
           ...currentMusic,
-          song: songs[songs.indexOf(song!) + 1],
+          song: songs[songs.indexOf(song) + 1],
         });
       } else {
         setIsPlaying(false);
@@ -58,7 +66,7 @@ const Player = () => {
     return () => {
       audioRef.current?.removeEventListener('ended', handleSongEnded);
     };
-  }, [currentMusic]);
+  }, [currentMusic, setCurrentMusic, setIsPlaying, volume]);
 
   const handlePlayClick = () => {
     setIsPlaying(!isPlaying);
@@ -66,29 +74,27 @@ const Player = () => {
 
   const handleBackwardClick = () => {
     const { song, songs } = currentMusic;
-
-    if (song?.id !== songs[0].id) {
+    if (song && songs.length && song.id !== songs[0].id) {
       setCurrentMusic({
         ...currentMusic,
-        song: songs[songs.indexOf(song!) - 1],
+        song: songs[songs.indexOf(song) - 1],
       });
     }
   };
 
   const handleForwardClick = () => {
     const { song, songs } = currentMusic;
-
-    if (song?.id !== songs[songs.length - 1].id) {
+    if (song && songs.length && song.id !== songs[songs.length - 1].id) {
       setCurrentMusic({
         ...currentMusic,
-        song: songs[songs.indexOf(song!) + 1],
+        song: songs[songs.indexOf(song) + 1],
       });
     }
   };
 
   return (
-    <div className='z-50 flex w-full flex-row justify-between px-4 pt-2'>
-      <div className='flex flex-1 basis-0 justify-start'>
+    <div className="z-50 flex w-full flex-row justify-between px-4 pt-2">
+      <div className="flex flex-1 basis-0 justify-start">
         <CurrentSong
           image={currentMusic.song?.image}
           title={currentMusic.song?.title}
@@ -96,24 +102,30 @@ const Player = () => {
         />
       </div>
 
-      <div className='grid flex-1 place-content-center'>
-        <div className='flex flex-col items-center justify-center gap-1'>
-          <div className='flex items-center justify-center gap-4'>
+      <div className="grid flex-1 place-content-center">
+        <div className="flex flex-col items-center justify-center gap-1">
+          <div className="flex items-center justify-center gap-4">
             {/* Backward button */}
-            <button className='p-2 text-xl text-accent/70 transition duration-300 hover:text-accent' onClick={handleBackwardClick}>
+            <button
+              className="p-2 text-xl text-accent/70 transition duration-300 hover:text-accent"
+              onClick={handleBackwardClick}
+            >
               <FontAwesomeIcon icon={faBackwardStep} />
             </button>
 
-            {/* Play button */}
+            {/* Play/Pause button */}
             <button
-              className='flex h-9 w-9 items-center justify-center rounded-full bg-accent/80 p-2 text-lg text-secondary transition duration-300 hover:bg-accent hover:scale-105'
+              className="flex h-9 w-9 items-center justify-center rounded-full bg-accent/80 p-2 text-lg text-secondary transition duration-300 hover:bg-accent hover:scale-105"
               onClick={handlePlayClick}
             >
               <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
             </button>
 
             {/* Forward button */}
-            <button className='p-2 text-xl text-accent/70 transition duration-300 hover:text-accent' onClick={handleForwardClick}>
+            <button
+              className="p-2 text-xl text-accent/70 transition duration-300 hover:text-accent"
+              onClick={handleForwardClick}
+            >
               <FontAwesomeIcon icon={faForwardStep} />
             </button>
           </div>
@@ -123,7 +135,7 @@ const Player = () => {
         </div>
       </div>
 
-      <div className='flex flex-1 basis-0 justify-end'>
+      <div className="flex flex-1 basis-0 justify-end">
         <VolumeController />
       </div>
 

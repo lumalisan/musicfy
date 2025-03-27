@@ -1,5 +1,5 @@
 ---
-import { ViewTransitions } from 'astro:transitions';
+import { ClientRouter } from 'astro:transitions';
 import Player from '@/components/Player';
 import AsideMenu from '../components/AsideMenu.astro';
 // The following import prevents a Font Awesome icon server-side rendering bug,
@@ -8,6 +8,8 @@ import '@fortawesome/fontawesome-svg-core/styles.css';
 // Prevent fontawesome from adding its CSS since we did it manually above:
 import { config } from '@fortawesome/fontawesome-svg-core';
 config.autoAddCss = false; /* eslint-disable import/first */
+// Import Tailwind CSS
+import "../styles/global.css";
 
 interface Props {
   title: string;
@@ -25,7 +27,7 @@ const { title } = Astro.props;
     <link rel='icon' type='image/svg+xml' href='/favicon.webp' />
     <meta name='generator' content={Astro.generator} />
     <title>{title}</title>
-    <ViewTransitions fallback='none' />
+    <ClientRouter fallback='none' />
 
     <script>
       //@ts-ignore
@@ -107,15 +109,15 @@ const { title } = Astro.props;
     <style is:global>
       html {
         font-family: system-ui, sans-serif;
-        background: theme(colors.secondary);
-        color: theme(colors.accent);
+        background: var(--color-secondary);
+        color: var(--color-accent);
       }
 
       /* ===== Scrollbar CSS ===== */
       /* Firefox */
       * {
         scrollbar-width: auto;
-        scrollbar-color: theme(colors.accent) theme(colors.primary);
+        scrollbar-color: var(--color-accent) var(--color-primary);
       }
 
       /* Chrome, Edge, and Safari */
@@ -124,11 +126,11 @@ const { title } = Astro.props;
       }
 
       *::-webkit-scrollbar-track {
-        background: theme(colors.primary);
+        background: var(--color-primary);
       }
 
       *::-webkit-scrollbar-thumb {
-        background-color: theme(colors.accent);
+        background-color: var(--color-accent);
       }
 
       *::-webkit-scrollbar-button {

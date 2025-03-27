@@ -5,7 +5,7 @@ import { Slider } from './Slider';
 const AudioController = ({
   audioRef,
 }: {
-  audioRef: React.RefObject<HTMLAudioElement>;
+  audioRef: React.RefObject<HTMLAudioElement | null>;
 }) => {
   const { audioDuration, currentTime } = useAudioTime(audioRef);
 

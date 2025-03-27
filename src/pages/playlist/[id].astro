@@ -14,12 +14,12 @@ const playListSongs = songs.filter(
 );
 ---
 
-<Layout title='Spotify Clone'>
+<Layout title={`${playlist?.title} - Musicfy`}>
   <div
     class='relative flex flex-col h-full bg-primary overflow-x-hidden'
     transition:name=`playlist ${numericId} box`
   >
-    <div class=`relative pb-10 bg-[${playlist?.color}] z-10`>
+    <div style={`background-color: ${playlist?.color};`} class=`relative pb-10 z-10`>
       <header class='flex flex-row gap-8 px-6 pt-12'>
         <picture class='aspect-square w-52 h-52 flex-none'>
           <img
