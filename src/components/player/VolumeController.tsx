@@ -6,7 +6,7 @@ import {
   faVolumeXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { usePlayerStore } from '@/store/playerStore';
-import { Slider } from './Slider';
+import { Slider } from '../Slider';
 
 const VolumeController = () => {
   const volume = usePlayerStore((state) => state.volume);

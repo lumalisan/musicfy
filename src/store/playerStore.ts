@@ -1,13 +1,7 @@
-import type { Playlist } from '@/lib/types/Playlist';
-import type { Song } from '@/lib/types/Song';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
-interface CurrentMusic {
-  playlist: Playlist | null;
-  song: Song | null;
-  songsQueue: Song[];
-}
+import type { CurrentMusic } from '@/lib/types/CurrentMusic';
 
 interface PlayerStore {
   volume: number;
