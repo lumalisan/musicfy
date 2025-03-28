@@ -1,8 +1,8 @@
 import { memo, useEffect, useState } from 'react';
-import classNames from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { usePlayerStore } from '@/store/playerStore';
+import { cn } from '@/lib/utils/cn';
 
 interface Props {
   id: number;
@@ -29,13 +29,11 @@ const PlayButton = ({ id, size }: Props) => {
       // Continue with current song
       setIsPlaying(true);
     } else {
-      // fetch('/api/featuredPlaylists')
-
       // Get new song and play it
       fetch(`/api/playlistInfo?id=${id}`)
         .then((resp) => resp.json())
         .then(({ songs, playlist }: any) => {
-          setCurrentMusic({ songs, playlist, song: songs[0] });
+          setCurrentMusic({ songsQueue: songs, playlist, song: songs[0] });
           setIsPlaying(true);
         });
     }
@@ -43,7 +41,7 @@ const PlayButton = ({ id, size }: Props) => {
 
   return (
     <button
-      className={classNames(
+      className={cn(
         size === 'large' ? 'h-14 w-14 text-2xl' : 'h-10 w-10 text-base',
         'bg-accent/80 flex items-center justify-center rounded-full text-black',
         'hover:bg-accent transition duration-300 hover:scale-105'

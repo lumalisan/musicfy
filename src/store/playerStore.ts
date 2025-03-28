@@ -1,35 +1,40 @@
-import type { Playlist, Song } from '@/lib/data';
+import type { Playlist } from '@/lib/types/Playlist';
+import type { Song } from '@/lib/types/Song';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface CurrentMusic {
   playlist: Playlist | null;
   song: Song | null;
-  songs: Song[];
+  songsQueue: Song[];
 }
 
 interface PlayerStore {
+  volume: number;
   isPlaying: boolean;
   currentMusic: CurrentMusic;
-  volume: number;
-  progress: number;
+  isRandom: boolean;
+  isRepeat: boolean;
   setVolume: (volume: number) => void;
   setIsPlaying: (isPlaying: boolean) => void;
   setCurrentMusic: (currentMusic: CurrentMusic) => void;
-  setProgress: (progress: number) => void;
+  setIsRandom: (isRandom: boolean) => void;
+  setIsRepeat: (isRepeat: boolean) => void;
 }
 
 export const usePlayerStore = create<PlayerStore>()(
   persist(
-    (set, get) => ({
+    (set, _) => ({
       isPlaying: false,
-      currentMusic: { playlist: null, song: null, songs: [] },
+      currentMusic: { playlist: null, song: null, songsQueue: [] },
       volume: 1,
-      progress: 0,
+      isRandom: false,
+      isRepeat: false,
       setVolume: (volume: number) => set({ volume }),
       setIsPlaying: (isPlaying: boolean) => set({ isPlaying }),
       setCurrentMusic: (currentMusic: CurrentMusic) => set({ currentMusic }),
-      setProgress: (progress: number) => set({ progress }),
+      setIsRandom: (isRandom: boolean) => set({ isRandom }),
+      setIsRepeat: (isRepeat: boolean) => set({ isRepeat }),
     }),
     {
       name: 'player-store',
@@ -37,7 +42,8 @@ export const usePlayerStore = create<PlayerStore>()(
       partialize: (state) => ({
         volume: state.volume,
         currentMusic: state.currentMusic,
-        progress: state.progress,
+        isRandom: state.isRandom,
+        isRepeat: state.isRepeat,
       }),
     }
   )

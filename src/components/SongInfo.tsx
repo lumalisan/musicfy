@@ -1,4 +1,6 @@
-import type { Playlist, Song } from '@/lib/data';
+import type { Playlist } from '@/lib/types/Playlist';
+import type { Song } from '@/lib/types/Song';
+import { generateRandomSongsQueue } from '@/lib/utils/generateRandomSongsQueue';
 import { usePlayerStore } from '@/store/playerStore';
 
 interface Props {
@@ -9,11 +11,20 @@ interface Props {
 }
 
 const SongInfo = ({ playlist, songs, song, idx }: Props) => {
-  const { currentMusic, setCurrentMusic } = usePlayerStore((state) => state);
+  const { currentMusic, setCurrentMusic, isRandom } = usePlayerStore(
+    (state) => state
+  );
 
   const handleClick = () => {
     if (currentMusic.song?.id !== song.id) {
-      setCurrentMusic({ songs, playlist, song });
+      // If isRandom is true and user selects a song,
+      // play that song and set songsQueue to a random songs order
+      if (isRandom) {
+        const randomSongs = generateRandomSongsQueue(songs, song);
+        setCurrentMusic({ songsQueue: randomSongs, playlist, song });
+      } else {
+        setCurrentMusic({ songsQueue: songs, playlist, song });
+      }
     }
   };
 

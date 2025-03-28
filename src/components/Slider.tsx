@@ -1,6 +1,6 @@
 import {
   forwardRef,
-  type ElementRef,
+  type ComponentRef,
   type ComponentPropsWithoutRef,
 } from 'react';
 import {
@@ -13,7 +13,7 @@ import {
 import cn from 'clsx';
 
 export const Slider = forwardRef<
-  ElementRef<typeof Root>,
+  ComponentRef<typeof Root>,
   ComponentPropsWithoutRef<typeof Root>
 >(({ className, ...props }, ref) => (
   <SliderRoot

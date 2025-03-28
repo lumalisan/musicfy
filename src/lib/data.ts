@@ -1,10 +1,5 @@
-export interface Playlist {
-  id: number;
-  title: string;
-  color: string;
-  cover: string;
-  artists: string[];
-}
+import type { Playlist } from './types/Playlist';
+import type { Song } from './types/Song';
 
 export const playlists: Playlist[] = [
   {
@@ -64,16 +59,6 @@ export const playlists: Playlist[] = [
     artists: ['John Swarn', 'Natalia Mconan'],
   },
 ];
-
-export interface Song {
-  id: number;
-  playlistId: number;
-  title: string;
-  image: string;
-  artists: string[];
-  album: string;
-  duration: string;
-}
 
 export const songs: Song[] = [
   {

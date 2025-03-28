@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 
-export const useAudioTime = (audioRef: React.RefObject<HTMLAudioElement | null>) => {
+export const useAudioTime = (
+  audioRef: React.RefObject<HTMLAudioElement | null>
+) => {
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {

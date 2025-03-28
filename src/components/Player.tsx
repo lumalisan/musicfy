@@ -1,19 +1,33 @@
 import { useEffect, useRef } from 'react';
+
 import {
   faBackwardStep,
   faForwardStep,
+  faRepeat,
+  faShuffle,
   faPause,
   faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { usePlayerStore } from '@/store/playerStore';
+import { cn } from '@/lib/utils/cn';
+
 import CurrentSong from './CurrentSong';
 import VolumeController from './VolumeController';
 import AudioController from './AudioController';
 
 const Player = () => {
-  const { isPlaying, currentMusic, setCurrentMusic, setIsPlaying, volume } =
-    usePlayerStore((state) => state);
+  const {
+    isPlaying,
+    currentMusic,
+    setCurrentMusic,
+    setIsPlaying,
+    volume,
+    isRandom,
+    isRepeat,
+    setIsRandom,
+    setIsRepeat,
+  } = usePlayerStore((state) => state);
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const isFirstRender = useRef(true);
@@ -30,8 +44,9 @@ const Player = () => {
     }
   }, [volume]);
 
+  // Play the new song when the currentMusic changes
   useEffect(() => {
-    const { song, songs, playlist } = currentMusic;
+    const { song, playlist } = currentMusic;
 
     if (song && audioRef.current) {
       const src = `/music/${playlist?.id}/${song.id}.mp3`;
@@ -49,16 +64,33 @@ const Player = () => {
     } else {
       setIsPlaying(false);
     }
+  }, [currentMusic.song, currentMusic.playlist, setIsPlaying]);
+
+  // Handle song ended event
+  useEffect(() => {
+    const { song, songsQueue } = currentMusic;
 
     // When the song ends, move on to the next one or pause if it is the last song
     const handleSongEnded = () => {
-      if (song && songs.length && song.id !== songs[songs.length - 1].id) {
-        setCurrentMusic({
-          ...currentMusic,
-          song: songs[songs.indexOf(song) + 1],
-        });
-      } else {
-        setIsPlaying(false);
+      if (song) {
+        if (isRepeat) {
+          setCurrentMusic({
+            ...currentMusic,
+            song: songsQueue[songsQueue.indexOf(song)],
+          });
+        } else {
+          if (
+            songsQueue.length &&
+            song.id !== songsQueue[songsQueue.length - 1].id
+          ) {
+            setCurrentMusic({
+              ...currentMusic,
+              song: songsQueue[songsQueue.indexOf(song) + 1],
+            });
+          } else {
+            setIsPlaying(false);
+          }
+        }
       }
     };
 
@@ -66,30 +98,42 @@ const Player = () => {
     return () => {
       audioRef.current?.removeEventListener('ended', handleSongEnded);
     };
-  }, [currentMusic, setCurrentMusic, setIsPlaying]);
+  }, [currentMusic, setCurrentMusic, setIsPlaying, isRepeat]);
 
   const handlePlayClick = () => {
     setIsPlaying(!isPlaying);
   };
 
   const handleBackwardClick = () => {
-    const { song, songs } = currentMusic;
-    if (song && songs.length && song.id !== songs[0].id) {
+    const { song, songsQueue } = currentMusic;
+    if (song && songsQueue.length && song.id !== songsQueue[0].id) {
       setCurrentMusic({
         ...currentMusic,
-        song: songs[songs.indexOf(song) - 1],
+        song: songsQueue[songsQueue.indexOf(song) - 1],
       });
     }
   };
 
   const handleForwardClick = () => {
-    const { song, songs } = currentMusic;
-    if (song && songs.length && song.id !== songs[songs.length - 1].id) {
+    const { song, songsQueue } = currentMusic;
+    if (
+      song &&
+      songsQueue.length &&
+      song.id !== songsQueue[songsQueue.length - 1].id
+    ) {
       setCurrentMusic({
         ...currentMusic,
-        song: songs[songs.indexOf(song) + 1],
+        song: songsQueue[songsQueue.indexOf(song) + 1],
       });
     }
+  };
+
+  const handleShuffleClick = () => {
+    setIsRandom(!isRandom);
+  };
+
+  const handleRepeatClick = () => {
+    setIsRepeat(!isRepeat);
   };
 
   return (
@@ -105,10 +149,28 @@ const Player = () => {
       <div className='grid flex-1 place-content-center'>
         <div className='flex flex-col items-center justify-center gap-1'>
           <div className='flex items-center justify-center gap-4'>
+            {/* Random song button */}
+            <button
+              className={cn(
+                'text-accent/40 hover:text-accent p-2 text-xl transition duration-300',
+                isRandom && 'text-accent'
+              )}
+              onClick={handleShuffleClick}
+              type='button'
+            >
+              <div className='relative'>
+                <FontAwesomeIcon icon={faShuffle} />
+                {isRandom && (
+                  <span className='bg-accent absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full'></span>
+                )}
+              </div>
+            </button>
+
             {/* Backward button */}
             <button
-              className='text-accent/70 hover:text-accent p-2 text-xl transition duration-300'
+              className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300'
               onClick={handleBackwardClick}
+              type='button'
             >
               <FontAwesomeIcon icon={faBackwardStep} />
             </button>
@@ -117,16 +179,35 @@ const Player = () => {
             <button
               className='bg-accent/80 text-secondary hover:bg-accent flex h-9 w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105'
               onClick={handlePlayClick}
+              type='button'
             >
               <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
             </button>
 
             {/* Forward button */}
             <button
-              className='text-accent/70 hover:text-accent p-2 text-xl transition duration-300'
+              className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300'
               onClick={handleForwardClick}
+              type='button'
             >
               <FontAwesomeIcon icon={faForwardStep} />
+            </button>
+
+            {/* Repeat button */}
+            <button
+              className={cn(
+                'text-accent/40 hover:text-accent p-2 text-xl transition duration-300',
+                isRepeat && 'text-accent'
+              )}
+              onClick={handleRepeatClick}
+              type='button'
+            >
+              <div className='relative'>
+                <FontAwesomeIcon icon={faRepeat} />
+                {isRepeat && (
+                  <span className='bg-accent absolute -bottom-1 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full'></span>
+                )}
+              </div>
             </button>
           </div>
 

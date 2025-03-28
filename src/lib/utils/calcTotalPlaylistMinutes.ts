@@ -1,4 +1,4 @@
-import type { Song } from '@/lib/data';
+import type { Song } from '../types/Song';
 
 export const calculateTotalMinutes = (playListSongs: Song[]) => {
   const totalSeconds = playListSongs.reduce((total, song) => {
