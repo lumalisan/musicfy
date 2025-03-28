@@ -1,19 +1,19 @@
-import type { AudioService } from "../types/AudioService";
+import type { AudioService } from '../types/AudioService';
 
 export class DefaultAudioService implements AudioService {
-    play(audio: HTMLAudioElement) {
-        audio.play();
-    }
+  play(audio: HTMLAudioElement) {
+    audio.play();
+  }
 
-    pause(audio: HTMLAudioElement) {
-        audio.pause();
-    }
+  pause(audio: HTMLAudioElement) {
+    audio.pause();
+  }
 
-    setVolume(audio: HTMLAudioElement, volume: number) {
-        audio.volume = volume;
-    }
+  setVolume(audio: HTMLAudioElement, volume: number) {
+    audio.volume = volume;
+  }
 
-    setSrc(audio: HTMLAudioElement, src: string) {
-        audio.src = src;
-    }
+  setSrc(audio: HTMLAudioElement, src: string) {
+    audio.src = src;
+  }
 }
