@@ -11,6 +11,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { usePlayerStore } from '@/store/playerStore';
 import { cn } from '@/lib/utils/cn';
+import { generateRandomSongsQueue } from '@/lib/utils/generateRandomSongsQueue';
 
 import CurrentSong from './CurrentSong';
 import VolumeController from './VolumeController';
@@ -43,6 +44,23 @@ const Player = () => {
       audioRef.current.volume = volume;
     }
   }, [volume]);
+
+  // Set a random songs order if isRandom is true
+  // Otherwise, set songsQueue to the original songs order
+  useEffect(() => {
+    if (isRandom && currentMusic.song) {
+      const randomSongs = generateRandomSongsQueue(currentMusic.songsQueue, currentMusic.song);
+      setCurrentMusic({
+        ...currentMusic,
+        songsQueue: randomSongs,
+      });
+    } else {
+      setCurrentMusic({
+        ...currentMusic,
+        songsQueue: currentMusic.songsQueue.sort((a, b) => a.id - b.id),
+      });
+    }
+  }, [isRandom]);
 
   // Play the new song when the currentMusic changes
   useEffect(() => {

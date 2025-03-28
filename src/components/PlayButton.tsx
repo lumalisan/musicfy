@@ -10,7 +10,7 @@ interface Props {
 }
 
 const PlayButton = ({ id, size }: Props) => {
-  const { isPlaying, currentMusic, setIsPlaying, setCurrentMusic } =
+  const { isPlaying, currentMusic, setIsPlaying, setCurrentMusic, isRandom } =
     usePlayerStore((state) => state);
 
   const [isPlayingPlaylist, setIsPlayingPlaylist] = useState(
@@ -30,7 +30,7 @@ const PlayButton = ({ id, size }: Props) => {
       setIsPlaying(true);
     } else {
       // Get new song and play it
-      fetch(`/api/playlistInfo?id=${id}`)
+      fetch(`/api/playlistInfo.json?id=${id}&isRandom=${isRandom}`)
         .then((resp) => resp.json())
         .then(({ songs, playlist }: any) => {
           setCurrentMusic({ songsQueue: songs, playlist, song: songs[0] });
