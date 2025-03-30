@@ -123,7 +123,7 @@ const Player = () => {
   }, [currentMusic, setCurrentMusic, setIsPlaying, isRepeat]);
 
   return (
-    <div className='flex w-auto md:w-full h-auto md:h-[80px] flex-row justify-between mx-2 md:mx-0 p-2 md:px-4 md:pt-2 bg-amber-900 md:bg-secondary rounded-lg'>
+    <div className='md:bg-secondary mx-2 flex h-auto w-auto flex-row justify-between rounded-lg bg-amber-900 p-2 md:mx-0 md:h-[80px] md:w-full md:px-4 md:pt-2'>
       <div className='flex flex-1 basis-0 justify-start'>
         <CurrentSong
           image={currentMusic.song?.image}
@@ -132,7 +132,7 @@ const Player = () => {
         />
       </div>
 
-      <div className='flex md:hidden justify-end items-center'>
+      <div className='flex items-center justify-end md:hidden'>
         <MobilePlayButton
           isPlaying={isPlaying}
           playerControlService={playerControlService}
@@ -140,7 +140,7 @@ const Player = () => {
         />
       </div>
 
-      <div className='hidden md:grid flex-1 place-content-center'>
+      <div className='hidden flex-1 place-content-center md:grid'>
         <div className='flex flex-col items-center justify-center gap-1'>
           <PlaybackControls
             isPlaying={isPlaying}
@@ -158,7 +158,7 @@ const Player = () => {
         </div>
       </div>
 
-      <div className='hidden md:flex flex-1 basis-0 justify-end'>
+      <div className='hidden flex-1 basis-0 justify-end md:flex'>
         <VolumeController />
       </div>
 

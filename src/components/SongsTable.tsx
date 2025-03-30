@@ -12,13 +12,13 @@ interface Props {
 
 const SongsTable = ({ playlist, songs }: Props) => {
   return (
-    <table className='divide-accent/50 min-w-full table-fixed md:table-auto w-full divide-y text-left'>
+    <table className='divide-accent/50 w-full min-w-full table-fixed divide-y text-left md:table-auto'>
       <thead>
         <tr className='text-accent text-sm'>
-          <th className='hidden md:table-cell px-4 py-2'>#</th>
-          <th className='px-4 py-2 w-[70%]'>Title</th>
+          <th className='hidden px-4 py-2 md:table-cell'>#</th>
+          <th className='w-[70%] px-4 py-2'>Title</th>
           <th className='px-4 py-2'>Album</th>
-          <th className='hidden md:table-cell px-4 py-2'>
+          <th className='hidden px-4 py-2 md:table-cell'>
             <FontAwesomeIcon icon={faClock} />
           </th>
         </tr>
