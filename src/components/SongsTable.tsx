@@ -12,20 +12,20 @@ interface Props {
 
 const SongsTable = ({ playlist, songs }: Props) => {
   return (
-    <table className='divide-accent/50 min-w-full table-auto divide-y text-left'>
+    <table className='divide-accent/50 min-w-full table-fixed md:table-auto w-full divide-y text-left'>
       <thead>
         <tr className='text-accent text-sm'>
-          <th className='px-4 py-2'>#</th>
-          <th className='px-4 py-2'>Title</th>
+          <th className='hidden md:table-cell px-4 py-2'>#</th>
+          <th className='px-4 py-2 w-[70%]'>Title</th>
           <th className='px-4 py-2'>Album</th>
-          <th className='px-4 py-2'>
+          <th className='hidden md:table-cell px-4 py-2'>
             <FontAwesomeIcon icon={faClock} />
           </th>
         </tr>
       </thead>
 
       <tbody>
-        <tr className='h-[16px]'></tr>
+        <tr className='h-4'></tr>
         {songs.map((song, idx) => (
           <SongInfo
             key={song.id}

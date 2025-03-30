@@ -9,6 +9,7 @@ import AudioController from './AudioController';
 import { DefaultAudioService } from '@/lib/services/DefaultAudioService';
 import { DefaultPlayerControlService } from '@/lib/services/DefaultPlayerControlService';
 import { PlaybackControls } from './PlaybackControls';
+import { MobilePlayButton } from './MobilePlayButton';
 
 const Player = () => {
   const audioService = new DefaultAudioService();
@@ -122,7 +123,7 @@ const Player = () => {
   }, [currentMusic, setCurrentMusic, setIsPlaying, isRepeat]);
 
   return (
-    <div className='z-50 flex w-full flex-row justify-between px-4 pt-2'>
+    <div className='flex w-auto md:w-full h-auto md:h-[80px] flex-row justify-between mx-2 md:mx-0 p-2 md:px-4 md:pt-2 bg-amber-900 md:bg-secondary rounded-lg'>
       <div className='flex flex-1 basis-0 justify-start'>
         <CurrentSong
           image={currentMusic.song?.image}
@@ -131,7 +132,15 @@ const Player = () => {
         />
       </div>
 
-      <div className='grid flex-1 place-content-center'>
+      <div className='flex md:hidden justify-end items-center'>
+        <MobilePlayButton
+          isPlaying={isPlaying}
+          playerControlService={playerControlService}
+          setIsPlaying={setIsPlaying}
+        />
+      </div>
+
+      <div className='hidden md:grid flex-1 place-content-center'>
         <div className='flex flex-col items-center justify-center gap-1'>
           <PlaybackControls
             isPlaying={isPlaying}
@@ -149,7 +158,7 @@ const Player = () => {
         </div>
       </div>
 
-      <div className='flex flex-1 basis-0 justify-end'>
+      <div className='hidden md:flex flex-1 basis-0 justify-end'>
         <VolumeController />
       </div>
 

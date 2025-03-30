@@ -1,32 +1,33 @@
 ---
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBook, faHome, faSearch } from "@fortawesome/free-solid-svg-icons";
-import SideMenuItem from "./SideMenuItem.astro";
-import SideMenuCard from "./SideMenuCard.astro";
-import { playlists } from "../lib/data";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBook, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
+import SideMenuItem from './SideMenuItem.astro';
+import SideMenuCard from './SideMenuCard.astro';
+import { playlists } from '../lib/data';
 ---
 
-<nav class="flex flex-col flex-1 gap-2">
-    <div class="bg-primary rounded-lg p-2">
-        <ul>
-            <SideMenuItem href="/">
-                <FontAwesomeIcon icon={faHome} className="text-xl" />
-                 Home
-            </SideMenuItem>
-            <SideMenuItem href="#">
-                <FontAwesomeIcon icon={faSearch} className="text-xl" />
-                 Search
-            </SideMenuItem>
-        </ul>
-    </div>
+<!-- Aside menu navigation -->
+<nav class='flex flex-col flex-1 gap-2'>
+  <div class='bg-primary rounded-lg p-2'>
+    <ul>
+      <SideMenuItem href='/'>
+        <FontAwesomeIcon icon={faHome} className='text-xl' />
+        Home
+      </SideMenuItem>
+      <SideMenuItem href='#'>
+        <FontAwesomeIcon icon={faSearch} className='text-xl' />
+        Search
+      </SideMenuItem>
+    </ul>
+  </div>
 
-    <div class="bg-primary rounded-lg p-2 flex-1">
-        <ul>
-            <SideMenuItem href="/">
-                <FontAwesomeIcon icon={faBook} className="text-xl" />
-                 Library
-            </SideMenuItem>
-        </ul>
-        {playlists.map((playlist) => <SideMenuCard playlist={playlist} />)}
-    </div>
+  <div class='bg-primary rounded-lg p-2 flex-1'>
+    <ul>
+      <SideMenuItem href='/'>
+        <FontAwesomeIcon icon={faBook} className='text-xl' />
+        Library
+      </SideMenuItem>
+    </ul>
+    {playlists.map((playlist) => <SideMenuCard playlist={playlist} />)}
+  </div>
 </nav>

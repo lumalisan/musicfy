@@ -1,0 +1,29 @@
+---
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBook, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
+---
+
+<!-- Mobile navigation -->
+<nav class='flex md:hidden items-center h-[70px] bg-secondary'>
+  <a
+    href='/'
+    class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+  >
+    <FontAwesomeIcon icon={faHome} className='text-xl' />
+    Home
+  </a>
+  <a
+    href='#'
+    class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+  >
+    <FontAwesomeIcon icon={faSearch} className='text-xl' />
+    Search
+  </a>
+  <a
+    href='/'
+    class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+  >
+    <FontAwesomeIcon icon={faBook} className='text-xl' />
+    Library
+  </a>
+</nav>

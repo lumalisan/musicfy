@@ -1,0 +1,20 @@
+---
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+const currentPath = Astro.url.pathname;
+const isHomePage = currentPath === '/';
+---
+
+{/* Only show button if we're not in the home page */}
+{
+  !isHomePage && (
+    <button
+      onclick='history.back()'
+      class='fixed md:hidden top-5 left-5 z-50 cursor-pointer border-none bg-transparent p-0'
+      aria-label='Volver a la página anterior'
+    >
+      <FontAwesomeIcon icon={faArrowLeft} className='text-accent text-3xl' />
+    </button>
+  )
+}

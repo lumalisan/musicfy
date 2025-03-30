@@ -33,18 +33,22 @@ const SongInfo = ({ playlist, songs, song, idx }: Props) => {
       className='text-accent hover:bg-accent/10 border-spacing-0 cursor-pointer overflow-hidden text-sm font-light transition duration-300'
       onClick={handleClick}
     >
-      <td className='w-5 rounded-tl-lg rounded-bl-lg px-4 py-2'>{idx + 1}</td>
-      <td className='flex gap-3 px-4 py-2'>
-        <picture className=''>
-          <img src={song.image} alt={song.title} className='h-11 w-11' />
+      <td className='hidden md:table-cell w-5 rounded-tl-lg rounded-bl-lg px-4 py-2'>{idx + 1}</td>
+      <td className='flex gap-3 px-4 py-2 w-full'>
+        <picture className='h-11 w-11 aspect-square flex-shrink-0'>
+          <img src={song.image} alt={song.title} className='h-full w-full' />
         </picture>
-        <div className='flex flex-col'>
-          <h3 className='text-accent text-base font-normal'>{song.title}</h3>
-          <span>{song.artists.join(', ')}</span>
+        <div className='flex flex-col overflow-hidden'>
+          <h3 className='text-accent text-base font-normal overflow-hidden whitespace-nowrap text-ellipsis'>
+            {song.title}
+          </h3>
+          <span className='overflow-hidden whitespace-nowrap text-ellipsis'>
+            {song.artists.join(', ')}
+          </span>
         </div>
       </td>
-      <td className='px-4 py-2'>{song.album}</td>
-      <td className='rounded-tr-lg rounded-br-lg px-4 py-2'>{song.duration}</td>
+      <td className='px-4 py-2 overflow-hidden whitespace-nowrap text-ellipsis'>{song.album}</td>
+      <td className='hidden md:table-cell rounded-tr-lg rounded-br-lg px-4 py-2'>{song.duration}</td>
     </tr>
   );
 };
