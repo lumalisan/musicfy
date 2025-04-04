@@ -8,12 +8,11 @@ This project is a Spotify-like application made in Astro / React for song playba
 Feel free to inspect the code and see how I made it possible! 😊
 
 ## 🧠 Features
+- Responsive Design: Works on desktop & mobile.
 - Intuitive Music Controls: Enjoy basic functionalities such as volume adjustments, song navigation (previous and next), play-pause toggles, fast forward, and rewind options.
 - Dynamic Playlist System: Immerse yourself in a playlist system that allows you to curate and explore songs with ease. Choose from a variety of playlists and select your preferred songs within each playlist.
 - Aside Menu for Playlist Selection: Navigate through playlists using the aside menu, providing a user-friendly experience.
 - Web Animations: Experience animations crafted using Astro built system, adding life and dynamism to the web.
-
-**NOTE:** For now only works on PC browsers.
 
 ## :rocket: Technologies used
 
