@@ -17,10 +17,8 @@ export const MobilePlayButton = ({
   return (
     <button
       className='text-accent flex h-10 w-10 items-center justify-center text-2xl'
-      onClick={() => {
-        const newPlayingState = playerControlService.handlePlayPause(isPlaying);
-        setIsPlaying(newPlayingState);
-      }}
+      onClick={() => playerControlService.handlePlayPause(isPlaying, setIsPlaying)
+      }
     >
       <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
     </button>

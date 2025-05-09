@@ -1,7 +1,10 @@
 import type { CurrentMusic } from './CurrentMusic';
 
 export interface PlayerControlService {
-  handlePlayPause(isPlaying: boolean): boolean;
+  handlePlayPause(
+    isPlaying: boolean,
+    setIsPlaying: (isPlaying: boolean) => void
+  ): void;
   handleNext(
     currentMusic: CurrentMusic,
     setCurrentMusic: (currentMusic: CurrentMusic) => void

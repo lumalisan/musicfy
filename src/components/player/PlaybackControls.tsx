@@ -60,11 +60,8 @@ export const PlaybackControls = ({
 
       <button
         className='bg-accent/80 text-secondary hover:bg-accent flex h-9 w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105'
-        onClick={() => {
-          const newPlayingState =
-            playerControlService.handlePlayPause(isPlaying);
-          setIsPlaying(newPlayingState);
-        }}
+        onClick={() => playerControlService.handlePlayPause(isPlaying, setIsPlaying)
+        }
       >
         <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
       </button>

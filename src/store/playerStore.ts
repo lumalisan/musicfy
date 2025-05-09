@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 import type { CurrentMusic } from '@/lib/types/CurrentMusic';
+import type { Song } from '@/lib/types/Song';
 
 interface PlayerStore {
   volume: number;
@@ -14,6 +15,7 @@ interface PlayerStore {
   setCurrentMusic: (currentMusic: CurrentMusic) => void;
   setIsRandom: (isRandom: boolean) => void;
   setIsRepeat: (isRepeat: boolean) => void;
+  loadAndPlayMusic: (data: { songsQueue: Song[]; playlist: any; song: Song }) => void;
 }
 
 export const usePlayerStore = create<PlayerStore>()(
@@ -29,6 +31,16 @@ export const usePlayerStore = create<PlayerStore>()(
       setCurrentMusic: (currentMusic: CurrentMusic) => set({ currentMusic }),
       setIsRandom: (isRandom: boolean) => set({ isRandom }),
       setIsRepeat: (isRepeat: boolean) => set({ isRepeat }),
+      loadAndPlayMusic: (data) => {
+        set({
+          currentMusic: {
+            songsQueue: data.songsQueue,
+            playlist: data.playlist,
+            song: data.song,
+          },
+          isPlaying: true,
+        });
+      },
     }),
     {
       name: 'player-store',

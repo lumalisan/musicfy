@@ -10,7 +10,7 @@ interface Props {
 }
 
 const PlayButton = ({ id, size }: Props) => {
-  const { isPlaying, currentMusic, setIsPlaying, setCurrentMusic, isRandom } =
+  const { isPlaying, currentMusic, setIsPlaying, loadAndPlayMusic, isRandom } =
     usePlayerStore((state) => state);
 
   const [isPlayingPlaylist, setIsPlayingPlaylist] = useState(
@@ -33,9 +33,13 @@ const PlayButton = ({ id, size }: Props) => {
       fetch(`/api/playlistInfo.json?id=${id}&isRandom=${isRandom}`)
         .then((resp) => resp.json())
         .then(({ songs, playlist }: any) => {
-          setCurrentMusic({ songsQueue: songs, playlist, song: songs[0] });
-          setIsPlaying(true);
-        });
+          if (songs && songs.length > 0) {
+            loadAndPlayMusic({ songsQueue: songs, playlist, song: songs[0] });
+          } else {
+            console.warn('No songs found in playlist with id:', id);
+          }
+        })
+        .catch(error => console.error("Error fetching playlist info:", error));
     }
   };
 

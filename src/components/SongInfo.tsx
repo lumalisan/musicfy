@@ -11,7 +11,7 @@ interface Props {
 }
 
 const SongInfo = ({ playlist, songs, song, idx }: Props) => {
-  const { currentMusic, setCurrentMusic, isRandom } = usePlayerStore(
+  const { currentMusic, loadAndPlayMusic, isRandom } = usePlayerStore(
     (state) => state
   );
 
@@ -21,9 +21,9 @@ const SongInfo = ({ playlist, songs, song, idx }: Props) => {
       // play that song and set songsQueue to a random songs order
       if (isRandom) {
         const randomSongs = generateRandomSongsQueue(songs, song);
-        setCurrentMusic({ songsQueue: randomSongs, playlist, song });
+        loadAndPlayMusic({ songsQueue: randomSongs, playlist, song });
       } else {
-        setCurrentMusic({ songsQueue: songs, playlist, song });
+        loadAndPlayMusic({ songsQueue: songs, playlist, song });
       }
     }
   };
