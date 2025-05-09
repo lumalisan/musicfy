@@ -1,7 +1,8 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 import { usePlayerStore } from '@/store/playerStore';
 import { generateRandomSongsQueue } from '@/lib/utils/generateRandomSongsQueue';
+import type { Song } from '@/lib/types/Song';
 
 import CurrentSong from './CurrentSong';
 import VolumeController from './VolumeController';
@@ -28,102 +29,120 @@ const Player = () => {
   } = usePlayerStore((state) => state);
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const isFirstRender = useRef(true);
+  const currentSongRef = useRef<Song | null>(null);
 
-  // Control play/pause based on isPlaying state changes
+  // EFFECT OF REPRODUCTION AND CHARGING
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    isPlaying ? audioService.play(audio) : audioService.pause(audio);
-  }, [isPlaying]);
+    const newSong = currentMusic.song;
 
-  // Update audio volume when volume state changes
+    if (newSong && newSong.id) {
+      const newSrc = `/music/${currentMusic.playlist?.id}/${newSong.id}.mp3`;
+
+      if (audio.src !== newSrc || currentSongRef.current?.id !== newSong.id) {
+        audioService.setSrc(audio, newSrc);
+        audioService.load(audio);
+        audioService.setVolume(audio, volume);
+        currentSongRef.current = newSong;
+      }
+
+      if (isPlaying) {
+        audioService.play(audio)
+          .catch((error) => {
+            console.warn("Autoplay prevented or error when playing.", error);
+            setIsPlaying(false);
+          });
+      } else {
+        audioService.pause(audio);
+      }
+    } else {
+      audioService.pause(audio);
+      currentSongRef.current = null;
+    }
+  }, [currentMusic.song, currentMusic.playlist?.id, isPlaying, volume, setIsPlaying]);
+
+  // EFFECT FOR VOLUME CHANGES
   useEffect(() => {
-    if (audioRef.current) {
-      audioService.setVolume(audioRef.current, volume);
+    const audio = audioRef.current;
+    if (audio && audio.volume !== volume) {
+      audioService.setVolume(audio, volume);
     }
   }, [volume]);
 
-  // Set a random songs order if isRandom is true
-  // Otherwise, set songsQueue to the original songs order
+  // EFFECT FOR RANDOM ORDER
   useEffect(() => {
-    if (isRandom && currentMusic.song) {
-      const randomSongs = generateRandomSongsQueue(
-        currentMusic.songsQueue,
+    if (!currentMusic.song || !currentMusic.songsQueue || currentMusic.songsQueue.length === 0) {
+      return;
+    }
+
+    let newSongsQueue: Song[];
+    if (isRandom) {
+      newSongsQueue = generateRandomSongsQueue(
+        [...currentMusic.songsQueue],
         currentMusic.song
       );
+    } else {
+      const originalQueue = currentMusic.songsQueue || [...currentMusic.songsQueue];
+      newSongsQueue = [...originalQueue].sort((a, b) => a.id - b.id);
+    }
+
+    if (JSON.stringify(currentMusic.songsQueue) !== JSON.stringify(newSongsQueue)) {
       setCurrentMusic({
         ...currentMusic,
-        songsQueue: randomSongs,
-      });
-    } else {
-      setCurrentMusic({
-        ...currentMusic,
-        songsQueue: currentMusic.songsQueue.sort((a, b) => a.id - b.id),
+        songsQueue: newSongsQueue,
       });
     }
-  }, [isRandom]);
 
-  // Play the new song when the currentMusic changes
-  useEffect(() => {
-    const { song, playlist } = currentMusic;
-    const audio = audioRef.current;
+  }, [isRandom, currentMusic.playlist, setCurrentMusic]);
 
-    if (song && audio) {
-      const src = `/music/${playlist?.id}/${song.id}.mp3`;
-      audioService.setSrc(audio, src);
-      audioService.setVolume(audio, volume);
-
-      // Auto-play if the song change is triggered after the initial render
-      if (!isFirstRender.current) {
-        audioService.play(audio);
-        setIsPlaying(true);
-      } else {
-        // Prevent auto-play on page load
-        isFirstRender.current = false;
-      }
-    } else {
-      setIsPlaying(false);
-    }
-  }, [currentMusic.song, currentMusic.playlist, setIsPlaying]);
-
-  // Handle song ended event
-  useEffect(() => {
+  const handleSongEnded = useCallback(() => {
     const { song, songsQueue } = currentMusic;
 
-    // When the song ends, move on to the next one or pause if it is the last song
-    const handleSongEnded = () => {
-      if (song) {
-        if (isRepeat) {
-          setCurrentMusic({
-            ...currentMusic,
-            song: songsQueue[songsQueue.indexOf(song)],
-          });
-        } else {
-          if (
-            songsQueue.length &&
-            song.id !== songsQueue[songsQueue.length - 1].id
-          ) {
-            setCurrentMusic({
-              ...currentMusic,
-              song: songsQueue[songsQueue.indexOf(song) + 1],
-            });
-          } else {
-            setIsPlaying(false);
-          }
+    if (!song || !songsQueue || songsQueue.length === 0) {
+      setIsPlaying(false);
+      return;
+    }
+
+    if (isRepeat) {
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        if (isPlaying) {
+          audioService.play(audioRef.current).catch(() => setIsPlaying(false));
         }
       }
-    };
+    } else {
+      const currentIndex = songsQueue.findIndex(s => s.id === song.id);
+      if (currentIndex !== -1 && currentIndex < songsQueue.length - 1) {
+        const nextSong = songsQueue[currentIndex + 1];
+        setCurrentMusic({
+          ...currentMusic,
+          song: nextSong,
+        });
+      } else {
+        setIsPlaying(false);
+      }
+    }
+  }, [currentMusic, isPlaying, isRepeat, setCurrentMusic, setIsPlaying]);
 
-    audioRef.current?.addEventListener('ended', handleSongEnded);
-    return () => {
-      audioRef.current?.removeEventListener('ended', handleSongEnded);
-    };
-  }, [currentMusic, setCurrentMusic, setIsPlaying, isRepeat]);
+  // EFFECT TO HANDLE END OF SONG
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.addEventListener('ended', handleSongEnded);
+      return () => {
+        audio.removeEventListener('ended', handleSongEnded);
+      };
+    }
+  }, [handleSongEnded]);
+
+  if (!currentMusic.song) {
+    return null;
+  }
 
   return (
-    <div className='md:bg-secondary mx-2 flex h-auto w-auto flex-row justify-between rounded-lg bg-amber-900 p-2 md:mx-0 md:h-[80px] md:w-full md:px-4 md:pt-2'>
+    <div className='md:bg-secondary flex h-auto w-auto flex-row justify-between rounded-t-lg bg-amber-900 p-2 md:h-[80px] md:w-full md:px-4 md:pt-2' >
       <div className='flex flex-1 basis-0 justify-start'>
         <CurrentSong
           image={currentMusic.song?.image}
