@@ -39,7 +39,9 @@ const PlayButton = ({ id, size }: Props) => {
             console.warn('No songs found in playlist with id:', id);
           }
         })
-        .catch(error => console.error("Error fetching playlist info:", error));
+        .catch((error) =>
+          console.error('Error fetching playlist info:', error)
+        );
     }
   };
 

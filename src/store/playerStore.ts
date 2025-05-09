@@ -15,7 +15,11 @@ interface PlayerStore {
   setCurrentMusic: (currentMusic: CurrentMusic) => void;
   setIsRandom: (isRandom: boolean) => void;
   setIsRepeat: (isRepeat: boolean) => void;
-  loadAndPlayMusic: (data: { songsQueue: Song[]; playlist: any; song: Song }) => void;
+  loadAndPlayMusic: (data: {
+    songsQueue: Song[];
+    playlist: any;
+    song: Song;
+  }) => void;
 }
 
 export const usePlayerStore = create<PlayerStore>()(

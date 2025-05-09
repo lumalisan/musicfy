@@ -5,7 +5,7 @@ export class DefaultAudioService implements AudioService {
     try {
       await audio.play();
     } catch (error) {
-      console.error("AudioService: Error when playing", error);
+      console.error('AudioService: Error when playing', error);
       throw error;
     }
   }

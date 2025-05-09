@@ -49,11 +49,10 @@ const Player = () => {
       }
 
       if (isPlaying) {
-        audioService.play(audio)
-          .catch((error) => {
-            console.warn("Autoplay prevented or error when playing.", error);
-            setIsPlaying(false);
-          });
+        audioService.play(audio).catch((error) => {
+          console.warn('Autoplay prevented or error when playing.', error);
+          setIsPlaying(false);
+        });
       } else {
         audioService.pause(audio);
       }
@@ -61,7 +60,13 @@ const Player = () => {
       audioService.pause(audio);
       currentSongRef.current = null;
     }
-  }, [currentMusic.song, currentMusic.playlist?.id, isPlaying, volume, setIsPlaying]);
+  }, [
+    currentMusic.song,
+    currentMusic.playlist?.id,
+    isPlaying,
+    volume,
+    setIsPlaying,
+  ]);
 
   // EFFECT FOR VOLUME CHANGES
   useEffect(() => {
@@ -73,7 +78,11 @@ const Player = () => {
 
   // EFFECT FOR RANDOM ORDER
   useEffect(() => {
-    if (!currentMusic.song || !currentMusic.songsQueue || currentMusic.songsQueue.length === 0) {
+    if (
+      !currentMusic.song ||
+      !currentMusic.songsQueue ||
+      currentMusic.songsQueue.length === 0
+    ) {
       return;
     }
 
@@ -84,17 +93,20 @@ const Player = () => {
         currentMusic.song
       );
     } else {
-      const originalQueue = currentMusic.songsQueue || [...currentMusic.songsQueue];
+      const originalQueue = currentMusic.songsQueue || [
+        ...currentMusic.songsQueue,
+      ];
       newSongsQueue = [...originalQueue].sort((a, b) => a.id - b.id);
     }
 
-    if (JSON.stringify(currentMusic.songsQueue) !== JSON.stringify(newSongsQueue)) {
+    if (
+      JSON.stringify(currentMusic.songsQueue) !== JSON.stringify(newSongsQueue)
+    ) {
       setCurrentMusic({
         ...currentMusic,
         songsQueue: newSongsQueue,
       });
     }
-
   }, [isRandom, currentMusic.playlist, setCurrentMusic]);
 
   const handleSongEnded = useCallback(() => {
@@ -113,7 +125,7 @@ const Player = () => {
         }
       }
     } else {
-      const currentIndex = songsQueue.findIndex(s => s.id === song.id);
+      const currentIndex = songsQueue.findIndex((s) => s.id === song.id);
       if (currentIndex !== -1 && currentIndex < songsQueue.length - 1) {
         const nextSong = songsQueue[currentIndex + 1];
         setCurrentMusic({
@@ -142,7 +154,7 @@ const Player = () => {
   }
 
   return (
-    <div className='md:bg-secondary flex h-auto w-auto flex-row justify-between rounded-t-lg bg-amber-900 p-2 md:h-[80px] md:w-full md:px-4 md:pt-2' >
+    <div className='md:bg-secondary flex h-auto w-auto flex-row justify-between rounded-t-lg bg-amber-900 p-2 md:h-[80px] md:w-full md:px-4 md:pt-2'>
       <div className='flex flex-1 basis-0 justify-start'>
         <CurrentSong
           image={currentMusic.song?.image}
