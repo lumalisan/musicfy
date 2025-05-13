@@ -16,7 +16,7 @@ export default defineConfig({
     }),
     react(),
   ],
-  adapter: netlify({ edgeMiddleware: true }),
+  adapter: netlify(),
   output: 'server',
   vite: {
     plugins: [tailwindcss()],
