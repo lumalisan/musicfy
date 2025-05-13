@@ -11,7 +11,7 @@ interface Props {
 }
 
 const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
-  const { isPlaying, currentMusic, setIsPlaying, loadAndPlayMusic, isRandom } =
+  const { isPlaying, currentMusic, setIsPlaying, loadAndPlayMusic } =
     usePlayerStore((state) => state);
 
   const [isIconShowingPause, setIsIconShowingPause] = useState(
@@ -39,21 +39,8 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
       setIsPlaying(true);
     }
     else {
-      let apiUrl = '';
-      if (itemType === 'playlist') {
-        apiUrl = `/api/playlistInfo.json?id=${itemId}&isRandom=${isRandom}`;
-      } else if (itemType === 'album') {
-        apiUrl = `/api/albumInfo.json?id=${itemId}&isRandom=${isRandom}`;
-        console.warn(
-          'PlayButton: Album playback initiated. Ensure /api/albumInfo.json exists and works.'
-        );
-      } else {
-        console.error('PlayButton: Unknown itemType:', itemType);
-        return;
-      }
-
       try {
-        const response = await fetch(apiUrl);
+        const response = await fetch(`/api/item-details/${itemId}.json?type=${itemType}`);
         if (!response.ok) {
           console.error(
             `Failed to fetch ${itemType} info for ID ${itemId}: ${response.status} ${response.statusText}`
