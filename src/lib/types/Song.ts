@@ -1,9 +1,9 @@
 export interface Song {
-  id: number;
-  playlistId: number;
+  id: string;
   title: string;
-  image: string;
+  image: string | null;
   artists: string[];
-  album: string;
-  duration: string;
+  album: string | null;
+  duration: number;
+  url?: string;
 }

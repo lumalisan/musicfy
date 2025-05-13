@@ -1,8 +1,8 @@
-import type { Playlist } from './Playlist';
+import type { ItemInfo } from './ItemInfo';
 import type { Song } from './Song';
 
 export interface CurrentMusic {
-  playlist: Playlist | null;
-  song: Song | null;
+  itemInfo?: ItemInfo | null;
+  song?: Song | null;
   songsQueue: Song[];
 }
