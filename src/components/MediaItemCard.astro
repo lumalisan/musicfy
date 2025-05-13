@@ -1,0 +1,68 @@
+---
+import type { MediaItem } from '@/lib/types/MediaItem';
+import PlayButton from './PlayButton';
+
+interface Props {
+  item: MediaItem;
+}
+
+const { item } = Astro.props;
+const itemIdStr = String(item.id);
+const artistsString =
+  item.artists && item.artists.length > 0 ? item.artists.join(', ') : '';
+const coverImage =
+  item.cover_art_url || '/images/default-media-placeholder.png';
+---
+
+<article
+  class='group max-w-52 relative hover:bg-secondary shadow-lg hover:shadow-xl bg-secondary/30 rounded-md transition-all duration-300'
+>
+  <div
+    class='absolute right-4 bottom-17 transition duration-300 opacity-0 group-hover:-translate-y-3 group-hover:opacity-100 z-10'
+  >
+    <PlayButton
+      itemId={itemIdStr}
+      itemType={item.type}
+      size='base'
+      transition:name={`play-button-${item.type}-${itemIdStr}`}
+      client:visible
+    />
+  </div>
+
+  <a
+    href={item.href}
+    class='playlist-item transition-all duration-300 flex relative p-2 overflow-hidden gap-2 pb-6 rounded-md w-full flex-col'
+    transition:name={`${item.type}-${itemIdStr}-box`}
+  >
+    <picture class='aspect-square w-full h-auto flex-none'>
+      <img
+        src={coverImage}
+        alt={`Cover of ${item.title}${artistsString ? ` by ${artistsString}` : ''}`}
+        class='object-cover w-full h-full rounded-md'
+        loading='lazy'
+        transition:name={`${item.type}-${itemIdStr}-image`}
+      />
+    </picture>
+
+    <div class='flex flex-auto flex-col px-2 text-accent'>
+      <h4
+        class='text-sm font-semibold truncate'
+        title={item.title}
+        transition:name={`${item.type}-${itemIdStr}-title`}
+      >
+        {item.title}
+      </h4>
+      {
+        artistsString && (
+          <span
+            class='text-xs opacity-70 truncate'
+            title={artistsString}
+            transition:name={`${item.type}-${itemIdStr}-artists`}
+          >
+            {artistsString}
+          </span>
+        )
+      }
+    </div>
+  </a>
+</article>

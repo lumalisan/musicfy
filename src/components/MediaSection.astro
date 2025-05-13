@@ -1,0 +1,49 @@
+---
+import MediaItemCard from '@/components/MediaItemCard.astro';
+import type { MediaItem } from '@/lib/types/MediaItem';
+import { cn } from '@/lib/utils/cn';
+
+interface Props {
+  sectionTitle: string;
+  items: MediaItem[];
+  emptyStateMessage: string;
+  hasError: boolean;
+  titleClass?: string;
+  sectionClass?: string;
+}
+
+const {
+  sectionTitle,
+  items,
+  emptyStateMessage,
+  hasError,
+  titleClass,
+  sectionClass = 'mt-6',
+} = Astro.props;
+---
+
+<section class={sectionClass}>
+  <h2
+    class={cn(
+      'mb-4 text-2xl font-bold tracking-tight text-accent md:mb-6 md:text-3xl',
+      titleClass
+    )}
+  >
+    {sectionTitle}
+  </h2>
+  {
+    items.length > 0 ? (
+      <div class='grid grid-cols-[repeat(auto-fit,minmax(170px,1fr))] gap-4 md:gap-6'>
+        {items.map((item) => (
+          <MediaItemCard item={item} />
+        ))}
+      </div>
+    ) : (
+      !hasError && (
+        <p class='py-4 text-center text-gray-400 md:text-left'>
+          {emptyStateMessage}
+        </p>
+      )
+    )
+  }
+</section>

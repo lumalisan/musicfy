@@ -1,0 +1,67 @@
+---
+import { cn } from '@/lib/utils/cn';
+import {
+  faCircleInfo,
+  faTriangleExclamation,
+  faCircleXmark,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+interface Props {
+  type: 'info' | 'warning' | 'error';
+  title: string;
+  message: string;
+  redirectUrl?: string;
+  redirectText?: string;
+}
+
+const { type, title, message, redirectText, redirectUrl } = Astro.props;
+
+const alertStyles = {
+  info: {
+    icon: faCircleInfo,
+    bg: 'bg-blue-700/50',
+    border: 'border-blue-600',
+    text: 'text-blue-100',
+  },
+  warning: {
+    icon: faTriangleExclamation,
+    bg: 'bg-yellow-700/50',
+    border: 'border-yellow-600',
+    text: 'text-yellow-100',
+  },
+  error: {
+    icon: faCircleXmark,
+    bg: 'bg-red-700/50',
+    border: 'border-red-600',
+    text: 'text-red-100',
+  },
+}[type];
+---
+
+<div
+  class={cn(
+    'my-4 rounded-lg border p-4 text-sm flex items-center gap-3',
+    alertStyles.bg,
+    alertStyles.border,
+    alertStyles.text
+  )}
+>
+  <FontAwesomeIcon icon={alertStyles.icon} />
+  <div>
+    <span class='font-medium'>{title}:</span>
+    {message}
+  </div>
+  {
+    redirectUrl ? (
+      <a
+        aria-label={redirectText || 'Go back'}
+        role='button'
+        href={redirectUrl}
+        class='ml-auto p-2 bg-accent text-primary hover:bg-white rounded-lg transition-colors duration-300'
+      >
+        {redirectText || 'Go back'}
+      </a>
+    ) : null
+  }
+</div>

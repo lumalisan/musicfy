@@ -1,0 +1,165 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import SongsTable from '@/components/SongsTable.tsx';
+import PlayButton from '@/components/PlayButton.tsx';
+import type { ItemInfo } from '@/lib/types/ItemInfo';
+import type { Song } from '@/lib/types/Song';
+import { calculateTotalMinutes } from '@/lib/utils/calcTotalPlaylistMinutes';
+import Alert from '@/components/Alert.astro';
+
+export async function getStaticPaths() {
+  return [];
+}
+
+const { itemType: rawItemType, id: itemId } = Astro.params;
+
+const itemType =
+  rawItemType === 'playlist' || rawItemType === 'album' ? rawItemType : null;
+
+interface PageData {
+  itemDetails: ItemInfo | null;
+  songs: Song[];
+}
+
+let pageData: PageData = { itemDetails: null, songs: [] };
+let fetchError: string | null = null;
+
+if (itemType && itemId) {
+  try {
+    const response = await fetch(
+      `${Astro.url.origin}/api/item-details/${itemId}.json?type=${itemType}`
+    );
+    if (!response.ok) {
+      const errorJson = await response
+        .json()
+        .catch(() => ({ error: `Failed to load ${itemType} details.` }));
+      fetchError = `Error ${response.status}: ${errorJson.error || response.statusText}`;
+      console.error(fetchError, errorJson.details);
+    } else {
+      pageData = await response.json();
+    }
+  } catch (e: any) {
+    console.error(
+      `Error fetching details for ${itemType}/${itemId} on page:`,
+      e
+    );
+    fetchError = e.message || `Failed to load ${itemType} details.`;
+  }
+} else {
+  return Astro.redirect('/404');
+}
+
+const { itemDetails, songs: itemSongs } = pageData;
+
+const pageTitle = itemDetails ? `${itemDetails.name} - Musicfy` : 'Musicfy';
+
+const totalDurationString =
+  itemSongs && itemSongs.length > 0 ? calculateTotalMinutes(itemSongs) : '0';
+
+const headerArtistsString = itemDetails?.artists?.join(', ') || '';
+---
+
+<Layout title={pageTitle}>
+  {
+    fetchError && (
+      <div class='p-6'>
+        <Alert
+          type='error'
+          title='Oops!'
+          message={fetchError}
+          redirectText='Go home'
+          redirectUrl='/'
+        />
+      </div>
+    )
+  }
+  {
+    !fetchError && itemDetails && (
+      <div
+        class='relative flex flex-col min-h-screen bg-primary overflow-x-hidden'
+        transition:name={`${itemDetails.type}-${itemDetails.id}-box`}
+      >
+        <div
+          style={
+            itemDetails.color ? `background-color: ${itemDetails.color};` : ''
+          }
+          class='relative pb-10 z-10 pt-12'
+        >
+          <header class='flex flex-col md:flex-row gap-6 md:gap-8 px-4 md:px-6'>
+            <div class='mx-auto md:mx-0 flex-shrink-0'>
+              <picture class='aspect-square w-44 h-44 md:w-52 md:h-52 block shadow-2xl rounded'>
+                <img
+                  src={
+                    itemDetails.cover_art_url ||
+                    '/images/default-media-placeholder.png'
+                  }
+                  alt={`Cover of ${itemDetails.name}`}
+                  class='object-cover w-full h-full rounded'
+                  transition:name={`${itemDetails.type}-${itemDetails.id}-image`}
+                />
+              </picture>
+            </div>
+
+            <div class='flex flex-col justify-end text-left text-accent min-w-0'>
+              <h2 class='hidden md:block text-xs font-bold tracking-wider mb-1 capitalize'>
+                {itemDetails.type}
+              </h2>
+
+              <div>
+                <h1 class='text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-extrabold break-words'>
+                  {itemDetails.name}
+                  <span
+                    transition:name={`${itemDetails.type}-${itemDetails.id}-title`}
+                  />
+                </h1>
+              </div>
+
+              <div class='mt-4 text-sm font-normal'>
+                {headerArtistsString && (
+                  <span class='font-bold'>{headerArtistsString}</span>
+                )}
+                {headerArtistsString && itemSongs.length > 0 ? ' • ' : ''}
+                {itemSongs.length > 0 && (
+                  <span>
+                    {itemSongs.length} song{itemSongs.length === 1 ? '' : 's'}
+                    <span class='opacity-70'>
+                      , {totalDurationString} mins aprox.
+                    </span>
+                  </span>
+                )}
+              </div>
+            </div>
+          </header>
+
+          <div class='px-4 md:px-6 pt-6 md:pt-8'>
+            {itemSongs && itemSongs.length > 0 && (
+              <PlayButton
+                itemId={itemDetails.id}
+                itemType={itemDetails.type}
+                size='large'
+                client:visible
+                transition:name={`play-button-${itemDetails.type}-${itemDetails.id}-main`}
+              />
+            )}
+          </div>
+
+          <div class='absolute inset-0 bg-gradient-to-t from-primary via-primary/50 -z-[1]' />
+        </div>
+
+        <section class='px-2 py-4 md:px-6 md:py-6'>
+          {itemSongs && itemSongs.length > 0 ? (
+            <SongsTable
+              client:visible
+              itemInfo={itemDetails}
+              songs={itemSongs}
+            />
+          ) : (
+            <p class='text-gray-400 p-6 text-center'>
+              This {itemDetails.type} currently has no songs.
+            </p>
+          )}
+        </section>
+      </div>
+    )
+  }
+</Layout>

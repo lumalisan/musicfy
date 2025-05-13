@@ -1,0 +1,30 @@
+---
+import { SignInButton, SignedIn, SignedOut } from '@clerk/astro/components';
+
+import Playlists from '@/components/MyPlaylists';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title='Mis Playlists'>
+  <div class='container mx-auto px-4 py-8'>
+    <SignedIn>
+      <div class='flex justify-between items-center mt-6 mb-4'>
+        <h1 class='text-3xl font-bold'>Your Musical Space</h1>
+      </div>
+      <Playlists client:load />
+    </SignedIn>
+    <SignedOut>
+      <div class='text-center py-10'>
+        <p class='text-xl mb-4'>
+          Por favor, inicia sesión para gestionar tus playlists.
+        </p>
+        <SignInButton
+          mode='modal'
+          class='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded'
+        >
+          Sign In
+        </SignInButton>
+      </div>
+    </SignedOut>
+  </div>
+</Layout>
