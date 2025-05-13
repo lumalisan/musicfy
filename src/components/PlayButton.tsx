@@ -5,56 +5,113 @@ import { usePlayerStore } from '@/store/playerStore';
 import { cn } from '@/lib/utils/cn';
 
 interface Props {
-  id: number;
+  itemId: string;
+  itemType: 'playlist' | 'album';
   size?: 'large' | 'base';
 }
 
-const PlayButton = ({ id, size }: Props) => {
+const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
   const { isPlaying, currentMusic, setIsPlaying, loadAndPlayMusic, isRandom } =
     usePlayerStore((state) => state);
 
-  const [isPlayingPlaylist, setIsPlayingPlaylist] = useState(
-    isPlaying && currentMusic.playlist?.id === id
+  const [isIconShowingPause, setIsIconShowingPause] = useState(
+    isPlaying &&
+    currentMusic.itemInfo?.id === itemId &&
+    currentMusic.itemInfo?.type === itemType
   );
 
   useEffect(() => {
-    setIsPlayingPlaylist(isPlaying && currentMusic.playlist?.id === id);
-  }, [isPlaying, currentMusic]);
+    setIsIconShowingPause(
+      isPlaying &&
+      currentMusic.itemInfo?.id === itemId &&
+      currentMusic.itemInfo?.type === itemType
+    );
+  }, [isPlaying, currentMusic, itemId, itemType]);
 
-  const handleClick = () => {
-    if (isPlayingPlaylist) {
-      // Pause song
+  const handleClick = async () => {
+    if (isIconShowingPause) {
       setIsPlaying(false);
-    } else if (currentMusic.playlist?.id === id) {
-      // Continue with current song
+    }
+    else if (
+      currentMusic.itemInfo?.id === itemId &&
+      currentMusic.itemInfo?.type === itemType
+    ) {
       setIsPlaying(true);
-    } else {
-      // Get new song and play it
-      fetch(`/api/playlistInfo.json?id=${id}&isRandom=${isRandom}`)
-        .then((resp) => resp.json())
-        .then(({ songs, playlist }: any) => {
-          if (songs && songs.length > 0) {
-            loadAndPlayMusic({ songsQueue: songs, playlist, song: songs[0] });
-          } else {
-            console.warn('No songs found in playlist with id:', id);
-          }
-        })
-        .catch((error) =>
-          console.error('Error fetching playlist info:', error)
+    }
+    else {
+      let apiUrl = '';
+      if (itemType === 'playlist') {
+        apiUrl = `/api/playlistInfo.json?id=${itemId}&isRandom=${isRandom}`;
+      } else if (itemType === 'album') {
+        apiUrl = `/api/albumInfo.json?id=${itemId}&isRandom=${isRandom}`;
+        console.warn(
+          'PlayButton: Album playback initiated. Ensure /api/albumInfo.json exists and works.'
         );
+      } else {
+        console.error('PlayButton: Unknown itemType:', itemType);
+        return;
+      }
+
+      try {
+        const response = await fetch(apiUrl);
+        if (!response.ok) {
+          console.error(
+            `Failed to fetch ${itemType} info for ID ${itemId}: ${response.status} ${response.statusText}`
+          );
+          const errorBody = await response.text();
+          console.error('Error body:', errorBody);
+          throw new Error(
+            `Failed to fetch ${itemType} info: ${response.statusText}`
+          );
+        }
+
+        const {
+          songs,
+          playlist,
+          album,
+          title: itemTitle,
+        } = await response.json();
+
+        if (songs && songs.length > 0) {
+          const currentItemInfo = {
+            id: itemId,
+            type: itemType,
+            name:
+              itemTitle ||
+              (itemType === 'playlist' ? playlist?.name : album?.title),
+          };
+          loadAndPlayMusic({
+            songsQueue: songs,
+            itemInfo: currentItemInfo,
+            songIndex: 0,
+          });
+        } else {
+          console.warn(`No songs found in ${itemType} with id:`, itemId);
+        }
+      } catch (error) {
+        console.error(
+          `Error fetching and playing ${itemType} with id ${itemId}:`,
+          error
+        );
+      }
     }
   };
 
   return (
     <button
+      aria-label={
+        isIconShowingPause
+          ? `Pause ${itemType} ${itemId}`
+          : `Play ${itemType} ${itemId}`
+      }
       className={cn(
         size === 'large' ? 'h-14 w-14 text-2xl' : 'h-10 w-10 text-base',
         'bg-accent/80 flex items-center justify-center rounded-full text-black',
-        'hover:bg-accent transition duration-300 hover:scale-105'
+        'hover:bg-accent focus:ring-accent/50 transition duration-300 hover:scale-105 focus:ring-2 focus:outline-none'
       )}
       onClick={handleClick}
     >
-      <FontAwesomeIcon icon={isPlayingPlaylist ? faPause : faPlay} />
+      <FontAwesomeIcon icon={isIconShowingPause ? faPause : faPlay} />
     </button>
   );
 };

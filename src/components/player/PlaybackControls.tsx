@@ -9,79 +9,83 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { cn } from '@/lib/utils/cn';
-import type { CurrentMusic } from '@/lib/types/CurrentMusic';
-import type { PlayerControlService } from '@/lib/types/PlayerControlService';
 
 export interface PlaybackControlsProps {
   isPlaying: boolean;
   isRandom: boolean;
   isRepeat: boolean;
-  currentMusic: CurrentMusic;
-  playerControlService: PlayerControlService;
-  setIsPlaying: (isPlaying: boolean) => void;
-  setCurrentMusic: (currentMusic: CurrentMusic) => void;
-  setIsRandom: (isRandom: boolean) => void;
-  setIsRepeat: (isRepeat: boolean) => void;
+  onPlayPause: () => void;
+  onNext: () => void;
+  onPrevious: () => void;
+  onToggleShuffle: () => void;
+  onToggleRepeat: () => void;
 }
 
 export const PlaybackControls = ({
   isPlaying,
   isRandom,
   isRepeat,
-  playerControlService,
-  setIsPlaying,
-  setIsRandom,
-  setIsRepeat,
-  currentMusic,
-  setCurrentMusic,
+  onPlayPause,
+  onNext,
+  onPrevious,
+  onToggleShuffle,
+  onToggleRepeat,
 }: PlaybackControlsProps) => {
   return (
     <div className='flex items-center justify-center gap-4'>
       <button
+        title={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
+        aria-label={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
         className={cn(
           'text-accent/40 hover:text-accent p-2 text-xl transition duration-300',
           isRandom && 'text-accent'
         )}
-        onClick={() =>
-          playerControlService.handleShuffle(isRandom, setIsRandom)
-        }
+        onClick={onToggleShuffle}
       >
         <FontAwesomeIcon icon={faShuffle} />
       </button>
 
       <button
+        title='Previous Track'
+        aria-label='Previous Track'
         className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300'
-        onClick={() =>
-          playerControlService.handlePrevious(currentMusic, setCurrentMusic)
-        }
+        onClick={onPrevious}
       >
         <FontAwesomeIcon icon={faBackwardStep} />
       </button>
 
       <button
-        className='bg-accent/80 text-secondary hover:bg-accent flex h-9 w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105'
-        onClick={() =>
-          playerControlService.handlePlayPause(isPlaying, setIsPlaying)
-        }
+        title={isPlaying ? 'Pause' : 'Play'}
+        aria-label={isPlaying ? 'Pause' : 'Play'}
+        className='bg-accent/80 text-secondary hover:bg-accent flex h-9 w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105' onClick={onPlayPause}
       >
         <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
       </button>
 
       <button
-        className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300'
-        onClick={() =>
-          playerControlService.handleNext(currentMusic, setCurrentMusic)
-        }
+        title='Next Track'
+        aria-label='Next Track'
+        className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300' onClick={onNext}
       >
         <FontAwesomeIcon icon={faForwardStep} />
       </button>
 
       <button
+        title={
+          isRepeat
+            ? 'Disable Repeat Current Song'
+            : 'Enable Repeat Current Song'
+        }
+        aria-label={
+          isRepeat
+            ? 'Disable Repeat Current Song'
+            : 'Enable Repeat Current Song'
+        }
         className={cn(
           'text-accent/40 hover:text-accent p-2 text-xl transition duration-300',
           isRepeat && 'text-accent'
         )}
-        onClick={() => playerControlService.handleRepeat(isRepeat, setIsRepeat)}
+        onClick={onToggleRepeat}
       >
         <FontAwesomeIcon icon={faRepeat} />
       </button>

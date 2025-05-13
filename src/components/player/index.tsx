@@ -1,35 +1,31 @@
 import { useEffect, useRef, useCallback } from 'react';
 
 import { usePlayerStore } from '@/store/playerStore';
-import { generateRandomSongsQueue } from '@/lib/utils/generateRandomSongsQueue';
-import type { Song } from '@/lib/types/Song';
 
 import CurrentSong from './CurrentSong';
 import VolumeController from './VolumeController';
 import AudioController from './AudioController';
 import { DefaultAudioService } from '@/lib/services/DefaultAudioService';
-import { DefaultPlayerControlService } from '@/lib/services/DefaultPlayerControlService';
 import { PlaybackControls } from './PlaybackControls';
 import { MobilePlayButton } from './MobilePlayButton';
 
 const Player = () => {
   const audioService = new DefaultAudioService();
-  const playerControlService = new DefaultPlayerControlService();
-
   const {
     isPlaying,
     currentMusic,
-    setCurrentMusic,
     setIsPlaying,
     volume,
     isRandom,
     isRepeat,
+    playNext,
+    playPrevious,
+    toggleRepeat,
     setIsRandom,
-    setIsRepeat,
   } = usePlayerStore((state) => state);
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const currentSongRef = useRef<Song | null>(null);
+  const currentLoadedSongIdRef = useRef<string | null>(null);
 
   // EFFECT OF REPRODUCTION AND CHARGING
   useEffect(() => {
@@ -37,106 +33,69 @@ const Player = () => {
     if (!audio) return;
 
     const newSong = currentMusic.song;
+    const currentItemInfo = currentMusic.itemInfo;
 
-    if (newSong && newSong.id) {
-      const newSrc = `/music/${currentMusic.playlist?.id}/${newSong.id}.mp3`;
+    if (
+      newSong &&
+      newSong.id &&
+      newSong.url &&
+      currentItemInfo &&
+      currentItemInfo.id
+    ) {
+      const newSrc = newSong.url;
 
-      if (audio.src !== newSrc || currentSongRef.current?.id !== newSong.id) {
+      if (
+        audio.src !== newSrc ||
+        currentLoadedSongIdRef.current !== newSong.id
+      ) {
         audioService.setSrc(audio, newSrc);
         audioService.load(audio);
+        currentLoadedSongIdRef.current = newSong.id;
+      }
+
+      if (audio.volume !== volume) {
         audioService.setVolume(audio, volume);
-        currentSongRef.current = newSong;
       }
 
       if (isPlaying) {
         audioService.play(audio).catch((error) => {
-          console.warn('Autoplay prevented or error when playing.', error);
-          setIsPlaying(false);
+          console.warn(
+            'Autoplay prevented or error when playing song:',
+            newSong.title,
+            error
+          );
         });
       } else {
         audioService.pause(audio);
       }
     } else {
       audioService.pause(audio);
-      currentSongRef.current = null;
+      audio.src = '';
+      currentLoadedSongIdRef.current = null;
     }
-  }, [
-    currentMusic.song,
-    currentMusic.playlist?.id,
-    isPlaying,
-    volume,
-    setIsPlaying,
-  ]);
+  }, [currentMusic.song, currentMusic.itemInfo?.id, isPlaying, volume]);
 
   // EFFECT FOR VOLUME CHANGES
   useEffect(() => {
     const audio = audioRef.current;
-    if (audio && audio.volume !== volume) {
+    if (audio && audio.volume !== volume && currentMusic.song) {
       audioService.setVolume(audio, volume);
     }
-  }, [volume]);
-
-  // EFFECT FOR RANDOM ORDER
-  useEffect(() => {
-    if (
-      !currentMusic.song ||
-      !currentMusic.songsQueue ||
-      currentMusic.songsQueue.length === 0
-    ) {
-      return;
-    }
-
-    let newSongsQueue: Song[];
-    if (isRandom) {
-      newSongsQueue = generateRandomSongsQueue(
-        [...currentMusic.songsQueue],
-        currentMusic.song
-      );
-    } else {
-      const originalQueue = currentMusic.songsQueue || [
-        ...currentMusic.songsQueue,
-      ];
-      newSongsQueue = [...originalQueue].sort((a, b) => a.id - b.id);
-    }
-
-    if (
-      JSON.stringify(currentMusic.songsQueue) !== JSON.stringify(newSongsQueue)
-    ) {
-      setCurrentMusic({
-        ...currentMusic,
-        songsQueue: newSongsQueue,
-      });
-    }
-  }, [isRandom, currentMusic.playlist, setCurrentMusic]);
+  }, [volume, currentMusic.song]);
 
   const handleSongEnded = useCallback(() => {
-    const { song, songsQueue } = currentMusic;
-
-    if (!song || !songsQueue || songsQueue.length === 0) {
-      setIsPlaying(false);
-      return;
-    }
-
     if (isRepeat) {
       if (audioRef.current) {
         audioRef.current.currentTime = 0;
-        if (isPlaying) {
-          audioService.play(audioRef.current).catch(() => setIsPlaying(false));
-        }
+        audioService.play(audioRef.current).catch(() => {
+          console.warn("Could not replay 'one' song automatically.");
+          setIsPlaying(false);
+        });
       }
     } else {
-      const currentIndex = songsQueue.findIndex((s) => s.id === song.id);
-      if (currentIndex !== -1 && currentIndex < songsQueue.length - 1) {
-        const nextSong = songsQueue[currentIndex + 1];
-        setCurrentMusic({
-          ...currentMusic,
-          song: nextSong,
-        });
-      } else {
-        setIsPlaying(false);
-      }
+      playNext();
     }
-  }, [currentMusic, isPlaying, isRepeat, setCurrentMusic, setIsPlaying]);
+  }, [isRepeat, playNext, setIsPlaying, audioService]);
 
   // EFFECT TO HANDLE END OF SONG
   useEffect(() => {
@@ -149,15 +108,15 @@ const Player = () => {
     }
   }, [handleSongEnded]);
 
-  if (!currentMusic.song) {
+  if (!currentMusic.song || !currentMusic.itemInfo) {
     return null;
   }
 
   return (
-    <div className='md:bg-secondary flex h-auto w-auto flex-row justify-between rounded-t-lg bg-amber-900 p-2 md:h-[80px] md:w-full md:px-4 md:pt-2'>
-      <div className='flex flex-1 basis-0 justify-start'>
+    <div className='md:bg-secondary md:backdrop-blur-none flex h-auto w-auto flex-row justify-between rounded-t-lg bg-amber-900/80 backdrop-blur-sm p-2 md:h-[80px] md:w-full md:px-4 md:pt-2'>
+      <div className='flex min-w-0 flex-1 basis-0 justify-start'>
         <CurrentSong
-          image={currentMusic.song?.image}
+          image={currentMusic.song?.image ?? undefined}
           title={currentMusic.song?.title}
           artists={currentMusic.song?.artists}
         />
@@ -166,8 +125,7 @@ const Player = () => {
       <div className='flex items-center justify-end md:hidden'>
         <MobilePlayButton
           isPlaying={isPlaying}
-          playerControlService={playerControlService}
-          setIsPlaying={setIsPlaying}
+          onClick={() => setIsPlaying(!isPlaying)}
         />
       </div>
 
@@ -177,14 +135,12 @@ const Player = () => {
             isPlaying={isPlaying}
             isRandom={isRandom}
             isRepeat={isRepeat}
-            currentMusic={currentMusic}
-            playerControlService={playerControlService}
-            setIsPlaying={setIsPlaying}
-            setCurrentMusic={setCurrentMusic}
-            setIsRandom={setIsRandom}
-            setIsRepeat={setIsRepeat}
+            onPlayPause={() => setIsPlaying(!isPlaying)}
+            onNext={playNext}
+            onPrevious={playPrevious}
+            onToggleShuffle={() => setIsRandom(!isRandom)}
+            onToggleRepeat={() => toggleRepeat()}
           />
-
           <AudioController audioRef={audioRef} />
         </div>
       </div>

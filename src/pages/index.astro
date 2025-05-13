@@ -1,23 +1,101 @@
 ---
-import { playlists } from '@/lib/data';
+import type { MediaItem } from '@/lib/types/MediaItem';
 import Layout from '@/layouts/Layout.astro';
-import PlaylistItemCard from '@/components/PlaylistItemCard.astro';
+import Alert from '@/components/Alert.astro';
+import MediaSection from '@/components/MediaSection.astro';
 import Greetings from '@/components/Greetings';
+
+let albums: MediaItem[] = [];
+let playlists: MediaItem[] = [];
+let fetchAlbumsError: string | null = null;
+let fetchPlaylistsError: string | null = null;
+
+// 1. Fetch albums
+try {
+  const albumsResponse = await fetch(`${Astro.url.origin}/api/albums.json`);
+  if (albumsResponse.ok) {
+    albums = await albumsResponse.json();
+  } else {
+    const errorData = await albumsResponse
+      .json()
+      .catch(() => ({ error: 'Failed to parse albums error' }));
+    console.error(
+      'Failed to fetch albums:',
+      albumsResponse.status,
+      errorData.error
+    );
+    fetchAlbumsError = `Could not load albums (${albumsResponse.status}).`;
+  }
+} catch (error: any) {
+  console.error('Error fetching albums in index.astro:', error);
+  fetchAlbumsError = 'An error occurred while fetching albums.';
+}
+
+// 2. Fetch playlists
+try {
+  const playlistsResponse = await fetch(
+    `${Astro.url.origin}/api/playlists.json`
+  );
+  if (playlistsResponse.ok) {
+    playlists = await playlistsResponse.json();
+  } else {
+    const errorData = await playlistsResponse
+      .json()
+      .catch(() => ({ error: 'Failed to parse playlists error' }));
+    console.error(
+      'Failed to fetch playlists:',
+      playlistsResponse.status,
+      errorData.error
+    );
+    fetchPlaylistsError = `Could not load playlists (${playlistsResponse.status})`;
+  }
+} catch (error: any) {
+  console.error('Error fetching playlists in index.astro:', error);
+  fetchPlaylistsError = 'An error occurred while fetching playlists.';
+}
 ---
 
-<Layout title='Musicfy'>
+<Layout title='Musicfy - Music for Everyone'>
   <div class='relative transition-all duration-1000 bg-accent'>
     <div class='relative z-10 px-4 pt-10 md:px-6'>
-      <Greetings />
+      <Greetings client:load />
 
-      <div
-        class='grid grid-cols-[repeat(auto-fit,minmax(150px,1fr))] mt-6 gap-4 md:gap-6'
-      >
-        {playlists.map((playlist) => <PlaylistItemCard playlist={playlist} />)}
-      </div>
+      <!-- Errors -->
+      {
+        fetchAlbumsError && (
+          <Alert type='error' title='Albums Error' message={fetchAlbumsError} />
+        )
+      }
+      {
+        fetchPlaylistsError && (
+          <Alert
+            type='error'
+            title='Playlists Error'
+            message={fetchPlaylistsError}
+          />
+        )
+      }
 
+      <!-- Albumbs section -->
+      <MediaSection
+        sectionTitle='Discover Albums'
+        items={albums}
+        emptyStateMessage='No albums to display at the moment. Check back soon!'
+        hasError={!!fetchAlbumsError}
+        titleClass='text-[#695d3a]'
+      />
+
+      <!-- Playlists section -->
+      <MediaSection
+        sectionTitle='Featured Playlists'
+        items={playlists}
+        emptyStateMessage='No playlists to display at the moment.'
+        hasError={!!fetchPlaylistsError}
+      />
+
+      <!-- Background gradient -->
       <div
-        class='absolute inset-0 bg-gradient-to-t from-primary via-primary/80 -z-[1]'
+        class='absolute inset-0 bg-gradient-to-t from-primary via-primary/95 to-transparent -z-[1]'
       >
       </div>
     </div>

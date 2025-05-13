@@ -1,4 +1,4 @@
-import type { Playlist } from '@/lib/types/Playlist';
+import type { ItemInfo } from '@/lib/types/ItemInfo';
 import type { Song } from '@/lib/types/Song';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock } from '@fortawesome/free-solid-svg-icons';
@@ -6,11 +6,11 @@ import { faClock } from '@fortawesome/free-solid-svg-icons';
 import SongInfo from './SongInfo';
 
 interface Props {
-  playlist: Playlist;
+  itemInfo: ItemInfo;
   songs: Song[];
 }
 
-const SongsTable = ({ playlist, songs }: Props) => {
+const SongsTable = ({ itemInfo, songs }: Props) => {
   return (
     <table className='divide-accent/50 w-full min-w-full table-fixed divide-y text-left md:table-auto'>
       <thead>
@@ -29,10 +29,10 @@ const SongsTable = ({ playlist, songs }: Props) => {
         {songs.map((song, idx) => (
           <SongInfo
             key={song.id}
-            playlist={playlist}
-            songs={songs}
+            itemInfo={itemInfo}
+            songsInView={songs}
             song={song}
-            idx={idx}
+            index={idx}
           />
         ))}
       </tbody>
