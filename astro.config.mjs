@@ -1,14 +1,23 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@astrojs/react';
 
+import react from '@astrojs/react';
 import netlify from '@astrojs/netlify';
+import clerk from '@clerk/astro';
+import { dark } from '@clerk/themes';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react()],
+  integrations: [
+    clerk({
+      appearance: {
+        baseTheme: [dark],
+      },
+    }),
+    react(),
+  ],
+  adapter: netlify({ edgeMiddleware: true }),
   output: 'server',
-  adapter: netlify(),
   vite: {
     plugins: [tailwindcss()],
   },
