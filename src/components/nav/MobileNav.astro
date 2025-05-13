@@ -1,10 +1,23 @@
 ---
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faBook,
+  faHome,
+  faSearch,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  SignedIn,
+  SignedOut,
+  UserButton,
+  SignInButton,
+} from '@clerk/astro/components';
 ---
 
 <!-- Mobile navigation -->
-<nav class='flex md:hidden items-center h-[70px] bg-secondary'>
+<nav
+  class='flex md:hidden items-center h-[70px] bg-secondary/80 backdrop-blur-sm'
+>
   <a
     href='/'
     class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
@@ -20,10 +33,25 @@ import { faBook, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
     Search
   </a>
   <a
-    href='/'
+    href='#'
     class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
   >
     <FontAwesomeIcon icon={faBook} className='text-xl' />
     Library
   </a>
+  <div class='flex flex-col items-center justify-center flex-1 h-full'>
+    <SignedIn>
+      <UserButton />
+      Profile
+    </SignedIn>
+    <SignedOut>
+      <SignInButton
+        mode='modal'
+        class={'flex flex-col items-center justify-center gap-1'}
+      >
+        <FontAwesomeIcon icon={faUser} className='text-xl' />
+        Sign In
+      </SignInButton>
+    </SignedOut>
+  </div>
 </nav>

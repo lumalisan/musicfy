@@ -1,33 +1,42 @@
 ---
-import type { Playlist } from '@/lib/types/Playlist';
+import type { MediaItem } from '@/lib/types/MediaItem';
 
 interface Props {
-    playlist: Playlist;
+  item: MediaItem;
 }
 
-const { playlist } = Astro.props;
-const { id, artists, cover, title } = playlist;
+const { item } = Astro.props;
+const { id, artists, cover_art_url, title, type } = item;
 
-const artistsString = artists.join(", ");
+const artistsString = artists.join(', ');
+const href = type === 'playlist' ? `/playlist/${id}` : `/album/${id}`;
 ---
 
 <a
-    href={`/playlist/${id}`}
-    class="playlist-item flex relative p-2 overflow-hidden items-center gap-5 rounded-md hover:bg-accent/10 transition duration-300"
+  href={href}
+  class='playlist-item flex relative p-2 overflow-hidden items-center gap-5 rounded-md hover:bg-accent/10 transition duration-300 group'
+  title={`${title} by ${artistsString}`}
 >
-    <picture class="h-12 w-12 flex-none">
+  <picture class='h-12 w-12 flex-none'>
+    {
+      cover_art_url ? (
         <img
-            src={cover}
-            alt={`Cover image for the album ${title} by ${artistsString}`}
-            class="object-cover w-full h-full rounded-md"
+          src={cover_art_url}
+          alt={`Cover for ${title}`}
+          class='object-cover w-full h-full rounded-md'
+          loading='lazy'
         />
-    </picture>
-    <div class="flex flex-col flex-auto truncate">
-        <h4 class="text-accent font-medium text-base">
-            {title}
-        </h4>
-        <span class="text-accent/70 text-sm">
-            {artistsString}
-        </span>
-    </div>
+      ) : null
+    }
+  </picture>
+  <div class='flex flex-col flex-auto truncate'>
+    <h4
+      class='text-accent font-medium text-base group-hover:text-white transition-colors'
+    >
+      {title}
+    </h4>
+    <span class='text-accent/70 text-sm'>
+      {artistsString || (type === 'playlist' ? 'Playlist' : 'Album')}
+    </span>
+  </div>
 </a>

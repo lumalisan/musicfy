@@ -1,33 +1,63 @@
 ---
+import type { MediaItem } from '@/lib/types/MediaItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
 import SideMenuItem from './SideMenuItem.astro';
 import SideMenuCard from './SideMenuCard.astro';
-import { playlists } from '../lib/data';
+
+let playlists: MediaItem[] = [];
+
+// Fetch playlists
+try {
+  const playlistsResponse = await fetch(
+    `${Astro.url.origin}/api/playlists.json`
+  );
+  if (playlistsResponse.ok) {
+    playlists = await playlistsResponse.json();
+  } else {
+    const errorData = await playlistsResponse
+      .json()
+      .catch(() => ({ error: 'Failed to parse playlists error' }));
+    console.error(
+      'Failed to fetch playlists:',
+      playlistsResponse.status,
+      errorData.error
+    );
+  }
+} catch (error: any) {
+  console.error('Error fetching playlists in index.astro:', error);
+}
 ---
 
-<!-- Aside menu navigation -->
-<nav class='flex flex-col flex-1 gap-2'>
+<nav class='flex flex-col flex-1 gap-2' aria-label='Main navigation'>
   <div class='bg-primary rounded-lg p-2'>
     <ul>
       <SideMenuItem href='/'>
-        <FontAwesomeIcon icon={faHome} className='text-xl' />
+        <FontAwesomeIcon icon={faHome} fixedWidth className='text-xl' />
         Home
       </SideMenuItem>
-      <SideMenuItem href='#'>
-        <FontAwesomeIcon icon={faSearch} className='text-xl' />
+      <SideMenuItem href='/search'>
+        <FontAwesomeIcon icon={faSearch} fixedWidth className='text-xl' />
         Search
       </SideMenuItem>
     </ul>
   </div>
 
-  <div class='bg-primary rounded-lg p-2 flex-1'>
-    <ul>
-      <SideMenuItem href='/'>
-        <FontAwesomeIcon icon={faBook} className='text-xl' />
-        Library
+  <div class='bg-primary rounded-lg p-2 flex-1 flex flex-col min-h-0'>
+    <ul class='flex-1 overflow-y-auto'>
+      <SideMenuItem href='/library'>
+        <FontAwesomeIcon icon={faBook} fixedWidth className='text-xl' />
+        Your Library
       </SideMenuItem>
+      {
+        playlists.length > 0
+          ? playlists.map((item) => (
+              <li>
+                <SideMenuCard item={item} />
+              </li>
+            ))
+          : null
+      }
     </ul>
-    {playlists.map((playlist) => <SideMenuCard playlist={playlist} />)}
   </div>
 </nav>
