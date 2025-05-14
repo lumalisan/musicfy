@@ -4,6 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
 import SideMenuItem from './SideMenuItem.astro';
 import SideMenuCard from './SideMenuCard.astro';
+import { SignedIn, SignedOut } from '@clerk/astro/components';
+import { LibraryLoginPopover } from './LibraryLoginPopover';
 
 let playlists: MediaItem[] = [];
 
@@ -45,10 +47,21 @@ try {
 
   <div class='bg-primary rounded-lg p-2 flex-1 flex flex-col min-h-0'>
     <ul class='flex-1 overflow-y-auto'>
-      <SideMenuItem href='/library'>
-        <FontAwesomeIcon icon={faBook} fixedWidth className='text-xl' />
-        Your Library
-      </SideMenuItem>
+      <SignedOut>
+        <LibraryLoginPopover
+          triggerClassName='flex gap-4 text-accent/70 cursor-pointer hover:text-accent items-center py-3 px-5 font-medium transition duration-300'
+          side='right'
+          client:load
+        />
+      </SignedOut>
+
+      <SignedIn>
+        <SideMenuItem href='/library'>
+          <FontAwesomeIcon icon={faBook} fixedWidth className='text-xl' />
+          Your Library
+        </SideMenuItem>
+      </SignedIn>
+
       {
         playlists.length > 0
           ? playlists.map((item) => (

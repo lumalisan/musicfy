@@ -12,6 +12,8 @@ import {
   UserButton,
   SignInButton,
 } from '@clerk/astro/components';
+
+import { LibraryLoginPopover } from '../LibraryLoginPopover';
 ---
 
 <!-- Mobile navigation -->
@@ -25,6 +27,7 @@ import {
     <FontAwesomeIcon icon={faHome} className='text-xl' />
     Home
   </a>
+
   <a
     href='#'
     class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
@@ -32,13 +35,23 @@ import {
     <FontAwesomeIcon icon={faSearch} className='text-xl' />
     Search
   </a>
-  <a
-    href='#'
-    class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
-  >
-    <FontAwesomeIcon icon={faBook} className='text-xl' />
-    Library
-  </a>
+
+  <SignedOut>
+    <LibraryLoginPopover
+      triggerClassName='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+      client:load
+    />
+  </SignedOut>
+  <SignedIn>
+    <a
+      href='/library'
+      class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+    >
+      <FontAwesomeIcon icon={faBook} className='text-xl' />
+      Library
+    </a>
+  </SignedIn>
+
   <div class='flex flex-col items-center justify-center flex-1 h-full'>
     <SignedIn>
       <UserButton />

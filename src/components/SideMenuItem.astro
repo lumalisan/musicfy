@@ -1,13 +1,24 @@
 ---
 interface Props {
-    href?: string;
+  href?: string;
 }
 
 const { href } = Astro.props;
 ---
 
 <li>
-    <a href={href} class="flex gap-4 text-accent/70 hover:text-accent items-center py-3 px-5 font-medium transition duration-300">
+  {
+    href ? (
+      <a
+        href={href}
+        class='flex gap-4 text-accent/70 hover:text-accent items-center py-3 px-5 font-medium transition duration-300'
+      >
         <slot />
-    </a>
+      </a>
+    ) : (
+      <span class='flex gap-4 text-accent/70 hover:text-accent items-center py-3 px-5 font-medium transition duration-300'>
+        <slot />
+      </span>
+    )
+  }
 </li>
