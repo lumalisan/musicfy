@@ -54,19 +54,19 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
 
         const {
           songs,
-          playlist,
-          album,
-          title: itemTitle,
+          itemDetails: { artists, color, cover_art_url, id, name, type },
         } = await response.json();
 
         if (songs && songs.length > 0) {
           const currentItemInfo = {
-            id: itemId,
-            type: itemType,
-            name:
-              itemTitle ||
-              (itemType === 'playlist' ? playlist?.name : album?.title),
+            id,
+            type,
+            artists,
+            color,
+            cover_art_url,
+            name,
           };
+
           loadAndPlayMusic({
             songsQueue: songs,
             itemInfo: currentItemInfo,

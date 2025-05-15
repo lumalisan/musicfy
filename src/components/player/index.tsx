@@ -1,16 +1,34 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 
+import { DefaultAudioService } from '@/lib/services/DefaultAudioService';
 import { usePlayerStore } from '@/store/playerStore';
+import { useWindowSize } from '@/hooks/useWindowSize';
 
 import CurrentSong from './CurrentSong';
 import VolumeController from './VolumeController';
 import AudioController from './AudioController';
-import { DefaultAudioService } from '@/lib/services/DefaultAudioService';
 import { PlaybackControls } from './PlaybackControls';
 import { MobilePlayButton } from './MobilePlayButton';
+import MobileExpandedPlayer from './MobileExpandedPlayer';
+
+const ANIMATION_DURATION_MS = 300;
+const PLAYER_ENTER_ANIMATION = 'animate-slideEnterUp';
+const PLAYER_EXIT_ANIMATION = 'animate-slideLeaveDown';
 
 const Player = () => {
-  const audioService = new DefaultAudioService();
+  // STATES
+  const [isExpandedIntent, setIsExpandedIntent] = useState<boolean>(false);
+  const [isPlayerMounted, setIsPlayerMounted] = useState<boolean>(false);
+  const [currentPlayerAnimation, setCurrentPlayerAnimation] = useState<string>('');
+
+  // REFS
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const currentLoadedSongIdRef = useRef<string | null>(null);
+
+  // SERVICES
+  const audioService = useMemo(() => new DefaultAudioService(), []);
+
+  // PLAYER STORE
   const {
     isPlaying,
     currentMusic,
@@ -24,8 +42,12 @@ const Player = () => {
     setIsRandom,
   } = usePlayerStore((state) => state);
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const currentLoadedSongIdRef = useRef<string | null>(null);
+  const windowSize = useWindowSize();
+
+  // Check if the current view is mobile
+  const isMobileView: boolean = useMemo(() => {
+    return windowSize.width !== undefined && windowSize.width < 768;
+  }, [windowSize.width])
 
   // EFFECT OF REPRODUCTION AND CHARGING
   useEffect(() => {
@@ -108,49 +130,133 @@ const Player = () => {
     }
   }, [handleSongEnded]);
 
+  // EFFECT TO PREVENT BODY SCROLL WHEN PLAYER IS EXPANDED ON MOBILE
+  useEffect(() => {
+    if (isExpandedIntent && isMobileView) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [isExpandedIntent, isMobileView]);
+
+  // EFFECT TO HANDLE PLAYER MOUNTING AND ANIMATION
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (isExpandedIntent) {
+      setIsPlayerMounted(true);
+      setCurrentPlayerAnimation(PLAYER_ENTER_ANIMATION);
+    } else {
+      if (isPlayerMounted) {
+        setCurrentPlayerAnimation(PLAYER_EXIT_ANIMATION);
+        timer = setTimeout(() => {
+          setIsPlayerMounted(false);
+        }, ANIMATION_DURATION_MS);
+      }
+    }
+
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [isExpandedIntent, isPlayerMounted]);
+
+  const handlePlayerBarClick = (event?: React.MouseEvent<HTMLDivElement>): void => {
+    if (event && (event.target as HTMLElement).closest('button, a, input[type="range"]')) {
+      return;
+    }
+    if (isMobileView) {
+      setIsExpandedIntent(prev => !prev);
+    }
+  };
+
+  const handleCloseExpandedPlayer = (event?: React.MouseEvent<HTMLButtonElement>): void => {
+    if (event) event.stopPropagation();
+    if (isMobileView) {
+      setIsExpandedIntent(false);
+    }
+  };
+
   if (!currentMusic.song || !currentMusic.itemInfo) {
     return null;
   }
 
   return (
-    <div className='md:bg-secondary md:backdrop-blur-none flex h-auto w-auto flex-row justify-between rounded-t-lg bg-amber-900/80 backdrop-blur-sm p-2 md:h-[80px] md:w-full md:px-4 md:pt-2'>
-      <div className='flex min-w-0 flex-1 basis-0 justify-start'>
-        <CurrentSong
-          image={currentMusic.song?.image ?? undefined}
-          title={currentMusic.song?.title}
-          artists={currentMusic.song?.artists}
-        />
-      </div>
-
-      <div className='flex items-center justify-end md:hidden'>
-        <MobilePlayButton
-          isPlaying={isPlaying}
-          onClick={() => setIsPlaying(!isPlaying)}
-        />
-      </div>
-
-      <div className='hidden flex-1 place-content-center md:grid'>
-        <div className='flex flex-col items-center justify-center gap-1'>
-          <PlaybackControls
+    <>
+      {/* Mobile full player */}
+      {
+        isPlayerMounted && isMobileView ?
+          <MobileExpandedPlayer
+            currentMusic={currentMusic}
             isPlaying={isPlaying}
             isRandom={isRandom}
             isRepeat={isRepeat}
+            audioRef={audioRef}
             onPlayPause={() => setIsPlaying(!isPlaying)}
             onNext={playNext}
             onPrevious={playPrevious}
             onToggleShuffle={() => setIsRandom(!isRandom)}
-            onToggleRepeat={() => toggleRepeat()}
+            onToggleRepeat={toggleRepeat}
+            onClose={handleCloseExpandedPlayer}
+            animationClassName={currentPlayerAnimation}
           />
-          <AudioController audioRef={audioRef} />
+          : null
+      }
+
+      {/* Desktop player & mobile small player */}
+      <div
+        className={'flex flex-row justify-between items-center rounded-t-lg h-auto transition-colors duration-300 bg-amber-900/80 backdrop-blur-sm p-2 md:bg-secondary md:backdrop-blur-none md:h-[80px] md:w-full md:px-4 md:py-2'}
+        onClick={handlePlayerBarClick}
+        role={isMobileView ? "button" : undefined}
+        tabIndex={isMobileView ? 0 : undefined}
+        aria-expanded={isMobileView ? isExpandedIntent : undefined}
+        aria-label={isMobileView ? "Music player, click to expand" : "Music player"}
+      >
+        {/* Current song info */}
+        <div className='flex min-w-0 flex-1 basis-0 justify-start'>
+          <CurrentSong
+            image={currentMusic.song?.image ?? undefined}
+            title={currentMusic.song?.title}
+            artists={currentMusic.song?.artists}
+          />
         </div>
-      </div>
 
-      <div className='hidden flex-1 basis-0 justify-end md:flex'>
-        <VolumeController />
-      </div>
+        {/* Mobile play button */}
+        <div className='flex items-center justify-end md:hidden'>
+          <MobilePlayButton
+            isPlaying={isPlaying}
+            onClick={() => setIsPlaying(!isPlaying)}
+          />
+        </div>
 
-      <audio ref={audioRef} />
-    </div>
+        {/* Desktop player controls */}
+        <div className='hidden flex-1 place-content-center md:grid'>
+          <div className='flex flex-col items-center justify-center gap-1'>
+            <PlaybackControls
+              isPlaying={isPlaying}
+              isRandom={isRandom}
+              isRepeat={isRepeat}
+              onPlayPause={() => setIsPlaying(!isPlaying)}
+              onNext={playNext}
+              onPrevious={playPrevious}
+              onToggleShuffle={() => setIsRandom(!isRandom)}
+              onToggleRepeat={() => toggleRepeat()}
+            />
+            <AudioController audioRef={audioRef} />
+          </div>
+        </div>
+
+        {/* Desktop volume controls */}
+        <div className='hidden flex-1 basis-0 justify-end md:flex'>
+          <VolumeController />
+        </div>
+
+        <audio ref={audioRef} />
+      </div>
+    </>
   );
 };
 

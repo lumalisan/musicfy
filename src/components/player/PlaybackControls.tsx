@@ -14,6 +14,7 @@ export interface PlaybackControlsProps {
   isPlaying: boolean;
   isRandom: boolean;
   isRepeat: boolean;
+  largeIcons?: boolean;
   onPlayPause: () => void;
   onNext: () => void;
   onPrevious: () => void;
@@ -25,6 +26,7 @@ export const PlaybackControls = ({
   isPlaying,
   isRandom,
   isRepeat,
+  largeIcons,
   onPlayPause,
   onNext,
   onPrevious,
@@ -32,7 +34,7 @@ export const PlaybackControls = ({
   onToggleRepeat,
 }: PlaybackControlsProps) => {
   return (
-    <div className='flex items-center justify-center gap-4'>
+    <div className='flex items-center justify-between md:justify-center gap-4'>
       <button
         title={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
         aria-label={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
@@ -42,7 +44,7 @@ export const PlaybackControls = ({
         )}
         onClick={onToggleShuffle}
       >
-        <FontAwesomeIcon icon={faShuffle} />
+        <FontAwesomeIcon icon={faShuffle} size={largeIcons ? 'lg' : undefined} />
       </button>
 
       <button
@@ -51,15 +53,15 @@ export const PlaybackControls = ({
         className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300'
         onClick={onPrevious}
       >
-        <FontAwesomeIcon icon={faBackwardStep} />
+        <FontAwesomeIcon icon={faBackwardStep} size={largeIcons ? 'lg' : undefined} />
       </button>
 
       <button
         title={isPlaying ? 'Pause' : 'Play'}
         aria-label={isPlaying ? 'Pause' : 'Play'}
-        className='bg-accent/80 text-secondary hover:bg-accent flex h-9 w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105' onClick={onPlayPause}
+        className='bg-accent/80 text-secondary hover:bg-accent flex h-14 w-14 md:h-9 md:w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105' onClick={onPlayPause}
       >
-        <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} />
+        <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} size={largeIcons ? 'lg' : undefined} />
       </button>
 
       <button
@@ -67,7 +69,7 @@ export const PlaybackControls = ({
         aria-label='Next Track'
         className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300' onClick={onNext}
       >
-        <FontAwesomeIcon icon={faForwardStep} />
+        <FontAwesomeIcon icon={faForwardStep} size={largeIcons ? 'lg' : undefined} />
       </button>
 
       <button
@@ -87,7 +89,7 @@ export const PlaybackControls = ({
         )}
         onClick={onToggleRepeat}
       >
-        <FontAwesomeIcon icon={faRepeat} />
+        <FontAwesomeIcon icon={faRepeat} size={largeIcons ? 'lg' : undefined} />
       </button>
     </div>
   );

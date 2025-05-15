@@ -28,7 +28,7 @@ export const Slider = forwardRef<
       <Range className='bg-accent/70 group-hover:bg-accent absolute h-full' />
     </Track>
 
-    <Thumb className='bg-background ring-offset-background focus-visible:ring-ring border-primary hidden h-4 w-4 rounded-full border-2 bg-white transition-colors group-hover:block focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50' />
+    <Thumb className='bg-background ring-offset-background focus-visible:ring-ring border-primary block md:hidden h-4 w-4 rounded-full border-2 bg-white transition-colors group-hover:block focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50' />
   </SliderRoot>
 ));
 
