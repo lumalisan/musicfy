@@ -34,7 +34,7 @@ export const PlaybackControls = ({
   onToggleRepeat,
 }: PlaybackControlsProps) => {
   return (
-    <div className='flex items-center justify-between md:justify-center gap-4'>
+    <div className='flex items-center justify-between gap-4 md:justify-center'>
       <button
         title={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
         aria-label={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
@@ -44,7 +44,10 @@ export const PlaybackControls = ({
         )}
         onClick={onToggleShuffle}
       >
-        <FontAwesomeIcon icon={faShuffle} size={largeIcons ? 'lg' : undefined} />
+        <FontAwesomeIcon
+          icon={faShuffle}
+          size={largeIcons ? 'lg' : undefined}
+        />
       </button>
 
       <button
@@ -53,23 +56,34 @@ export const PlaybackControls = ({
         className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300'
         onClick={onPrevious}
       >
-        <FontAwesomeIcon icon={faBackwardStep} size={largeIcons ? 'lg' : undefined} />
+        <FontAwesomeIcon
+          icon={faBackwardStep}
+          size={largeIcons ? 'lg' : undefined}
+        />
       </button>
 
       <button
         title={isPlaying ? 'Pause' : 'Play'}
         aria-label={isPlaying ? 'Pause' : 'Play'}
-        className='bg-accent/80 text-secondary hover:bg-accent flex h-14 w-14 md:h-9 md:w-9 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105' onClick={onPlayPause}
+        className='bg-accent/80 text-secondary hover:bg-accent flex h-14 w-14 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105 md:h-9 md:w-9'
+        onClick={onPlayPause}
       >
-        <FontAwesomeIcon icon={isPlaying ? faPause : faPlay} size={largeIcons ? 'lg' : undefined} />
+        <FontAwesomeIcon
+          icon={isPlaying ? faPause : faPlay}
+          size={largeIcons ? 'lg' : undefined}
+        />
       </button>
 
       <button
         title='Next Track'
         aria-label='Next Track'
-        className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300' onClick={onNext}
+        className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300'
+        onClick={onNext}
       >
-        <FontAwesomeIcon icon={faForwardStep} size={largeIcons ? 'lg' : undefined} />
+        <FontAwesomeIcon
+          icon={faForwardStep}
+          size={largeIcons ? 'lg' : undefined}
+        />
       </button>
 
       <button

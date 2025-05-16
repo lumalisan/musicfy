@@ -3,6 +3,7 @@ import { getAverageColor } from 'fast-average-color-node';
 
 import { supabaseAdmin } from '@/lib/db/supabase';
 import type { Playlist } from '@/lib/types/Playlist';
+import type { MediaItem } from '@/lib/types/MediaItem';
 
 // Get all playlists of the authenticated user
 export const GET: APIRoute = async (context: APIContext) => {
@@ -41,18 +42,19 @@ export const GET: APIRoute = async (context: APIContext) => {
       );
     }
 
-    const playlists: Playlist[] = data?.map((playlist: any) => {
-      return {
-        id: playlist.id,
-        name: playlist.name,
-        description: playlist.description,
-        coverArtUrl: playlist.cover_art_url,
-        createdAt: playlist.created_at,
-        updatedAt: playlist.updated_at,
-        color: playlist.color,
-        userId: playlist.user_id,
-      };
-    }) || [];
+    const playlists: MediaItem[] =
+      data?.map((playlist: any) => {
+        return {
+          id: playlist.id,
+          title: playlist.name,
+          coverArtUrl: playlist.cover_art_url,
+          artists: playlist.artist_names || ['Various Artists'],
+          href: `/playlist/${playlist.id}`,
+          type: 'playlist',
+          color: playlist.color,
+          userId: playlist.user_id,
+        };
+      }) || [];
 
     // Return empty array if data is null
     return new Response(JSON.stringify(playlists), {

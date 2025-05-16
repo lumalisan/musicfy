@@ -5,9 +5,15 @@ import type { Song } from '@/lib/types/Song';
 export const GET: APIRoute = async (context: APIContext) => {
   const searchQuery = context.url.searchParams.get('q');
 
-  if (!searchQuery || typeof searchQuery !== 'string' || searchQuery.trim() === '') {
+  if (
+    !searchQuery ||
+    typeof searchQuery !== 'string' ||
+    searchQuery.trim() === ''
+  ) {
     return new Response(
-      JSON.stringify({ error: 'Search query parameter "q" is required and cannot be empty.' }),
+      JSON.stringify({
+        error: 'Search query parameter "q" is required and cannot be empty.',
+      }),
       {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
@@ -19,7 +25,8 @@ export const GET: APIRoute = async (context: APIContext) => {
     // Query the 'songs' table for titles matching the search query.
     const { data: songs, error } = await supabaseAdmin
       .from('songs')
-      .select(`
+      .select(
+        `
         id,
         title,
         duration_seconds,
@@ -33,7 +40,8 @@ export const GET: APIRoute = async (context: APIContext) => {
           id,
           name
         )
-      `)
+      `
+      )
       .ilike('title', `%${searchQuery.trim()}%`)
       .limit(20);
 
@@ -57,14 +65,13 @@ export const GET: APIRoute = async (context: APIContext) => {
       artists: [song.artist.name],
       album: song.album,
       duration: song.duration_seconds,
-      url: song.file_url,      
+      url: song.file_url,
     }));
 
     return new Response(JSON.stringify(songsResponse), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
-
   } catch (e: any) {
     console.error('Exception in GET /api/songs:', e);
     return new Response(

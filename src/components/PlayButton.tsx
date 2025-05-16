@@ -16,31 +16,31 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
 
   const [isIconShowingPause, setIsIconShowingPause] = useState(
     isPlaying &&
-    currentMusic.itemInfo?.id === itemId &&
-    currentMusic.itemInfo?.type === itemType
+      currentMusic.itemInfo?.id === itemId &&
+      currentMusic.itemInfo?.type === itemType
   );
 
   useEffect(() => {
     setIsIconShowingPause(
       isPlaying &&
-      currentMusic.itemInfo?.id === itemId &&
-      currentMusic.itemInfo?.type === itemType
+        currentMusic.itemInfo?.id === itemId &&
+        currentMusic.itemInfo?.type === itemType
     );
   }, [isPlaying, currentMusic, itemId, itemType]);
 
   const handleClick = async () => {
     if (isIconShowingPause) {
       setIsPlaying(false);
-    }
-    else if (
+    } else if (
       currentMusic.itemInfo?.id === itemId &&
       currentMusic.itemInfo?.type === itemType
     ) {
       setIsPlaying(true);
-    }
-    else {
+    } else {
       try {
-        const response = await fetch(`/api/item-details/${itemId}.json?type=${itemType}`);
+        const response = await fetch(
+          `/api/item-details/${itemId}.json?type=${itemType}`
+        );
         if (!response.ok) {
           console.error(
             `Failed to fetch ${itemType} info for ID ${itemId}: ${response.status} ${response.statusText}`

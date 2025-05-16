@@ -123,12 +123,12 @@ export const GET: APIRoute = async ({ params, url }) => {
       type: itemType,
       name:
         itemType === 'playlist' ? itemDetailsData.name : itemDetailsData.title,
-        coverArtUrl: itemDetailsData.cover_art_url,
+      coverArtUrl: itemDetailsData.cover_art_url,
       artists: itemDetailsData.artist_names || [],
       color: itemDetailsData.color,
       description:
         itemType === 'playlist' ? itemDetailsData.description : undefined,
-      creatorUserId: 
+      creatorUserId:
         itemType === 'playlist' ? itemDetailsData.creator_user_id : undefined,
     };
 

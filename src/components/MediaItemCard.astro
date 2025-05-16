@@ -10,8 +10,7 @@ const { item } = Astro.props;
 const itemIdStr = String(item.id);
 const artistsString =
   item.artists && item.artists.length > 0 ? item.artists.join(', ') : '';
-const coverImage =
-  item.coverArtUrl || '/images/default-media-placeholder.png';
+const coverImage = item.coverArtUrl || '/images/default-media-placeholder.png';
 ---
 
 <article

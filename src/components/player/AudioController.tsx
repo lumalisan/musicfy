@@ -10,8 +10,10 @@ const AudioController = ({
   const { audioDuration, currentTime } = useAudioTime(audioRef);
 
   return (
-    <div className='flex gap-x-3 text-xs flex-col md:flex-row'>
-      <span className='hidden md:block opacity-80'>{formatTime(currentTime)}</span>
+    <div className='flex flex-col gap-x-3 text-xs md:flex-row'>
+      <span className='hidden opacity-80 md:block'>
+        {formatTime(currentTime)}
+      </span>
       <Slider
         defaultValue={[0]}
         max={audioDuration}
@@ -25,8 +27,10 @@ const AudioController = ({
         }}
         value={[currentTime]}
       />
-      <span className='hidden md:block opacity-80'>{formatTime(audioDuration)}</span>
-      <div className='flex md:hidden items-center justify-between w-full mt-1'>
+      <span className='hidden opacity-80 md:block'>
+        {formatTime(audioDuration)}
+      </span>
+      <div className='mt-1 flex w-full items-center justify-between md:hidden'>
         <span className='opacity-80'>{formatTime(currentTime)}</span>
         <span className='opacity-80'>{formatTime(audioDuration)}</span>
       </div>

@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
 interface WindowSize {
-    width: number | undefined;
-    height: number | undefined;
+  width: number | undefined;
+  height: number | undefined;
 }
 
 /**
@@ -19,31 +19,31 @@ interface WindowSize {
  * }
  */
 export const useWindowSize = (): WindowSize => {
-    const [windowSize, setWindowSize] = useState<WindowSize>({
-        width: undefined,
-        height: undefined,
-    });
+  const [windowSize, setWindowSize] = useState<WindowSize>({
+    width: undefined,
+    height: undefined,
+  });
 
-    useEffect(() => {
-        const handleResize = () => {
-            setWindowSize({
-                width: window.innerWidth,
-                height: window.innerHeight,
-            });
-        };
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
 
-        // Check if window object is available
-        if (typeof window !== 'undefined') {
-            window.addEventListener('resize', handleResize);
+    // Check if window object is available
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', handleResize);
 
-            handleResize();
+      handleResize();
 
-            return () => window.removeEventListener('resize', handleResize);
-        }
+      return () => window.removeEventListener('resize', handleResize);
+    }
 
-        // If window is not defined (e.g., during SSR), do nothing and rely on initial state.
-        return undefined;
-    }, []);
+    // If window is not defined (e.g., during SSR), do nothing and rely on initial state.
+    return undefined;
+  }, []);
 
-    return windowSize;
-}
+  return windowSize;
+};

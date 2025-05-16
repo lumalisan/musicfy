@@ -1,0 +1,62 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { PlaylistControls } from '@/components/library/PlaylistControls.tsx';
+import type { MediaItem } from '@/lib/types/MediaItem';
+import MediaSection from '@/components/MediaSection.astro';
+import Alert from '@/components/Alert.astro';
+
+const { userId: clerkUserId, sessionId } = Astro.locals.auth();
+
+let playlists: MediaItem[] = [];
+let fetchError: string | null = null;
+
+if (!clerkUserId || !sessionId) {
+  return Astro.redirect('/');
+}
+
+try {
+  const response = await fetch(`${Astro.url.origin}/api/user-playlists.json`, {
+    headers: Astro.request.headers,
+  });
+
+  if (!response.ok) {
+    const errorData = await response
+      .json()
+      .catch(() => ({ error: 'Failed to parse error from API' }));
+    throw new Error(errorData.error || `API Error: ${response.status}`);
+  }
+
+  playlists = await response.json();
+} catch (error) {
+  console.error('Error fetching user playlists in library.astro:', error);
+  fetchError = 'Could not load your playlists.';
+}
+---
+
+<Layout title='Musicfy - Your Library'>
+  <div class='p-4 md:p-6 mt-12 md:mt-0'>
+    <div class='flex justify-between items-start sm:items-center mb-8 gap-4'>
+      <h1 class='text-3xl font-bold'>Your Library</h1>
+
+      <PlaylistControls client:load />
+    </div>
+
+    {
+      fetchError && (
+        <Alert
+          type='error'
+          title='Oops!'
+          message={fetchError}
+          redirectText='Go home'
+          redirectUrl='/'
+        />
+      )
+    }
+
+    <MediaSection
+      items={playlists}
+      hasError={!!fetchError}
+      emptyStateMessage='Your library is empty. Start by creating a new playlist!'
+    />
+  </div>
+</Layout>

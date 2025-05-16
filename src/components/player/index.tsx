@@ -19,7 +19,8 @@ const Player = () => {
   // STATES
   const [isExpandedIntent, setIsExpandedIntent] = useState<boolean>(false);
   const [isPlayerMounted, setIsPlayerMounted] = useState<boolean>(false);
-  const [currentPlayerAnimation, setCurrentPlayerAnimation] = useState<string>('');
+  const [currentPlayerAnimation, setCurrentPlayerAnimation] =
+    useState<string>('');
 
   // REFS
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -47,7 +48,7 @@ const Player = () => {
   // Check if the current view is mobile
   const isMobileView: boolean = useMemo(() => {
     return windowSize.width !== undefined && windowSize.width < 768;
-  }, [windowSize.width])
+  }, [windowSize.width]);
 
   // EFFECT OF REPRODUCTION AND CHARGING
   useEffect(() => {
@@ -164,16 +165,23 @@ const Player = () => {
     };
   }, [isExpandedIntent, isPlayerMounted]);
 
-  const handlePlayerBarClick = (event?: React.MouseEvent<HTMLDivElement>): void => {
-    if (event && (event.target as HTMLElement).closest('button, a, input[type="range"]')) {
+  const handlePlayerBarClick = (
+    event?: React.MouseEvent<HTMLDivElement>
+  ): void => {
+    if (
+      event &&
+      (event.target as HTMLElement).closest('button, a, input[type="range"]')
+    ) {
       return;
     }
     if (isMobileView) {
-      setIsExpandedIntent(prev => !prev);
+      setIsExpandedIntent((prev) => !prev);
     }
   };
 
-  const handleCloseExpandedPlayer = (event?: React.MouseEvent<HTMLButtonElement>): void => {
+  const handleCloseExpandedPlayer = (
+    event?: React.MouseEvent<HTMLButtonElement>
+  ): void => {
     if (event) event.stopPropagation();
     if (isMobileView) {
       setIsExpandedIntent(false);
@@ -187,33 +195,35 @@ const Player = () => {
   return (
     <>
       {/* Mobile full player */}
-      {
-        isPlayerMounted && isMobileView ?
-          <MobileExpandedPlayer
-            currentMusic={currentMusic}
-            isPlaying={isPlaying}
-            isRandom={isRandom}
-            isRepeat={isRepeat}
-            audioRef={audioRef}
-            onPlayPause={() => setIsPlaying(!isPlaying)}
-            onNext={playNext}
-            onPrevious={playPrevious}
-            onToggleShuffle={() => setIsRandom(!isRandom)}
-            onToggleRepeat={toggleRepeat}
-            onClose={handleCloseExpandedPlayer}
-            animationClassName={currentPlayerAnimation}
-          />
-          : null
-      }
+      {isPlayerMounted && isMobileView ? (
+        <MobileExpandedPlayer
+          currentMusic={currentMusic}
+          isPlaying={isPlaying}
+          isRandom={isRandom}
+          isRepeat={isRepeat}
+          audioRef={audioRef}
+          onPlayPause={() => setIsPlaying(!isPlaying)}
+          onNext={playNext}
+          onPrevious={playPrevious}
+          onToggleShuffle={() => setIsRandom(!isRandom)}
+          onToggleRepeat={toggleRepeat}
+          onClose={handleCloseExpandedPlayer}
+          animationClassName={currentPlayerAnimation}
+        />
+      ) : null}
 
       {/* Desktop player & mobile small player */}
       <div
-        className={'flex flex-row justify-between items-center rounded-t-lg h-auto transition-colors duration-300 bg-amber-900/80 backdrop-blur-sm p-2 md:bg-secondary md:backdrop-blur-none md:h-[80px] md:w-full md:px-4 md:py-2'}
+        className={
+          'md:bg-secondary flex h-auto flex-row items-center justify-between rounded-t-lg bg-amber-900/80 p-2 backdrop-blur-sm transition-colors duration-300 md:h-[80px] md:w-full md:px-4 md:py-2 md:backdrop-blur-none'
+        }
         onClick={handlePlayerBarClick}
-        role={isMobileView ? "button" : undefined}
+        role={isMobileView ? 'button' : undefined}
         tabIndex={isMobileView ? 0 : undefined}
         aria-expanded={isMobileView ? isExpandedIntent : undefined}
-        aria-label={isMobileView ? "Music player, click to expand" : "Music player"}
+        aria-label={
+          isMobileView ? 'Music player, click to expand' : 'Music player'
+        }
       >
         {/* Current song info */}
         <div className='flex min-w-0 flex-1 basis-0 justify-start'>
