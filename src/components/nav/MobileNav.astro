@@ -14,27 +14,70 @@ import {
 } from '@clerk/astro/components';
 
 import { LibraryLoginPopover } from '../LibraryLoginPopover';
+
+/**
+ * Function to check if the current pathname matches the given href
+ *
+ * @param href - The href to check against the current pathname
+ * @returns {boolean} - True if the href is the same as the current pathname
+ */
+const isActive = (href: string): boolean => {
+  // Normlize href to always start with a slash
+  let normalizedHref = href.startsWith('/') ? href : `/${href}`;
+  if (normalizedHref !== '/' && normalizedHref.endsWith('/')) {
+    normalizedHref = normalizedHref.slice(0, -1);
+  }
+
+  // Normalize current pathname to always start with a slash
+  let normalizedCurrentPathname = Astro.url.pathname;
+  if (
+    normalizedCurrentPathname !== '/' &&
+    normalizedCurrentPathname.endsWith('/')
+  ) {
+    normalizedCurrentPathname = normalizedCurrentPathname.slice(0, -1);
+  }
+
+  return normalizedCurrentPathname === normalizedHref;
+};
 ---
 
 <!-- Mobile navigation -->
 <nav
   class='flex md:hidden items-center h-[70px] bg-secondary/80 backdrop-blur-sm'
 >
-  <a
-    href='/'
-    class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
-  >
-    <FontAwesomeIcon icon={faHome} className='text-xl' />
-    Home
-  </a>
+  {
+    isActive('/') ? (
+      <div class='flex flex-col items-center justify-center flex-1 gap-1 h-full'>
+        <FontAwesomeIcon icon={faHome} className='text-xl' />
+        Home
+      </div>
+    ) : (
+      <a
+        href='/'
+        class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+      >
+        <FontAwesomeIcon icon={faHome} className='text-xl' />
+        Home
+      </a>
+    )
+  }
 
-  <a
-    href='#'
-    class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
-  >
-    <FontAwesomeIcon icon={faSearch} className='text-xl' />
-    Search
-  </a>
+  {
+    isActive('/search') ? (
+      <div class='flex flex-col items-center justify-center flex-1 gap-1 h-full'>
+        <FontAwesomeIcon icon={faSearch} className='text-xl' />
+        Search
+      </div>
+    ) : (
+      <a
+        href='/search'
+        class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+      >
+        <FontAwesomeIcon icon={faSearch} className='text-xl' />
+        Search
+      </a>
+    )
+  }
 
   <SignedOut>
     <LibraryLoginPopover
@@ -43,13 +86,22 @@ import { LibraryLoginPopover } from '../LibraryLoginPopover';
     />
   </SignedOut>
   <SignedIn>
-    <a
-      href='/library'
-      class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
-    >
-      <FontAwesomeIcon icon={faBook} className='text-xl' />
-      Library
-    </a>
+    {
+      isActive('/library') ? (
+        <div class='flex flex-col items-center justify-center flex-1 gap-1 h-full'>
+          <FontAwesomeIcon icon={faBook} className='text-xl' />
+          Library
+        </div>
+      ) : (
+        <a
+          href='/library'
+          class='flex flex-col items-center justify-center flex-1 gap-1 h-full'
+        >
+          <FontAwesomeIcon icon={faBook} className='text-xl' />
+          Library
+        </a>
+      )
+    }
   </SignedIn>
 
   <div class='flex flex-col items-center justify-center flex-1 h-full'>

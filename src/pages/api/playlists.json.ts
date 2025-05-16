@@ -26,7 +26,7 @@ export const GET: APIRoute = async () => {
       (playlist: any) => ({
         id: playlist.id,
         title: playlist.name,
-        cover_art_url: playlist.cover_art_url,
+        coverArtUrl: playlist.cover_art_url,
         artists: playlist.artist_names || ['Various Artists'],
         href: `/playlist/${playlist.id}`,
         type: 'playlist',

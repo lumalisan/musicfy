@@ -6,7 +6,7 @@ interface Props {
 }
 
 const { item } = Astro.props;
-const { id, artists, cover_art_url, title, type } = item;
+const { id, artists, coverArtUrl, title, type } = item;
 
 const artistsString = artists.join(', ');
 const href = type === 'playlist' ? `/playlist/${id}` : `/album/${id}`;
@@ -19,9 +19,9 @@ const href = type === 'playlist' ? `/playlist/${id}` : `/album/${id}`;
 >
   <picture class='h-12 w-12 flex-none'>
     {
-      cover_art_url ? (
+      coverArtUrl ? (
         <img
-          src={cover_art_url}
+          src={coverArtUrl}
           alt={`Cover for ${title}`}
           class='object-cover w-full h-full rounded-md'
           loading='lazy'

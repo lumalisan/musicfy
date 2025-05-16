@@ -1,10 +1,10 @@
 export interface Playlist {
   id: string;
   name: string;
-  user_id: string;
+  userId: string;
   description?: string;
-  cover_art_url?: string;
-  created_at: string;
-  updated_at: string;
+  coverArtUrl?: string;
+  createdAt: string;
+  updatedAt: string;
   color?: string;
 }

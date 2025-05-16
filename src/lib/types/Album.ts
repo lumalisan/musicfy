@@ -1,9 +1,9 @@
 export interface Album {
   id: string;
   title: string;
-  cover_art_url?: string;
+  coverArtUrl?: string;
   color?: string;
-  release_date?: string;
-  artist_id?: string;
+  releaseDate?: string;
+  artistId?: string;
   artists?: { name: string };
 }

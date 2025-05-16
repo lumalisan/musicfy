@@ -2,6 +2,7 @@ import type { APIRoute, APIContext } from 'astro';
 import { getAverageColor } from 'fast-average-color-node';
 
 import { supabaseAdmin } from '@/lib/db/supabase';
+import type { Playlist } from '@/lib/types/Playlist';
 
 // Get all playlists of the authenticated user
 export const GET: APIRoute = async (context: APIContext) => {
@@ -40,8 +41,21 @@ export const GET: APIRoute = async (context: APIContext) => {
       );
     }
 
+    const playlists: Playlist[] = data?.map((playlist: any) => {
+      return {
+        id: playlist.id,
+        name: playlist.name,
+        description: playlist.description,
+        coverArtUrl: playlist.cover_art_url,
+        createdAt: playlist.created_at,
+        updatedAt: playlist.updated_at,
+        color: playlist.color,
+        userId: playlist.user_id,
+      };
+    }) || [];
+
     // Return empty array if data is null
-    return new Response(JSON.stringify(data || []), {
+    return new Response(JSON.stringify(playlists), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -213,7 +227,18 @@ export const POST: APIRoute = async (context: APIContext) => {
       }
     }
 
-    return new Response(JSON.stringify(newPlaylist), {
+    const newPlaylistResponse: Playlist = {
+      id: newPlaylist.id,
+      name: newPlaylist.name,
+      description: newPlaylist.description,
+      coverArtUrl: newPlaylist.cover_art_url,
+      createdAt: newPlaylist.created_at,
+      updatedAt: newPlaylist.updated_at,
+      color: newPlaylist.color,
+      userId: newPlaylist.user_id,
+    };
+
+    return new Response(JSON.stringify(newPlaylistResponse), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     });
@@ -254,7 +279,7 @@ export const PUT: APIRoute = async (context: APIContext) => {
 
   try {
     const body = await context.request.json();
-    const { playlistId, name, cover_art_url, color } = body;
+    const { playlistId, name, coverArtUrl, color } = body;
 
     if (!playlistId || typeof playlistId !== 'string') {
       return new Response(
@@ -293,7 +318,7 @@ export const PUT: APIRoute = async (context: APIContext) => {
 
     const updateData: {
       name?: string;
-      cover_art_url?: string | null;
+      coverArtUrl?: string | null;
       color?: string;
     } = {};
     let hasUpdates = false;
@@ -314,9 +339,9 @@ export const PUT: APIRoute = async (context: APIContext) => {
       hasUpdates = true;
     }
 
-    if (!cover_art_url) {
+    if (!coverArtUrl) {
       return new Response(
-        JSON.stringify({ error: 'cover_art_url can not be empty.' }),
+        JSON.stringify({ error: 'coverArtUrl can not be empty.' }),
         {
           status: 400,
           headers: { 'Content-Type': 'application/json' },
@@ -386,7 +411,18 @@ export const PUT: APIRoute = async (context: APIContext) => {
       );
     }
 
-    return new Response(JSON.stringify(updatedPlaylist), {
+    const updatedPlaylistResponse: Playlist = {
+      id: updatedPlaylist.id,
+      name: updatedPlaylist.name,
+      description: updatedPlaylist.description,
+      coverArtUrl: updatedPlaylist.cover_art_url,
+      createdAt: updatedPlaylist.created_at,
+      updatedAt: updatedPlaylist.updated_at,
+      color: updatedPlaylist.color,
+      userId: updatedPlaylist.user_id,
+    };
+
+    return new Response(JSON.stringify(updatedPlaylistResponse), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

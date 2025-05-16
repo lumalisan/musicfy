@@ -42,7 +42,7 @@ export const GET: APIRoute = async () => {
       return {
         id: album.id,
         title: album.title,
-        cover_art_url: album.cover_art_url,
+        coverArtUrl: album.cover_art_url,
         artists: albumArtists,
         href: `/album/${album.id}`,
         type: 'album',

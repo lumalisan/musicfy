@@ -54,7 +54,7 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
 
         const {
           songs,
-          itemDetails: { artists, color, cover_art_url, id, name, type },
+          itemDetails: { artists, color, coverArtUrl, id, name, type },
         } = await response.json();
 
         if (songs && songs.length > 0) {
@@ -63,7 +63,7 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
             type,
             artists,
             color,
-            cover_art_url,
+            coverArtUrl,
             name,
           };
 

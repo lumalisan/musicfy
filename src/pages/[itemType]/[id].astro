@@ -90,7 +90,7 @@ const headerArtistsString = itemDetails?.artists?.join(', ') || '';
               <picture class='aspect-square w-44 h-44 md:w-52 md:h-52 block shadow-2xl rounded'>
                 <img
                   src={
-                    itemDetails.cover_art_url ||
+                    itemDetails.coverArtUrl ||
                     '/images/default-media-placeholder.png'
                   }
                   alt={`Cover of ${itemDetails.name}`}
