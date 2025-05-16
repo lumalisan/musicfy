@@ -161,7 +161,7 @@ export const CreatePlaylistModal = () => {
           <Dialog.Close asChild>
             <button
               onClick={resetModalStateAndClose}
-              className='focus-visible:ring-accent absolute top-3 right-3 h-8 w-8 rounded-full flex items-center justify-center text-gray-400 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2'
+              className='focus-visible:ring-accent absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2'
               aria-label='Close'
               type='button'
             >
@@ -172,7 +172,7 @@ export const CreatePlaylistModal = () => {
           <Dialog.Title className='mb-6 text-center text-2xl font-semibold'>
             Create new playlist
           </Dialog.Title>
-          
+
           <Dialog.Description className='sr-only'>
             Create a new playlist and add your first song.
           </Dialog.Description>
@@ -279,7 +279,7 @@ export const CreatePlaylistModal = () => {
               <button
                 onClick={resetModalStateAndClose}
                 disabled={isCreatingPlaylist}
-                className='bg-primary hover:bg-primary/80 rounded-full px-5 py-2 font-medium text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+                className='bg-primary hover:bg-primary/80 rounded-full px-5 py-2 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
               >
                 Cancel
               </button>
@@ -289,7 +289,7 @@ export const CreatePlaylistModal = () => {
               disabled={
                 isCreatingPlaylist || !newPlaylistName.trim() || !selectedSongId
               }
-              className='bg-accent hover:bg-accent/80 flex items-center justify-center gap-2 rounded-full px-5 py-2 font-medium text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+              className='bg-accent hover:bg-accent/80 flex items-center justify-center gap-2 rounded-full px-5 py-2 font-medium text-black transition-colors disabled:cursor-not-allowed disabled:opacity-50'
             >
               {isCreatingPlaylist && (
                 <FontAwesomeIcon icon={faSpinner} className='animate-spin' />
