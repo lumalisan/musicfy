@@ -1,6 +1,6 @@
 ---
 import Layout from '@/layouts/Layout.astro';
-import { PlaylistControls } from '@/components/library/PlaylistControls.tsx';
+import { CreatePlaylistModal } from '@/components/library/CreatePlaylistModal';
 import type { MediaItem } from '@/lib/types/MediaItem';
 import MediaSection from '@/components/MediaSection.astro';
 import Alert from '@/components/Alert.astro';
@@ -38,7 +38,7 @@ try {
     <div class='flex justify-between items-start sm:items-center mb-8 gap-4'>
       <h1 class='text-3xl font-bold'>Your Library</h1>
 
-      <PlaylistControls client:load />
+      <CreatePlaylistModal client:load />
     </div>
 
     {

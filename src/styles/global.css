@@ -73,6 +73,15 @@
   }
 }
 
+@keyframes overlayShow {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 @theme {
   /* #393E46 */
   --color-primary: oklch(36.23% 0.015 259.81);
@@ -89,8 +98,11 @@
   --animate-slideUpAndFade: slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-slideRightAndFade: slideRightAndFade 400ms
     cubic-bezier(0.16, 1, 0.3, 1);
+  /* Mobile full player */
   --animate-slideEnterUp: slideEnterUp 300ms
     cubic-bezier(0.25, 0.46, 0.45, 0.94);
   --animate-slideLeaveDown: slideLeaveDown 300ms
     cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  /* Radix UI dialog */
+  --animate-overlayShow: overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1);
 }
