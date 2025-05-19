@@ -1,8 +1,18 @@
 ---
 import type { MediaItem } from '@/lib/types/MediaItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook, faHome, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { SignedIn, SignedOut } from '@clerk/astro/components';
+import {
+  faBook,
+  faHome,
+  faSearch,
+  faUser,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from '@clerk/astro/components';
 
 import { LibraryLoginPopover } from './LibraryLoginPopover';
 import SideMenuItem from './SideMenuItem.astro';
@@ -50,8 +60,9 @@ try {
     <ul class='flex-1 overflow-y-auto'>
       <SignedOut>
         <LibraryLoginPopover
-          triggerClassName='flex gap-4 text-accent/70 cursor-pointer hover:text-accent items-center py-3 px-5 font-medium transition duration-300'
+          triggerClassName='flex gap-4 w-full text-accent/70 cursor-pointer hover:text-accent items-center py-3 px-5 font-medium transition duration-300'
           side='right'
+          sideOffset={-20}
           client:load
         />
       </SignedOut>
@@ -73,5 +84,27 @@ try {
           : null
       }
     </ul>
+
+    <div class='border-t border-accent/80 pt-2'>
+      <SignedIn>
+        <span class='flex items-start justify-start'>
+          <UserButton showName appearance={{
+            elements: {
+              userButtonBox: 'flex justify-between gap-4 w-full text-accent/70 cursor-pointer hover:text-accent items-center py-2 px-5 font-medium transition duration-300',
+            },
+          }} />
+        </span>
+      </SignedIn>
+      <SignedOut>
+        <SignInButton mode='modal' class='w-full'>
+          <ul>
+            <SideMenuItem>
+              <FontAwesomeIcon icon={faUser} className='text-xl' />
+              Sign In
+            </SideMenuItem>
+          </ul>
+        </SignInButton>
+      </SignedOut>
+    </div>
   </div>
 </nav>
