@@ -3,7 +3,7 @@ import Layout from '@/layouts/Layout.astro';
 import { CreatePlaylistModal } from '@/components/library/CreatePlaylistModal';
 import type { MediaItem } from '@/lib/types/MediaItem';
 import MediaSection from '@/components/MediaSection.astro';
-import Alert from '@/components/Alert.astro';
+import Alert from '@/components/shared/Alert.astro';
 
 const { userId: clerkUserId, sessionId } = Astro.locals.auth();
 
