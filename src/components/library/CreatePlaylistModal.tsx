@@ -193,9 +193,7 @@ export const CreatePlaylistModal = () => {
           />
 
           <div>
-            <h3 className='mb-2 text-lg font-medium'>
-              Add first song
-            </h3>
+            <h3 className='mb-2 text-lg font-medium'>Add first song</h3>
             <div className='relative mb-1'>
               <input
                 type='text'
@@ -216,7 +214,7 @@ export const CreatePlaylistModal = () => {
                 Error: {songSearchError}
               </p>
             )}
-            
+
             {!isSearchingSongs && searchedSongs.length > 0 && (
               <div className='bg-primary mt-2 max-h-[calc(90vh-20rem)] overflow-y-auto rounded-md p-2'>
                 {searchedSongs.map((song) => (
@@ -269,7 +267,7 @@ export const CreatePlaylistModal = () => {
             <button
               onClick={resetModalStateAndClose}
               disabled={isCreatingPlaylist}
-              className='cursor-pointer bg-primary hover:bg-primary/80 rounded-full px-5 py-2 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+              className='bg-primary hover:bg-primary/80 cursor-pointer rounded-full px-5 py-2 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
             >
               Cancel
             </button>
@@ -279,7 +277,7 @@ export const CreatePlaylistModal = () => {
             disabled={
               isCreatingPlaylist || !newPlaylistName.trim() || !selectedSongId
             }
-            className='cursor-pointer bg-accent hover:bg-accent/80 flex items-center justify-center gap-2 rounded-full px-5 py-2 font-medium text-black transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+            className='bg-accent hover:bg-accent/80 flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-2 font-medium text-black transition-colors disabled:cursor-not-allowed disabled:opacity-50'
           >
             {isCreatingPlaylist && (
               <FontAwesomeIcon icon={faSpinner} className='animate-spin' />

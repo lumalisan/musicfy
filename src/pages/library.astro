@@ -16,9 +16,12 @@ if (!clerkUserId || !sessionId) {
 }
 
 try {
-  const response = await fetch(`${Astro.url.origin}${API_BASE_URL}/user-playlists.json`, {
-    headers: Astro.request.headers,
-  });
+  const response = await fetch(
+    `${Astro.url.origin}${API_BASE_URL}/user-playlists.json`,
+    {
+      headers: Astro.request.headers,
+    }
+  );
 
   if (!response.ok) {
     const errorData = await response

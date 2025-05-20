@@ -44,50 +44,62 @@ export const EditPlaylistNameModal: React.FC<EditPlaylistNameModalProps> = ({
     }
   }, [isOpen, currentName]);
 
-  const handleSubmitEditName = useCallback(async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmitEditName = useCallback(
+    async (e: React.FormEvent) => {
+      e.preventDefault();
 
-    if (!editingPlaylistName || editingPlaylistName.trim() === '') {
-      setEditError('Playlist name cannot be empty.');
-      return;
-    }
-
-    if (editingPlaylistName.trim() === currentName && !editError) {
-      onOpenChange(false);
-      return;
-    }
-
-    setIsSubmittingEdit(true);
-    setEditError(null);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/user-playlists.json`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          playlistId,
-          name: editingPlaylistName.trim(),
-          coverArtUrl,
-          color,
-        }),
-      });
-
-      if (response.ok) {
-        onOpenChange(false);
-        onActionComplete();
-      } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: 'Error updating playlist name.' }));
-        setEditError(errorData.message || 'Failed to update playlist name.');
+      if (!editingPlaylistName || editingPlaylistName.trim() === '') {
+        setEditError('Playlist name cannot be empty.');
+        return;
       }
-    } catch (error) {
-      console.error('Error updating playlist name:', error);
-      setEditError('An unexpected error occurred.');
-    } finally {
-      setIsSubmittingEdit(false);
-    }
-  }, [playlistId, editingPlaylistName, currentName, coverArtUrl, color, onOpenChange, onActionComplete, editError]);
+
+      if (editingPlaylistName.trim() === currentName && !editError) {
+        onOpenChange(false);
+        return;
+      }
+
+      setIsSubmittingEdit(true);
+      setEditError(null);
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/user-playlists.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            playlistId,
+            name: editingPlaylistName.trim(),
+            coverArtUrl,
+            color,
+          }),
+        });
+
+        if (response.ok) {
+          onOpenChange(false);
+          onActionComplete();
+        } else {
+          const errorData = await response
+            .json()
+            .catch(() => ({ message: 'Error updating playlist name.' }));
+          setEditError(errorData.message || 'Failed to update playlist name.');
+        }
+      } catch (error) {
+        console.error('Error updating playlist name:', error);
+        setEditError('An unexpected error occurred.');
+      } finally {
+        setIsSubmittingEdit(false);
+      }
+    },
+    [
+      playlistId,
+      editingPlaylistName,
+      currentName,
+      coverArtUrl,
+      color,
+      onOpenChange,
+      onActionComplete,
+      editError,
+    ]
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
@@ -127,8 +139,8 @@ export const EditPlaylistNameModal: React.FC<EditPlaylistNameModalProps> = ({
               <button
                 type='button'
                 onClick={() => onOpenChange(false)}
-                className='cursor-pointer bg-primary hover:bg-primary/80 rounded-full px-5 py-2 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-                >
+                className='bg-primary hover:bg-primary/80 cursor-pointer rounded-full px-5 py-2 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+              >
                 Cancel
               </button>
             </DialogClose>
@@ -139,8 +151,8 @@ export const EditPlaylistNameModal: React.FC<EditPlaylistNameModalProps> = ({
                 !editingPlaylistName.trim() ||
                 (editingPlaylistName.trim() === currentName && !editError)
               }
-              className='cursor-pointer bg-accent hover:bg-accent/80 flex items-center justify-center gap-2 rounded-full px-5 py-2 font-medium text-black transition-colors disabled:cursor-not-allowed disabled:opacity-50'
-              >
+              className='bg-accent hover:bg-accent/80 flex cursor-pointer items-center justify-center gap-2 rounded-full px-5 py-2 font-medium text-black transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+            >
               {isSubmittingEdit && (
                 <FontAwesomeIcon
                   icon={faSpinner}

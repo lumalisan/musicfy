@@ -5,10 +5,10 @@
  */
 export const formatDuration = (seconds: number): string => {
   if (isNaN(seconds) || seconds < 0) return '0:00';
-  
+
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = Math.floor(seconds % 60);
-  
+
   // Format as MM:SS with leading zeros
   return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 };
@@ -20,10 +20,10 @@ export const formatDuration = (seconds: number): string => {
  */
 export const parseDuration = (durationString: string): number => {
   if (!durationString) return 0;
-  
+
   const [minutes, seconds] = durationString.split(':').map(Number);
-  
+
   if (isNaN(minutes) || isNaN(seconds)) return 0;
-  
+
   return minutes * 60 + seconds;
 };

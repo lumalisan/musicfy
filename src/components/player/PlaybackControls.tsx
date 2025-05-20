@@ -39,7 +39,7 @@ export const PlaybackControls = ({
         title={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
         aria-label={isRandom ? 'Disable Shuffle' : 'Enable Shuffle'}
         className={cn(
-          'text-accent/40 hover:text-accent p-2 text-xl transition duration-300 cursor-pointer',
+          'text-accent/40 hover:text-accent cursor-pointer p-2 text-xl transition duration-300',
           isRandom && 'text-accent'
         )}
         onClick={onToggleShuffle}
@@ -53,7 +53,7 @@ export const PlaybackControls = ({
       <button
         title='Previous Track'
         aria-label='Previous Track'
-        className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300 cursor-pointer'
+        className='text-accent/40 hover:text-accent cursor-pointer p-2 text-xl transition duration-300'
         onClick={onPrevious}
       >
         <FontAwesomeIcon
@@ -65,7 +65,7 @@ export const PlaybackControls = ({
       <button
         title={isPlaying ? 'Pause' : 'Play'}
         aria-label={isPlaying ? 'Pause' : 'Play'}
-        className='bg-accent/80 text-secondary hover:bg-accent flex h-14 w-14 items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105 md:h-9 md:w-9 cursor-pointer'
+        className='bg-accent/80 text-secondary hover:bg-accent flex h-14 w-14 cursor-pointer items-center justify-center rounded-full p-2 text-lg transition duration-300 hover:scale-105 md:h-9 md:w-9'
         onClick={onPlayPause}
       >
         <FontAwesomeIcon
@@ -77,7 +77,7 @@ export const PlaybackControls = ({
       <button
         title='Next Track'
         aria-label='Next Track'
-        className='text-accent/40 hover:text-accent p-2 text-xl transition duration-300 cursor-pointer'
+        className='text-accent/40 hover:text-accent cursor-pointer p-2 text-xl transition duration-300'
         onClick={onNext}
       >
         <FontAwesomeIcon
@@ -98,7 +98,7 @@ export const PlaybackControls = ({
             : 'Enable Repeat Current Song'
         }
         className={cn(
-          'text-accent/40 hover:text-accent p-2 text-xl transition duration-300 cursor-pointer',
+          'text-accent/40 hover:text-accent cursor-pointer p-2 text-xl transition duration-300',
           isRepeat && 'text-accent'
         )}
         onClick={onToggleRepeat}

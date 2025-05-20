@@ -13,7 +13,9 @@ let fetchPlaylistsError: string | null = null;
 
 // 1. Fetch albums
 try {
-  const albumsResponse = await fetch(`${Astro.url.origin}${API_BASE_URL}/albums.json`);
+  const albumsResponse = await fetch(
+    `${Astro.url.origin}${API_BASE_URL}/albums.json`
+  );
   if (albumsResponse.ok) {
     albums = await albumsResponse.json();
   } else {

@@ -124,7 +124,14 @@ export const GET: APIRoute = async ({ params, url }) => {
       name:
         itemType === 'playlist' ? itemDetailsData.name : itemDetailsData.title,
       coverArtUrl: itemDetailsData.cover_art_url,
-      artists: songsData.map((s: any) => s.song_artists).flat().filter((artist: string, index: number, self: string[]) => self.indexOf(artist) === index) || [],
+      artists:
+        songsData
+          .map((s: any) => s.song_artists)
+          .flat()
+          .filter(
+            (artist: string, index: number, self: string[]) =>
+              self.indexOf(artist) === index
+          ) || [],
       color: itemDetailsData.color,
       description:
         itemType === 'playlist' ? itemDetailsData.description : undefined,

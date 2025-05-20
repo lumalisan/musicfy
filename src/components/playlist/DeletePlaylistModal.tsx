@@ -71,7 +71,7 @@ export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
       <DialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogHeaderCloseButton onClick={() => onOpenChange(false)} />
         <DialogTitle>Delete playlist</DialogTitle>
-        <DialogDescription className='text-accent-foreground mb-6 text-muted-foreground'>
+        <DialogDescription className='text-accent-foreground text-muted-foreground mb-6'>
           Are you sure you want to delete the playlist "
           <strong>{playlistName}</strong>"? This action cannot be undone.
         </DialogDescription>
@@ -87,7 +87,7 @@ export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
             <button
               type='button'
               onClick={() => onOpenChange(false)}
-              className='cursor-pointer bg-primary hover:bg-primary/80 rounded-full px-5 py-2 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
+              className='bg-primary hover:bg-primary/80 cursor-pointer rounded-full px-5 py-2 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50'
             >
               Cancel
             </button>
@@ -95,7 +95,7 @@ export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
           <button
             onClick={handleConfirmDelete}
             disabled={isDeleting}
-            className='cursor-pointer flex items-center gap-2 rounded-full bg-red-600 px-5 py-2 font-medium text-white transition-colors hover:bg-red-500 disabled:opacity-50'
+            className='flex cursor-pointer items-center gap-2 rounded-full bg-red-600 px-5 py-2 font-medium text-white transition-colors hover:bg-red-500 disabled:opacity-50'
           >
             {isDeleting && (
               <FontAwesomeIcon

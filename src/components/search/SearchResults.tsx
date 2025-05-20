@@ -84,7 +84,7 @@ export const SearchResults = ({
 
   if (!query) {
     return (
-      <div className='mt-12 text-center text-accent/70'>
+      <div className='text-accent/70 mt-12 text-center'>
         <p className='text-lg'>
           Start typing to search for songs, albums, and playlists
         </p>
@@ -95,7 +95,7 @@ export const SearchResults = ({
   if (!hasResults) {
     return (
       <div className='mt-12 text-center'>
-        <p className='text-lg text-accent/70'>No results found for "{query}"</p>
+        <p className='text-accent/70 text-lg'>No results found for "{query}"</p>
         <p className='mt-2 text-sm text-gray-500'>
           Try different keywords or check for typos
         </p>
@@ -129,12 +129,12 @@ export const SearchResults = ({
               )}
               <div className='min-w-0 flex-1'>
                 <h3 className='truncate font-medium'>{item.title}</h3>
-                <p className='truncate text-sm text-accent/70'>
+                <p className='text-accent/70 truncate text-sm'>
                   {item.artist} • {item.album}
                 </p>
               </div>
               <div className='flex items-center gap-2'>
-                <div className='text-sm text-accent/70'>
+                <div className='text-accent/70 text-sm'>
                   {formatDuration(item.duration as number)}
                 </div>
               </div>
@@ -174,7 +174,7 @@ export const SearchResults = ({
                 <h3 className='group-hover:text-accent truncate font-medium'>
                   {item.title}
                 </h3>
-                <p className='truncate text-sm text-accent/70'>{item.artist}</p>
+                <p className='text-accent/70 truncate text-sm'>{item.artist}</p>
               </div>
             </a>
           )}
@@ -215,7 +215,7 @@ export const SearchResults = ({
                 <h3 className='group-hover:text-accent truncate font-medium'>
                   {item.title}
                 </h3>
-                <p className='truncate text-sm text-accent/70'>
+                <p className='text-accent/70 truncate text-sm'>
                   {item.description || 'Playlist'}
                 </p>
               </div>

@@ -55,7 +55,7 @@ export const SearchInput = ({
         placeholder={placeholder}
         value={query}
         onChange={handleChange}
-        className='bg-primary w-full rounded-md p-3 pl-10 placeholder-gray-400 outline-none focus:ring-4 ring-2 ring-accent'
+        className='bg-primary ring-accent w-full rounded-md p-3 pl-10 placeholder-gray-400 ring-2 outline-none focus:ring-4'
       />
       <FontAwesomeIcon
         icon={isLoading || isTyping ? faSpinner : faSearch}

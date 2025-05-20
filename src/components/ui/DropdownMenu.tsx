@@ -12,7 +12,7 @@ const DropdownMenuTrigger = React.forwardRef<
   <DropdownMenuPrimitive.Trigger
     ref={ref}
     className={cn(
-      'cursor-pointer outline-none h-10 w-10 rounded-full focus-visible:ring-2 focus-visible:ring-offset-1',
+      'h-10 w-10 cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-offset-1',
       className
     )}
     {...props}

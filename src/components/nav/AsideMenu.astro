@@ -90,11 +90,15 @@ try {
     <div class='border-t border-accent/80 pt-2'>
       <SignedIn>
         <span class='flex items-start justify-start'>
-          <UserButton showName appearance={{
-            elements: {
-              userButtonBox: 'flex justify-between gap-4 w-full text-accent/70 cursor-pointer hover:text-accent items-center py-2 px-5 font-medium transition duration-300',
-            },
-          }} />
+          <UserButton
+            showName
+            appearance={{
+              elements: {
+                userButtonBox:
+                  'flex justify-between gap-4 w-full text-accent/70 cursor-pointer hover:text-accent items-center py-2 px-5 font-medium transition duration-300',
+              },
+            }}
+          />
         </span>
       </SignedIn>
       <SignedOut>

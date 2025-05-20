@@ -94,7 +94,7 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
       }
       className={cn(
         size === 'large' ? 'h-14 w-14 text-2xl' : 'h-10 w-10 text-base',
-        'bg-accent/80 flex items-center justify-center rounded-full text-black cursor-pointer',
+        'bg-accent/80 flex cursor-pointer items-center justify-center rounded-full text-black',
         'hover:bg-accent focus:ring-accent/50 transition duration-300 hover:scale-105 focus:ring-2 focus:outline-none'
       )}
       onClick={handleClick}
