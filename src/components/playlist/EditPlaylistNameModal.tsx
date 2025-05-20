@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
+import { API_BASE_URL } from '@/lib/constants';
+
 import {
   Dialog,
   DialogClose,
@@ -57,7 +61,7 @@ export const EditPlaylistNameModal: React.FC<EditPlaylistNameModalProps> = ({
     setEditError(null);
 
     try {
-      const response = await fetch('/api/user-playlists.json', {
+      const response = await fetch(`${API_BASE_URL}/user-playlists.json`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

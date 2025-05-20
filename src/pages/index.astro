@@ -4,6 +4,7 @@ import Layout from '@/layouts/Layout.astro';
 import Alert from '@/components/shared/Alert.astro';
 import MediaSection from '@/components/MediaSection.astro';
 import Greetings from '@/components/Greetings';
+import { API_BASE_URL } from '@/lib/constants';
 
 let albums: MediaItem[] = [];
 let playlists: MediaItem[] = [];
@@ -12,7 +13,7 @@ let fetchPlaylistsError: string | null = null;
 
 // 1. Fetch albums
 try {
-  const albumsResponse = await fetch(`${Astro.url.origin}/api/albums.json`);
+  const albumsResponse = await fetch(`${Astro.url.origin}${API_BASE_URL}/albums.json`);
   if (albumsResponse.ok) {
     albums = await albumsResponse.json();
   } else {
@@ -34,7 +35,7 @@ try {
 // 2. Fetch playlists
 try {
   const playlistsResponse = await fetch(
-    `${Astro.url.origin}/api/playlists.json`
+    `${Astro.url.origin}${API_BASE_URL}/playlists.json`
   );
   if (playlistsResponse.ok) {
     playlists = await playlistsResponse.json();

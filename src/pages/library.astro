@@ -4,6 +4,7 @@ import { CreatePlaylistModal } from '@/components/library/CreatePlaylistModal';
 import type { MediaItem } from '@/lib/types/MediaItem';
 import MediaSection from '@/components/MediaSection.astro';
 import Alert from '@/components/shared/Alert.astro';
+import { API_BASE_URL } from '@/lib/constants';
 
 const { userId: clerkUserId, sessionId } = Astro.locals.auth();
 
@@ -15,7 +16,7 @@ if (!clerkUserId || !sessionId) {
 }
 
 try {
-  const response = await fetch(`${Astro.url.origin}/api/user-playlists.json`, {
+  const response = await fetch(`${Astro.url.origin}${API_BASE_URL}/user-playlists.json`, {
     headers: Astro.request.headers,
   });
 

@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
+import { API_BASE_URL } from '@/lib/constants';
+
 import {
   Dialog,
   DialogClose,
@@ -40,7 +44,7 @@ export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
 
     try {
       const response = await fetch(
-        `/api/user-playlists.json?id=${playlistId}`,
+        `${API_BASE_URL}/user-playlists.json?id=${playlistId}`,
         {
           method: 'DELETE',
         }

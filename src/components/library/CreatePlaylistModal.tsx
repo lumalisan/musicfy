@@ -11,6 +11,8 @@ import {
 import type { Song } from '@/lib/types/Song';
 import { debounce } from '@/lib/utils/debounce';
 import { cn } from '@/lib/utils/cn';
+import { API_BASE_URL } from '@/lib/constants';
+
 import {
   Dialog,
   DialogClose,
@@ -56,7 +58,7 @@ export const CreatePlaylistModal = () => {
     setSongSearchError(null);
     try {
       const response = await fetch(
-        `/api/songs.json?q=${encodeURIComponent(query)}`
+        `${API_BASE_URL}/songs.json?q=${encodeURIComponent(query)}`
       );
       if (!response.ok) {
         const errorData = await response
@@ -106,7 +108,7 @@ export const CreatePlaylistModal = () => {
     setCreatePlaylistError(null);
 
     try {
-      const response = await fetch('/api/user-playlists.json', {
+      const response = await fetch(`${API_BASE_URL}/user-playlists.json`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

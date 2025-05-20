@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { usePlayerStore } from '@/store/playerStore';
 import { cn } from '@/lib/utils/cn';
+import { API_BASE_URL } from '@/lib/constants';
 
 interface Props {
   itemId: string;
@@ -39,7 +40,7 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
     } else {
       try {
         const response = await fetch(
-          `/api/item-details/${itemId}.json?type=${itemType}`
+          `${API_BASE_URL}/item-details/${itemId}.json?type=${itemType}`
         );
         if (!response.ok) {
           console.error(

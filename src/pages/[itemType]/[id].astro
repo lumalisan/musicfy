@@ -7,6 +7,7 @@ import type { Song } from '@/lib/types/Song';
 import { calculateTotalMinutes } from '@/lib/utils/calcTotalPlaylistMinutes';
 import Alert from '@/components/shared/Alert.astro';
 import PlaylistOptionsMenu from '@/components/playlist/PlaylistOptionsMenu';
+import { API_BASE_URL } from '@/lib/constants';
 
 export async function getStaticPaths() {
   return [];
@@ -29,7 +30,7 @@ let fetchError: string | null = null;
 if (itemType && itemId) {
   try {
     const response = await fetch(
-      `${Astro.url.origin}/api/item-details/${itemId}.json?type=${itemType}`
+      `${Astro.url.origin}${API_BASE_URL}/item-details/${itemId}.json?type=${itemType}`
     );
     if (!response.ok) {
       const errorJson = await response
@@ -139,7 +140,7 @@ const isPlaylistOwner =
             </div>
           </header>
 
-          <div class='flex items-center gap-4 justify-between px-4 md:px-6 pt-6 md:pt-8'>
+          <div class='flex items-center gap-4 justify-between md:justify-normal px-4 md:px-6 pt-6 md:pt-8'>
             {itemSongs && itemSongs.length > 0 && (
               <PlayButton
                 itemId={itemDetails.id}
