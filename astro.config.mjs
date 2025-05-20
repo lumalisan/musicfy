@@ -21,4 +21,6 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
+  site: 'https://chillmusicfy.netlify.app',
+  base: '/',
 });
