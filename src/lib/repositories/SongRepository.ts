@@ -1,6 +1,7 @@
 import BaseRepository from './BaseRepository';
 import { searchRepository } from './SearchRepository';
 import type { SongResult } from '../types/SearchResultItem';
+import { AppError, ErrorCode } from '../utils/errorHandling';
 
 export class SongRepository extends BaseRepository<SongResult> {
   constructor() {
@@ -28,10 +29,24 @@ export class SongRepository extends BaseRepository<SongResult> {
     if (!albumId) {
       return [];
     }
-    const response = await fetch(
-      `${this.baseUrl}.json?album_id=${encodeURIComponent(albumId)}`
-    );
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(
+        `${this.baseUrl}.json?album_id=${encodeURIComponent(albumId)}`
+      );
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      throw new AppError(
+        'A network error occurred. Please check your connection.',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
@@ -43,10 +58,24 @@ export class SongRepository extends BaseRepository<SongResult> {
     if (!artistId) {
       return [];
     }
-    const response = await fetch(
-      `${this.baseUrl}.json?artist_id=${encodeURIComponent(artistId)}`
-    );
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(
+        `${this.baseUrl}.json?artist_id=${encodeURIComponent(artistId)}`
+      );
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      throw new AppError(
+        'A network error occurred. Please check your connection.',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 }
 

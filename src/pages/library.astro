@@ -18,23 +18,35 @@ if (!clerkUserId || !sessionId) {
 }
 
 try {
-  const playlistResults: PlaylistResult[] = await playlistRepository.getUserPlaylists(Astro.url.origin.toString(), Astro.request.headers);
-  console.log('playlistResults', playlistResults)
-  playlists = playlistResults.map((p: PlaylistResult): MediaItem => ({
-    id: p.id,
-    title: p.title,
-    href: p.href,
-    coverArtUrl: p.coverArtUrl,
-    type: 'playlist' as const,
-    artists: p.artists ? p.artists : [],
-    color: p.color,
-  }));
+  const playlistResults: PlaylistResult[] =
+    await playlistRepository.getUserPlaylists(
+      Astro.url.origin.toString(),
+      Astro.request.headers
+    );
+  console.log('playlistResults', playlistResults);
+  playlists = playlistResults.map(
+    (p: PlaylistResult): MediaItem => ({
+      id: p.id,
+      title: p.title,
+      href: p.href,
+      coverArtUrl: p.coverArtUrl,
+      type: 'playlist' as const,
+      artists: p.artists ? p.artists : [],
+      color: p.color,
+    })
+  );
 } catch (error: any) {
   if (error instanceof AppError) {
-    console.error(`Error fetching user playlists (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+    console.error(
+      `Error fetching user playlists (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`,
+      error.details
+    );
     fetchError = `Could not load your playlists: ${error.message}`;
   } else {
-    console.error('Error fetching user playlists in library.astro:', error.message || error);
+    console.error(
+      'Error fetching user playlists in library.astro:',
+      error.message || error
+    );
     fetchError = 'Could not load your playlists. An unexpected error occurred.';
   }
 }

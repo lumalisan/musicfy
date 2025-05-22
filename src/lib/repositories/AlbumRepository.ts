@@ -1,6 +1,7 @@
 import BaseRepository from './BaseRepository';
 import { searchRepository } from './SearchRepository';
 import type { AlbumResult } from '../types/SearchResultItem';
+import { AppError, ErrorCode } from '../utils/errorHandling';
 
 export class AlbumRepository extends BaseRepository<AlbumResult> {
   constructor() {
@@ -24,8 +25,23 @@ export class AlbumRepository extends BaseRepository<AlbumResult> {
    * @returns Promise with an array of all albums
    */
   async getAll(origin: string): Promise<AlbumResult[]> {
-    const response = await fetch(`${origin}${this.baseUrl}.json`);
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(`${origin}${this.baseUrl}.json`);
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      // For generic errors (like network errors), wrap them in an AppError
+      throw new AppError(
+        'A network error occurred while fetching all albums. Please check your connection.',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
@@ -37,10 +53,25 @@ export class AlbumRepository extends BaseRepository<AlbumResult> {
     if (!artistId) {
       return [];
     }
-    const response = await fetch(
-      `${this.baseUrl}.json?artist_id=${encodeURIComponent(artistId)}`
-    );
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(
+        `${this.baseUrl}.json?artist_id=${encodeURIComponent(artistId)}`
+      );
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) {
+        throw error;
+      }
+      // For generic errors (like network errors), wrap them in an AppError
+      throw new AppError(
+        'A network error occurred while fetching albums by artist. Please check your connection.',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 import BaseRepository from './BaseRepository';
+import { AppError, ErrorCode } from '../utils/errorHandling';
 import type {
   SearchResult,
   SongResult,
@@ -53,8 +54,16 @@ export class SearchRepository extends BaseRepository<SearchResult> {
       const response = await fetch(`${this.baseUrl}.json?${params.toString()}`);
       return this.handleResponse(response);
     } catch (error) {
-      console.error('Search fetch error:', error);
-      throw error; 
+      if (error instanceof AppError) throw error;
+      // console.error('Search fetch error:', error); // Optional: keep for debugging if desired, but not essential for AppError
+      throw new AppError(
+        `Search failed for query "${query.trim()}"`,
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
     }
   }
 

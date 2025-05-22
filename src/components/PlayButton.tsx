@@ -60,7 +60,10 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
         }
       } catch (error: any) {
         if (error instanceof AppError) {
-          console.error(`Error fetching playback details for ${itemType} ${itemId} (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+          console.error(
+            `Error fetching playback details for ${itemType} ${itemId} (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`,
+            error.details
+          );
         } else {
           console.error(
             `Error fetching and playing ${itemType} with id ${itemId}:`,

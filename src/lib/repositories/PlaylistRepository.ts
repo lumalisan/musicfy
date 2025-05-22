@@ -2,6 +2,7 @@ import BaseRepository from './BaseRepository';
 import { searchRepository } from './SearchRepository';
 import type { PlaylistResult } from '../types/SearchResultItem';
 import type { ApiBatchResponse } from '../types/PlaylistSongsAPI';
+import { AppError, ErrorCode } from '../utils/errorHandling';
 
 export class PlaylistRepository extends BaseRepository<PlaylistResult> {
   constructor() {
@@ -25,19 +26,53 @@ export class PlaylistRepository extends BaseRepository<PlaylistResult> {
    * @param limit Optional limit of playlists to fetch
    * @returns Promise with an array of global playlists
    */
-  async getGlobalPlaylists(origin: string, limit: number = 50): Promise<PlaylistResult[]> {
+  async getGlobalPlaylists(
+    origin: string,
+    limit: number = 50
+  ): Promise<PlaylistResult[]> {
     // Fetches general playlists, not user-specific ones
-    const response = await fetch(`${origin}/api/playlists.json?limit=${limit}`);
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(
+        `${origin}/api/playlists.json?limit=${limit}`
+      );
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        'Failed to fetch global playlists',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
    * Get all user playlists
    * @returns Promise with an array of the current user's playlists
    */
-  async getUserPlaylists(origin: string, headers?: HeadersInit): Promise<PlaylistResult[]> {
-    const response = await fetch(`${origin}/api/user-playlists.json`, { headers });
-    return this.handleResponse(response);
+  async getUserPlaylists(
+    origin: string,
+    headers?: HeadersInit
+  ): Promise<PlaylistResult[]> {
+    try {
+      const response = await fetch(`${origin}/api/user-playlists.json`, {
+        headers,
+      });
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        'Failed to fetch user playlists',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
@@ -51,12 +86,24 @@ export class PlaylistRepository extends BaseRepository<PlaylistResult> {
     name: string,
     firstSongId: string
   ): Promise<PlaylistResult> {
-    const response = await fetch(`/api/user-playlists.json`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, firstSongId }),
-    });
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(`/api/user-playlists.json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, firstSongId }),
+      });
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        'Failed to create playlist',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
@@ -65,13 +112,26 @@ export class PlaylistRepository extends BaseRepository<PlaylistResult> {
    * @returns Promise that resolves to true if successful
    */
   async deletePlaylist(playlistId: string): Promise<boolean> {
-    const response = await fetch(
-      `/api/user-playlists.json?id=${encodeURIComponent(playlistId)}`,
-      {
-        method: 'DELETE',
-      }
-    );
-    return response.ok;
+    try {
+      const response = await fetch(
+        `/api/user-playlists.json?id=${encodeURIComponent(playlistId)}`,
+        {
+          method: 'DELETE',
+        }
+      );
+      return response.ok;
+    } catch (error) {
+      // For network errors, throw AppError. API errors (response not ok) are handled by returning false.
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        'Failed to delete playlist due to a network error',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
@@ -84,12 +144,24 @@ export class PlaylistRepository extends BaseRepository<PlaylistResult> {
     playlistId: string,
     songIds: string[]
   ): Promise<ApiBatchResponse> {
-    const response = await fetch(`/api/playlist-songs.json`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ playlistId, songIds }),
-    });
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(`/api/playlist-songs.json`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ playlistId, songIds }),
+      });
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        'Failed to add song(s) to playlist',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
@@ -102,14 +174,27 @@ export class PlaylistRepository extends BaseRepository<PlaylistResult> {
     playlistId: string,
     songId: string
   ): Promise<boolean> {
-    const response = await fetch(
-      `/api/playlist-songs.json?playlistId=${encodeURIComponent(playlistId)}&songId=${encodeURIComponent(songId)}`,
-      {
-        method: 'DELETE',
-      }
-    );
-    // DELETE should return 204 No Content on success
-    return response.status === 204;
+    try {
+      const response = await fetch(
+        `/api/playlist-songs.json?playlistId=${encodeURIComponent(playlistId)}&songId=${encodeURIComponent(songId)}`,
+        {
+          method: 'DELETE',
+        }
+      );
+      // DELETE should return 204 No Content on success
+      return response.status === 204;
+    } catch (error) {
+      // For network errors, throw AppError. API errors (status not 204) are handled by returning false.
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        'Failed to remove song from playlist due to a network error',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 
   /**
@@ -134,12 +219,24 @@ export class PlaylistRepository extends BaseRepository<PlaylistResult> {
       payload.color = color;
     }
 
-    const response = await fetch(`/api/user-playlists.json`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    });
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(`/api/user-playlists.json`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        'Failed to update playlist',
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 }
 

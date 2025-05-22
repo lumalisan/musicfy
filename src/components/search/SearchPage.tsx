@@ -35,11 +35,18 @@ export const SearchPage = () => {
       setErrorMessage('');
     } catch (error: any) {
       if (error instanceof AppError) {
-        console.error(`Search error (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
-        setErrorMessage(error.message || 'An error occurred during the search.');
+        console.error(
+          `Search error (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`,
+          error.details
+        );
+        setErrorMessage(
+          error.message || 'An error occurred during the search.'
+        );
       } else {
         console.error('Search error:', error?.message || error);
-        setErrorMessage('An unexpected error occurred while searching. Please try again later.');
+        setErrorMessage(
+          'An unexpected error occurred while searching. Please try again later.'
+        );
       }
     } finally {
       setIsLoading(false);

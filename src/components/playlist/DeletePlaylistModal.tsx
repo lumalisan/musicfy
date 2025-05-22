@@ -55,11 +55,18 @@ export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
       }
     } catch (error: any) {
       if (error instanceof AppError) {
-        console.error(`Error deleting playlist ${playlistId} (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
-        setDeleteError(error.message || 'Failed to delete playlist due to a server error.');
+        console.error(
+          `Error deleting playlist ${playlistId} (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`,
+          error.details
+        );
+        setDeleteError(
+          error.message || 'Failed to delete playlist due to a server error.'
+        );
       } else {
         console.error('Error deleting playlist:', error?.message || error);
-        setDeleteError('An unexpected error occurred while trying to delete the playlist.');
+        setDeleteError(
+          'An unexpected error occurred while trying to delete the playlist.'
+        );
       }
     } finally {
       setIsDeleting(false);

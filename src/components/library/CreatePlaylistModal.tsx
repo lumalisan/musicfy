@@ -74,11 +74,18 @@ export const CreatePlaylistModal = () => {
       setSearchedSongs(results.map(mapSongResultToSong));
     } catch (err: any) {
       if (err instanceof AppError) {
-        console.error(`Error searching songs (Code: ${err.code}, Status: ${err.statusCode}): ${err.message}`, err.details);
-        setSongSearchError(err.message || 'Failed to fetch songs due to a server error.');
+        console.error(
+          `Error searching songs (Code: ${err.code}, Status: ${err.statusCode}): ${err.message}`,
+          err.details
+        );
+        setSongSearchError(
+          err.message || 'Failed to fetch songs due to a server error.'
+        );
       } else {
         console.error('Error searching songs:', err?.message || err);
-        setSongSearchError('An unexpected error occurred while fetching songs.');
+        setSongSearchError(
+          'An unexpected error occurred while fetching songs.'
+        );
       }
       setSearchedSongs([]);
     } finally {
@@ -132,11 +139,18 @@ export const CreatePlaylistModal = () => {
       }
     } catch (error: any) {
       if (error instanceof AppError) {
-        console.error(`Error creating playlist (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
-        setCreatePlaylistError(error.message || 'Failed to create playlist due to a server error.');
+        console.error(
+          `Error creating playlist (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`,
+          error.details
+        );
+        setCreatePlaylistError(
+          error.message || 'Failed to create playlist due to a server error.'
+        );
       } else {
         console.error('Error creating playlist:', error?.message || error);
-        setCreatePlaylistError('An unexpected error occurred while trying to create the playlist.');
+        setCreatePlaylistError(
+          'An unexpected error occurred while trying to create the playlist.'
+        );
       }
     } finally {
       setIsCreatingPlaylist(false);

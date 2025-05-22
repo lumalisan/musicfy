@@ -1,5 +1,6 @@
 import BaseRepository from './BaseRepository';
 import type { Song } from '../types/Song';
+import { AppError, ErrorCode } from '../utils/errorHandling';
 
 export interface PlaybackItemInfo {
   id: string;
@@ -27,11 +28,23 @@ export class PlaybackRepository extends BaseRepository<PlaybackDetailsResponse> 
     itemType: 'playlist' | 'album',
     headers?: HeadersInit
   ): Promise<PlaybackDetailsResponse> {
-    const response = await fetch(
-      `${origin}${this.baseUrl}/${itemId}.json?type=${encodeURIComponent(itemType)}`,
-      { headers }
-    );
-    return this.handleResponse(response);
+    try {
+      const response = await fetch(
+        `${origin}${this.baseUrl}/${itemId}.json?type=${encodeURIComponent(itemType)}`,
+        { headers }
+      );
+      return this.handleResponse(response);
+    } catch (error) {
+      if (error instanceof AppError) throw error;
+      throw new AppError(
+        `Failed to fetch playback details for ${itemType} ${itemId}`,
+        ErrorCode.NETWORK_ERROR,
+        undefined,
+        {
+          originalError: error instanceof Error ? error.message : String(error),
+        }
+      );
+    }
   }
 }
 

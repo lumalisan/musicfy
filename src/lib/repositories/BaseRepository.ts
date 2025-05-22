@@ -22,7 +22,9 @@ export abstract class BaseRepository<T> implements IRepository<T> {
         errorData = await response.json();
       } catch (e) {
         // If parsing JSON fails, use a generic error message based on status
-        errorData = { message: `API Error: ${response.statusText || response.status}` };
+        errorData = {
+          message: `API Error: ${response.statusText || response.status}`,
+        };
       }
 
       let errorCode: ErrorCode;
@@ -48,7 +50,9 @@ export abstract class BaseRepository<T> implements IRepository<T> {
           break;
       }
       throw new AppError(
-        errorData.message || errorData.error || 'An unexpected API error occurred',
+        errorData.message ||
+          errorData.error ||
+          'An unexpected API error occurred',
         errorCode,
         response.status,
         errorData.details || errorData
@@ -92,9 +96,7 @@ export abstract class BaseRepository<T> implements IRepository<T> {
     const response = await fetch(`${this.baseUrl}/${id}`, {
       method: 'DELETE',
     });
-    if (response.status === 404) return false;
-    await this.handleResponse(response);
-    return true;
+    return response.ok;
   }
 }
 

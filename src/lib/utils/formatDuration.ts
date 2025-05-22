@@ -19,11 +19,28 @@ export const formatDuration = (seconds: number): string => {
  * @returns Duration in seconds
  */
 export const parseDuration = (durationString: string): number => {
-  if (!durationString) return 0;
+  if (!durationString || typeof durationString !== 'string') {
+    return 0;
+  }
 
-  const [minutes, seconds] = durationString.split(':').map(Number);
+  const parts = durationString.split(':');
 
-  if (isNaN(minutes) || isNaN(seconds)) return 0;
+  if (parts.length !== 2) {
+    return 0;
+  }
+
+  const minutes = parseInt(parts[0], 10);
+  const seconds = parseInt(parts[1], 10);
+
+  if (
+    isNaN(minutes) ||
+    isNaN(seconds) ||
+    minutes < 0 ||
+    seconds < 0 ||
+    seconds >= 60
+  ) {
+    return 0;
+  }
 
   return minutes * 60 + seconds;
 };
