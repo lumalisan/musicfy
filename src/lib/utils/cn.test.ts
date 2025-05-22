@@ -1,0 +1,30 @@
+import { cn } from './cn';
+
+describe('cn utility', () => {
+  it('should combine class names', () => {
+    expect(cn('bg-red-500', 'text-white')).toBe('bg-red-500 text-white');
+  });
+
+  it('should handle conditional classes', () => {
+    const isActive = true;
+    const isDisabled = false;
+    expect(cn('base', isActive && 'active', isDisabled && 'disabled')).toBe(
+      'base active'
+    );
+  });
+
+  it('should merge tailwind classes correctly (basic check)', () => {
+    expect(cn('p-4 p-2')).toBe('p-2');
+    expect(cn('bg-red-500 bg-blue-500')).toBe('bg-blue-500');
+  });
+
+  it('should handle various input types', () => {
+    expect(
+      cn('foo', null, 'bar', undefined, { baz: true, bat: false }, ['qux'])
+    ).toBe('foo bar baz qux');
+  });
+
+  it('should return an empty string for no inputs', () => {
+    expect(cn()).toBe('');
+  });
+});

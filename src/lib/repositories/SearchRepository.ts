@@ -52,18 +52,34 @@ export class SearchRepository extends BaseRepository<SearchResult> {
 
     try {
       const response = await fetch(`${this.baseUrl}.json?${params.toString()}`);
-      return this.handleResponse(response);
-    } catch (error) {
-      if (error instanceof AppError) throw error;
-      // console.error('Search fetch error:', error); // Optional: keep for debugging if desired, but not essential for AppError
-      throw new AppError(
-        `Search failed for query "${query.trim()}"`,
-        ErrorCode.NETWORK_ERROR,
-        undefined,
-        {
-          originalError: error instanceof Error ? error.message : String(error),
-        }
-      );
+      return await this.handleResponse(response);
+    } catch (error: unknown) {
+      // Type guard to check if the error has the structure of an AppError or similar
+      const isAppErrorLike = (
+        e: any
+      ): e is { name: string; code: any; message: string } => {
+        return (
+          e &&
+          typeof e.name === 'string' &&
+          typeof e.code !== 'undefined' &&
+          typeof e.message === 'string'
+        );
+      };
+
+      if (isAppErrorLike(error) && error.name === 'AppError') {
+        // If it's already an AppError (or looks like one), re-throw it
+        throw error;
+      } else {
+        // For other errors, wrap in a new AppError
+        const originalErrorMessage =
+          error instanceof Error ? error.message : 'An unknown error occurred';
+        throw new AppError(
+          `Search failed for query "${query.trim()}"`,
+          ErrorCode.UNEXPECTED_ERROR,
+          undefined,
+          { originalError: originalErrorMessage }
+        );
+      }
     }
   }
 
@@ -134,6 +150,7 @@ export class SearchRepository extends BaseRepository<SearchResult> {
       query,
       type: 'all',
       limit: limitPerType,
+      offset: 0,
     });
   }
 }

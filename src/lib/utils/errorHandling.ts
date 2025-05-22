@@ -28,6 +28,7 @@ export class AppError extends Error {
   ) {
     super(message);
     this.name = 'AppError';
+    Object.setPrototypeOf(this, AppError.prototype);
 
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, AppError);
