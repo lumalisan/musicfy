@@ -32,8 +32,6 @@ export class DefaultPlayerControlService implements PlayerControlService {
         ...currentMusic,
         song: songsQueue[currentIndex + 1],
       });
-    } else {
-      console.log("handleNext: It's already the last song in the queue.");
     }
   }
 
@@ -62,8 +60,6 @@ export class DefaultPlayerControlService implements PlayerControlService {
         ...currentMusic,
         song: songsQueue[currentIndex - 1],
       });
-    } else {
-      console.log("handlePrevious: It's already the first song in the queue.");
     }
   }
 

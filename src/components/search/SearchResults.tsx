@@ -8,12 +8,15 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import { formatDuration } from '@/lib/utils/formatDuration';
-import { cn } from '@/lib/utils/cn';
 import { usePlayerStore } from '@/store/playerStore';
-import type { SearchResult as SearchResultType } from '@/lib/types/SearchResultItem';
+import type {
+  SearchResult as SearchResultType,
+  SongResult,
+} from '@/lib/types/SearchResultItem';
 import type { Song } from '@/lib/types/Song';
 
 import { LoadingSearch } from '../shared/LoadingSearch';
+import { SearchResultSection } from './SearchResultSection';
 
 interface SearchResultsProps {
   results: SearchResultType;
@@ -44,7 +47,7 @@ export const SearchResults = ({
         const playerSong: Song = {
           id: song.id,
           title: song.title,
-          artists: [song.artist],
+          artists: song.artists,
           album: song.album || null,
           duration: song.duration,
           image: song.image,
@@ -59,7 +62,7 @@ export const SearchResults = ({
             type: 'album',
             name: song.title,
             coverArtUrl: song.image,
-            artists: [song.artist],
+            artists: song.artists,
             color: song.color,
           },
           songIndex: 0,
@@ -113,7 +116,7 @@ export const SearchResults = ({
           isSong
           renderItem={(item) => (
             <div
-              onClick={(e) => handlePlaySong(item, e)}
+              onClick={(e) => handlePlaySong(item as SongResult, e)}
               className='flex w-full items-center gap-4 text-left transition-colors'
             >
               {item.image ? (
@@ -130,7 +133,7 @@ export const SearchResults = ({
               <div className='min-w-0 flex-1'>
                 <h3 className='truncate font-medium'>{item.title}</h3>
                 <p className='text-accent/70 truncate text-sm'>
-                  {item.artist} • {item.album}
+                  {item.artists[0]} • {item.album}
                 </p>
               </div>
               <div className='flex items-center gap-2'>
@@ -171,7 +174,9 @@ export const SearchResults = ({
                 <h3 className='group-hover:text-accent truncate font-medium'>
                   {item.title}
                 </h3>
-                <p className='text-accent/70 truncate text-xs'>{item.artist}</p>
+                <p className='text-accent/70 truncate text-xs'>
+                  {item.artists[0]}
+                </p>
               </div>
             </a>
           )}
@@ -218,51 +223,5 @@ export const SearchResults = ({
         />
       )}
     </div>
-  );
-};
-
-interface SearchResultSectionProps<T> {
-  title: string;
-  icon: any;
-  items: T[];
-  isSong?: boolean;
-  renderItem: (item: T) => React.ReactNode;
-}
-
-const SearchResultSection = <T,>({
-  title,
-  icon,
-  items,
-  isSong,
-  renderItem,
-}: SearchResultSectionProps<T>) => {
-  if (items.length === 0) return null;
-
-  return (
-    <section>
-      <div className='mb-4 flex items-center gap-2'>
-        <FontAwesomeIcon icon={icon} className='text-accent' />
-        <h2 className='text-xl font-bold'>{title}</h2>
-        <span className='bg-accent/20 text-accent ml-2 rounded-full px-2 py-0.5 text-xs'>
-          {items.length}
-        </span>
-      </div>
-
-      <div
-        className={cn(
-          'grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6',
-          isSong && 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-        )}
-      >
-        {items.map((item, index) => (
-          <article
-            key={index}
-            className='group p-2 cursor-pointer hover:bg-secondary bg-secondary/30 relative w-full rounded-md shadow-lg transition-all duration-300 hover:shadow-xl'
-          >
-            {renderItem(item)}
-          </article>
-        ))}
-      </div>
-    </section>
   );
 };

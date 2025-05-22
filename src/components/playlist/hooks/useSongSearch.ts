@@ -1,7 +1,7 @@
 import { useState, useCallback, type ChangeEvent } from 'react';
 import { debounce } from '@/lib/utils/debounce';
 import type { Song } from '@/lib/types/Song';
-import { API_BASE_URL } from '@/lib/constants';
+import songRepository from '@/lib/repositories/SongRepository';
 
 export function useSongSearch() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -18,19 +18,17 @@ export function useSongSearch() {
     setIsSearching(true);
     setSearchError(null);
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/songs.json?q=${encodeURIComponent(query)}`
-      );
-      if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: 'Failed to parse error response' }));
-        throw new Error(
-          errorData.message || `Failed to fetch songs: ${response.statusText}`
-        );
-      }
-      const data: Song[] = await response.json();
-      setSearchResults(data);
+      const songResults = await songRepository.search(query);
+      const songs: Song[] = songResults.map((sr) => ({
+        id: sr.id,
+        title: sr.title,
+        image: sr.image,
+        artists: sr.artists,
+        album: sr.album,
+        duration: sr.duration,
+        url: sr.url,
+      }));
+      setSearchResults(songs);
     } catch (err: any) {
       console.error('Song search error:', err);
       setSearchError(

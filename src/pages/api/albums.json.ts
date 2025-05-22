@@ -2,22 +2,29 @@ import type { APIRoute } from 'astro';
 import { supabaseAdmin } from '@/lib/db/supabase';
 import type { MediaItem } from '@/lib/types/MediaItem';
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (context) => {
   try {
     // Get all albums from the database
-    const { data: rawAlbums, error } = await supabaseAdmin
-      .from('albums')
-      .select(
+    const artistId = context.url.searchParams.get('artist_id');
+
+    let query = supabaseAdmin.from('albums').select(
+      `
+          id,
+          title,
+          cover_art_url,
+          color,
+          release_date,
+          artists!inner(id, name) 
         `
-                id,
-                title,
-                cover_art_url,
-                color,
-                release_date,
-                artists (name)
-            `
-      )
-      .order('release_date', { ascending: false });
+    );
+
+    if (artistId) {
+      query = query.eq('artists.id', artistId);
+    }
+
+    query = query.order('release_date', { ascending: false });
+
+    const { data: rawAlbums, error } = await query;
 
     if (error) {
       return new Response(
@@ -34,8 +41,12 @@ export const GET: APIRoute = async () => {
 
     const albums: MediaItem[] = (rawAlbums || []).map((album) => {
       let albumArtists: string[] = ['Unknown Artist'];
-      if (album.artists) {
-        albumArtists = [(album.artists as any).name].filter(Boolean);
+      if (album.artists && (album.artists as any).name) {
+        albumArtists = [(album.artists as any).name];
+      } else if (Array.isArray(album.artists) && album.artists.length > 0) {
+        albumArtists = album.artists
+          .map((artist: any) => artist.name)
+          .filter(Boolean);
       }
       if (albumArtists.length === 0) albumArtists = ['Unknown Artist'];
 

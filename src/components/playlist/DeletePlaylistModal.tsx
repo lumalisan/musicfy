@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-import { API_BASE_URL } from '@/lib/constants';
+import playlistRepository from '@/lib/repositories/PlaylistRepository';
 
 import {
   Dialog,
@@ -43,22 +43,16 @@ export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
     setDeleteError(null);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/user-playlists.json?id=${playlistId}`,
-        {
-          method: 'DELETE',
-        }
-      );
-      if (response.ok) {
+      const success = await playlistRepository.deletePlaylist(playlistId);
+      if (success) {
         onOpenChange(false);
         onActionComplete();
       } else {
-        const errorData = await response
-          .json()
-          .catch(() => ({ message: 'Error deleting playlist.' }));
-        setDeleteError(errorData.message || 'Failed to delete playlist.');
+        setDeleteError(
+          'Failed to delete playlist. The server denied the request or an error occurred.'
+        );
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting playlist:', error);
       setDeleteError('An unexpected error occurred.');
     } finally {

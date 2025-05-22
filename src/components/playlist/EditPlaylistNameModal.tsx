@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-import { API_BASE_URL } from '@/lib/constants';
+import playlistRepository from '@/lib/repositories/PlaylistRepository';
 
 import {
   Dialog,
@@ -19,7 +19,7 @@ interface EditPlaylistNameModalProps {
   onOpenChange: (isOpen: boolean) => void;
   playlistId: string;
   currentName?: string;
-  coverArtUrl?: string;
+  coverArtUrl: string;
   color?: string;
   onActionComplete: () => void;
 }
@@ -62,27 +62,15 @@ export const EditPlaylistNameModal: React.FC<EditPlaylistNameModalProps> = ({
       setEditError(null);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/user-playlists.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            playlistId,
-            name: editingPlaylistName.trim(),
-            coverArtUrl,
-            color,
-          }),
-        });
-
-        if (response.ok) {
-          onOpenChange(false);
-          onActionComplete();
-        } else {
-          const errorData = await response
-            .json()
-            .catch(() => ({ message: 'Error updating playlist name.' }));
-          setEditError(errorData.message || 'Failed to update playlist name.');
-        }
-      } catch (error) {
+        await playlistRepository.updatePlaylist(
+          playlistId,
+          editingPlaylistName.trim(),
+          coverArtUrl,
+          color
+        );
+        onOpenChange(false);
+        onActionComplete();
+      } catch (error: any) {
         console.error('Error updating playlist name:', error);
         setEditError('An unexpected error occurred.');
       } finally {

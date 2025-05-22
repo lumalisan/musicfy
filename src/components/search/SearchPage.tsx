@@ -6,7 +6,7 @@ import { SearchResults } from './SearchResults';
 import type { SearchResult } from '@/lib/types/SearchResultItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import { API_BASE_URL } from '@/lib/constants';
+import searchRepository from '@/lib/repositories/SearchRepository';
 
 const initialResults: SearchResult = {
   songs: [],
@@ -20,7 +20,6 @@ export const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<SearchResult>(initialResults);
 
-  // Handle search with debounce
   const handleSearch = useCallback(async (query: string) => {
     if (!query.trim()) {
       setResults(initialResults);
@@ -30,18 +29,10 @@ export const SearchPage = () => {
     setIsLoading(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/search.json?q=${encodeURIComponent(query)}&type=all`
-      );
-
-      if (!response.ok) {
-        throw new Error('Search failed');
-      }
-
-      const data = await response.json();
+      const data = await searchRepository.searchAll(query.trim());
       setResults(data);
+      setErrorMessage('');
     } catch (error) {
-      console.error('Search error:', error);
       setErrorMessage(
         'An error occurred while searching. Please try again later.'
       );

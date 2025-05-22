@@ -254,3 +254,178 @@ export const POST: APIRoute = async (context: APIContext) => {
     );
   }
 };
+
+// Remove a song from a playlist
+export const DELETE: APIRoute = async (context: APIContext) => {
+  const { userId: clerkUserId } = context.locals.auth();
+
+  if (!clerkUserId) {
+    return new Response(
+      JSON.stringify({ error: 'Unauthorised. User must be logged in.' }),
+      {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+
+  try {
+    const playlistId = context.url.searchParams.get('playlistId');
+    const songId = context.url.searchParams.get('songId');
+
+    if (!playlistId || typeof playlistId !== 'string') {
+      return new Response(
+        JSON.stringify({
+          error: 'playlistId (string) query parameter is required.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    if (!songId || typeof songId !== 'string') {
+      return new Response(
+        JSON.stringify({
+          error: 'songId (string) query parameter is required.',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // 1. Get internal user ID
+    const { data: userData, error: userError } = await supabaseAdmin
+      .from('users')
+      .select('id')
+      .eq('clerk_user_id', clerkUserId)
+      .single();
+
+    if (userError || !userData) {
+      console.error('Error finding user:', userError);
+      return new Response(JSON.stringify({ error: 'User not found.' }), {
+        status: userError?.code === 'PGRST116' ? 404 : 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+    const internalUserId = userData.id;
+
+    // 2. Verify playlist ownership
+    const { data: playlistData, error: playlistError } = await supabaseAdmin
+      .from('playlists')
+      .select('user_id')
+      .eq('id', playlistId)
+      .single();
+
+    if (playlistError || !playlistData) {
+      console.error(
+        'Error fetching playlist or playlist not found:',
+        playlistError
+      );
+      return new Response(JSON.stringify({ error: 'Playlist not found.' }), {
+        status: playlistError?.code === 'PGRST116' ? 404 : 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (playlistData.user_id !== internalUserId) {
+      return new Response(
+        JSON.stringify({ error: 'Forbidden. You do not own this playlist.' }),
+        {
+          status: 403,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // 3. Get the song's order in the playlist before deleting
+    const { data: songToRemoveData, error: fetchSongError } =
+      await supabaseAdmin
+        .from('playlist_songs')
+        .select('order_in_playlist')
+        .eq('playlist_id', playlistId)
+        .eq('song_id', songId)
+        .single();
+
+    if (fetchSongError || !songToRemoveData) {
+      console.error(
+        'Error fetching song to remove or song not in playlist:',
+        fetchSongError
+      );
+      return new Response(
+        JSON.stringify({ error: 'Song not found in this playlist.' }),
+        {
+          status: 404, // PGRST116 would mean "no rows found"
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+    const deletedSongOrder = songToRemoveData.order_in_playlist;
+
+    // 4. Delete the song from the playlist
+    const { error: deleteError, count: deletedCount } = await supabaseAdmin
+      .from('playlist_songs')
+      .delete()
+      .eq('playlist_id', playlistId)
+      .eq('song_id', songId);
+
+    if (deleteError) {
+      console.error('Error deleting song from playlist_songs:', deleteError);
+      return new Response(
+        JSON.stringify({
+          error: 'Failed to remove song from playlist.',
+          details: deleteError.message,
+        }),
+        {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    if (deletedCount === 0) {
+      return new Response(
+        JSON.stringify({
+          error: 'Song not found in playlist or already removed.',
+        }),
+        {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // 5. Update order of subsequent songs by calling the RPC function
+    const { error: rpcError } = await supabaseAdmin.rpc(
+      'decrement_playlist_song_orders_after_delete',
+      {
+        p_playlist_id: playlistId,
+        p_deleted_song_order: deletedSongOrder,
+      }
+    );
+
+    if (rpcError) {
+      console.error(
+        'Error calling decrement_playlist_song_orders_after_delete RPC:',
+        rpcError
+      );
+    }
+
+    return new Response(null, { status: 204 });
+  } catch (error: any) {
+    console.error('Server error removing song from playlist:', error);
+    return new Response(
+      JSON.stringify({
+        error: 'Internal server error.',
+        details: error.message,
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+};

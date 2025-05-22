@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { usePlayerStore } from '@/store/playerStore';
 import { cn } from '@/lib/utils/cn';
-import { API_BASE_URL } from '@/lib/constants';
+import playbackRepository from '@/lib/repositories/PlaybackRepository';
 
 interface Props {
   itemId: string;
@@ -39,33 +39,14 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
       setIsPlaying(true);
     } else {
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/item-details/${itemId}.json?type=${itemType}`
-        );
-        if (!response.ok) {
-          console.error(
-            `Failed to fetch ${itemType} info for ID ${itemId}: ${response.status} ${response.statusText}`
-          );
-          const errorBody = await response.text();
-          console.error('Error body:', errorBody);
-          throw new Error(
-            `Failed to fetch ${itemType} info: ${response.statusText}`
-          );
-        }
-
-        const {
-          songs,
-          itemDetails: { artists, color, coverArtUrl, id, name, type },
-        } = await response.json();
+        const { songs, itemDetails } =
+          await playbackRepository.getPlaybackDetails(itemId, itemType);
 
         if (songs && songs.length > 0) {
           const currentItemInfo = {
-            id,
-            type,
-            artists,
-            color,
-            coverArtUrl,
-            name,
+            ...itemDetails,
+            artists:
+              itemDetails.artists === null ? undefined : itemDetails.artists,
           };
 
           loadAndPlayMusic({

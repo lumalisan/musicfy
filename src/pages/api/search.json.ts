@@ -7,6 +7,16 @@ export const GET: APIRoute = async ({ request }) => {
     const url = new URL(request.url);
     const query = url.searchParams.get('q')?.trim() || '';
     const type = url.searchParams.get('type') || 'all';
+    const limitParam = url.searchParams.get('limit');
+    const offsetParam = url.searchParams.get('offset');
+
+    // Default limit to 10 if not specified or invalid, cap at 50 for safety
+    let limit = parseInt(limitParam || '10', 10);
+    if (isNaN(limit) || limit <= 0) limit = 10;
+    if (limit > 50) limit = 50;
+
+    let offset = parseInt(offsetParam || '0', 10);
+    if (isNaN(offset) || offset < 0) offset = 0;
 
     if (!query) {
       return new Response(
@@ -23,7 +33,7 @@ export const GET: APIRoute = async ({ request }) => {
           .from('songs')
           .select('*, artists(name), albums(title, cover_art_url, color)')
           .ilike('title', `%${query}%`)
-          .limit(10)
+          .range(offset, offset + limit - 1)
       );
     } else {
       searchPromises.push(Promise.resolve({ data: [], error: null }));
@@ -35,7 +45,7 @@ export const GET: APIRoute = async ({ request }) => {
           .from('albums')
           .select('*, artists(name)')
           .ilike('title', `%${query}%`)
-          .limit(10)
+          .range(offset, offset + limit - 1)
       );
     } else {
       searchPromises.push(Promise.resolve({ data: [], error: null }));
@@ -47,7 +57,7 @@ export const GET: APIRoute = async ({ request }) => {
           .from('playlists')
           .select('*')
           .ilike('name', `%${query}%`)
-          .limit(10)
+          .range(offset, offset + limit - 1)
       );
     } else {
       searchPromises.push(Promise.resolve({ data: [], error: null }));
@@ -73,7 +83,7 @@ export const GET: APIRoute = async ({ request }) => {
         id: song.id,
         type: 'song',
         title: song.title,
-        artist: song.artists?.name || 'Unknown Artist',
+        artists: [song.artists?.name || 'Unknown Artist'],
         album: song.albums?.title || 'Unknown Album',
         image: song.albums?.cover_art_url || null,
         duration: song.duration_seconds || 0,
@@ -84,7 +94,7 @@ export const GET: APIRoute = async ({ request }) => {
         id: album.id,
         type: 'album',
         title: album.title,
-        artist: album.artists?.name || 'Unknown Artist',
+        artists: [album.artists?.name || 'Unknown Artist'],
         image: album.cover_art_url || null,
         color: album.color || null,
         year: album.release_year || null,

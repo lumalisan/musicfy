@@ -22,7 +22,7 @@ interface PlaylistOptionsMenuProps {
   playlistId: string;
   itemType: string;
   currentName?: string;
-  coverArtUrl?: string;
+  coverArtUrl: string;
   color?: string;
   isOwner: boolean;
   onActionComplete?: () => void;

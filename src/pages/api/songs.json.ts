@@ -3,16 +3,59 @@ import { supabaseAdmin } from '@/lib/db/supabase';
 import type { Song } from '@/lib/types/Song';
 
 export const GET: APIRoute = async (context: APIContext) => {
+  const albumId = context.url.searchParams.get('album_id');
+  const artistId = context.url.searchParams.get('artist_id');
   const searchQuery = context.url.searchParams.get('q');
 
-  if (
-    !searchQuery ||
-    typeof searchQuery !== 'string' ||
-    searchQuery.trim() === ''
-  ) {
+  let query = supabaseAdmin.from('songs').select(
+    `
+      id,
+      title,
+      duration_seconds,
+      file_url,
+      album:albums (
+        id,
+        title,
+        cover_art_url
+      ),
+      artist:artists (
+        id,
+        name
+      )
+    `
+  );
+
+  if (albumId) {
+    if (typeof albumId !== 'string' || albumId.trim() === '') {
+      return new Response(
+        JSON.stringify({ error: 'album_id must be a non-empty string.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    query = query.eq('album_id', albumId);
+  } else if (artistId) {
+    if (typeof artistId !== 'string' || artistId.trim() === '') {
+      return new Response(
+        JSON.stringify({ error: 'artist_id must be a non-empty string.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    query = query.eq('artist_id', artistId);
+  } else if (searchQuery) {
+    if (typeof searchQuery !== 'string' || searchQuery.trim() === '') {
+      return new Response(
+        JSON.stringify({
+          error:
+            'Search query parameter "q" must be a non-empty string if provided.',
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    query = query.ilike('title', `%${searchQuery.trim()}%`);
+  } else {
     return new Response(
       JSON.stringify({
-        error: 'Search query parameter "q" is required and cannot be empty.',
+        error: 'A filter (album_id, artist_id, or q) is required.',
       }),
       {
         status: 400,
@@ -22,28 +65,7 @@ export const GET: APIRoute = async (context: APIContext) => {
   }
 
   try {
-    // Query the 'songs' table for titles matching the search query.
-    const { data: songs, error } = await supabaseAdmin
-      .from('songs')
-      .select(
-        `
-        id,
-        title,
-        duration_seconds,
-        file_url,
-        album:albums (
-          id,
-          title,
-          cover_art_url
-        ),
-        artist:artists (
-          id,
-          name
-        )
-      `
-      )
-      .ilike('title', `%${searchQuery.trim()}%`)
-      .limit(20);
+    const { data: songs, error } = await query.limit(50);
 
     if (error) {
       return new Response(

@@ -9,9 +9,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import type { Song } from '@/lib/types/Song';
+import type { SongResult } from '@/lib/types/SearchResultItem';
+import songRepository from '@/lib/repositories/SongRepository';
+import playlistRepository from '@/lib/repositories/PlaylistRepository';
 import { debounce } from '@/lib/utils/debounce';
 import { cn } from '@/lib/utils/cn';
-import { API_BASE_URL } from '@/lib/constants';
 
 import {
   Dialog,
@@ -56,20 +58,20 @@ export const CreatePlaylistModal = () => {
     }
     setIsSearchingSongs(true);
     setSongSearchError(null);
+
+    const mapSongResultToSong = (songResult: SongResult): Song => ({
+      id: songResult.id,
+      title: songResult.title,
+      image: songResult.image,
+      artists: songResult.artists,
+      album: songResult.album,
+      duration: songResult.duration,
+      url: songResult.url,
+    });
+
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/songs.json?q=${encodeURIComponent(query)}`
-      );
-      if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ error: 'Failed to parse error response from API' }));
-        throw new Error(
-          errorData.error || `Failed to fetch songs: ${response.statusText}`
-        );
-      }
-      const data: Song[] = await response.json();
-      setSearchedSongs(data);
+      const results: SongResult[] = await songRepository.search(query);
+      setSearchedSongs(results.map(mapSongResultToSong));
     } catch (err: any) {
       console.error(err);
       setSongSearchError(
@@ -108,21 +110,10 @@ export const CreatePlaylistModal = () => {
     setCreatePlaylistError(null);
 
     try {
-      const response = await fetch(`${API_BASE_URL}/user-playlists.json`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newPlaylistName,
-          firstSongId: selectedSongId,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response
-          .json()
-          .catch(() => ({ error: 'Failed to parse error response' }));
-        throw new Error(errorData.error || 'Failed to create playlist.');
-      }
+      await playlistRepository.createPlaylist(
+        newPlaylistName.trim(),
+        selectedSongId!
+      );
 
       resetModalStateAndClose();
 
