@@ -11,7 +11,7 @@ import {
 jest.mock('@/store/playerStore');
 jest.mock('../shared/Slider', () => ({
   Slider: jest.fn(
-    ({ onValueChange, value, max, min, step, defaultValue, className }) => (
+    ({ onValueChange, value, max, min, step, defaultValue }) => (
       <div data-testid='mock-slider'>
         <input
           type='range'

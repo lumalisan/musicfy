@@ -152,7 +152,7 @@ describe('AlbumRepository', () => {
         .fn()
         .mockRejectedValue(apiError);
 
-      await expect(albumRepository.getAll(origin)).rejects.toThrowError(
+      await expect(albumRepository.getAll(origin)).rejects.toThrow(
         apiError
       );
       expect(global.fetch).toHaveBeenCalledWith(`${origin}${baseUrl}.json`);
@@ -165,7 +165,7 @@ describe('AlbumRepository', () => {
       const networkError = new Error('Network failed');
       (global.fetch as jest.Mock).mockRejectedValueOnce(networkError);
 
-      await expect(albumRepository.getAll(origin)).rejects.toThrowError(
+      await expect(albumRepository.getAll(origin)).rejects.toThrow(
         AppError
       );
       expect(global.fetch).toHaveBeenCalledWith(`${origin}${baseUrl}.json`);
@@ -213,7 +213,7 @@ describe('AlbumRepository', () => {
         .fn()
         .mockRejectedValue(apiError);
 
-      await expect(albumRepository.getByArtist(artistId)).rejects.toThrowError(
+      await expect(albumRepository.getByArtist(artistId)).rejects.toThrow(
         apiError
       );
       expect(global.fetch).toHaveBeenCalledWith(
@@ -228,7 +228,7 @@ describe('AlbumRepository', () => {
       const networkError = new Error('Network connection lost');
       (global.fetch as jest.Mock).mockRejectedValueOnce(networkError);
 
-      await expect(albumRepository.getByArtist(artistId)).rejects.toThrowError(
+      await expect(albumRepository.getByArtist(artistId)).rejects.toThrow(
         AppError
       );
       expect(global.fetch).toHaveBeenCalledWith(
