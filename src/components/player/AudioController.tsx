@@ -18,7 +18,7 @@ const AudioController = ({
         defaultValue={[0]}
         max={audioDuration}
         min={0}
-        className='md:w-[400px]'
+        className='md:w-[300px] lg:w-[400px]'
         onValueChange={(value) => {
           if (audioRef.current) {
             const [newTime] = value;
