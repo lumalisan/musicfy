@@ -14,7 +14,8 @@ import {
   UserButton,
 } from '@clerk/astro/components';
 
-import playlistRepository from '@/lib/repositories/PlaylistRepository';
+import { playlistRepository } from '@/lib/repositories';
+import { AppError } from '@/lib/utils/errorHandling';
 import type { PlaylistResult } from '@/lib/types/SearchResultItem';
 
 import { LibraryLoginPopover } from './LibraryLoginPopover';
@@ -25,9 +26,7 @@ let playlists: MediaItem[] = [];
 
 // Fetch playlists
 try {
-  const results: PlaylistResult[] = await playlistRepository.getGlobalPlaylists(
-    Astro.url.origin.toString()
-  );
+  const results: PlaylistResult[] = await playlistRepository.getGlobalPlaylists(Astro.url.origin.toString());
   playlists = results.map(
     (p: PlaylistResult): MediaItem => ({
       id: p.id,
@@ -40,10 +39,11 @@ try {
     })
   );
 } catch (error: any) {
-  console.error(
-    'Error fetching playlists in AsideMenu.astro:',
-    error.message || error
-  );
+  if (error instanceof AppError) {
+    console.error(`Error fetching playlists in AsideMenu (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+  } else {
+    console.error('Error fetching playlists in AsideMenu.astro:', error.message || error);
+  }
   playlists = [];
 }
 ---

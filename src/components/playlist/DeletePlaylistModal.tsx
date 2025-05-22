@@ -3,7 +3,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
-import playlistRepository from '@/lib/repositories/PlaylistRepository';
+import { playlistRepository } from '@/lib/repositories';
+import { AppError } from '@/lib/utils/errorHandling';
 
 import {
   Dialog,
@@ -53,8 +54,13 @@ export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
         );
       }
     } catch (error: any) {
-      console.error('Error deleting playlist:', error);
-      setDeleteError('An unexpected error occurred.');
+      if (error instanceof AppError) {
+        console.error(`Error deleting playlist ${playlistId} (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+        setDeleteError(error.message || 'Failed to delete playlist due to a server error.');
+      } else {
+        console.error('Error deleting playlist:', error?.message || error);
+        setDeleteError('An unexpected error occurred while trying to delete the playlist.');
+      }
     } finally {
       setIsDeleting(false);
     }

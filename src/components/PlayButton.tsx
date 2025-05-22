@@ -3,7 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { usePlayerStore } from '@/store/playerStore';
 import { cn } from '@/lib/utils/cn';
-import playbackRepository from '@/lib/repositories/PlaybackRepository';
+import { playbackRepository } from '@/lib/repositories';
+import { AppError } from '@/lib/utils/errorHandling';
 
 interface Props {
   itemId: string;
@@ -57,11 +58,15 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
         } else {
           console.warn(`No songs found in ${itemType} with id:`, itemId);
         }
-      } catch (error) {
-        console.error(
-          `Error fetching and playing ${itemType} with id ${itemId}:`,
-          error
-        );
+      } catch (error: any) {
+        if (error instanceof AppError) {
+          console.error(`Error fetching playback details for ${itemType} ${itemId} (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+        } else {
+          console.error(
+            `Error fetching and playing ${itemType} with id ${itemId}:`,
+            error?.message || error
+          );
+        }
       }
     }
   };

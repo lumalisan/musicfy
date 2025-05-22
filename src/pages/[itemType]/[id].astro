@@ -6,7 +6,8 @@ import type { Song } from '@/lib/types/Song';
 import { calculateTotalMinutes } from '@/lib/utils/calcTotalPlaylistMinutes';
 import Alert from '@/components/shared/Alert.astro';
 import PlaylistOptionsMenu from '@/components/playlist/PlaylistOptionsMenu';
-import playbackRepository, { type PlaybackDetailsResponse, type PlaybackItemInfo } from '@/lib/repositories/PlaybackRepository';
+import { playbackRepository, type PlaybackDetailsResponse, type PlaybackItemInfo } from '@/lib/repositories';
+import { AppError } from '@/lib/utils/errorHandling';
 
 export async function getStaticPaths() {
   return [];
@@ -33,12 +34,14 @@ if (itemType && itemId) {
       itemDetails: detailsResponse.itemDetails,
       songs: detailsResponse.songs,
     };
-  } catch (e: any) {
-    console.error(
-      `Error fetching details for ${itemType}/${itemId} on page:`,
-      e.message || e
-    );
-    fetchError = e.message || `Failed to load ${itemType} details.`;
+  } catch (error: any) {
+    if (error instanceof AppError) {
+      console.error(`Error fetching ${itemType}/${itemId} (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+      fetchError = `Failed to load ${itemType} details: ${error.message}`;
+    } else {
+      console.error(`Error fetching details for ${itemType}/${itemId} on page:`, error.message || error);
+      fetchError = `Failed to load ${itemType} details. An unexpected error occurred.`;
+    }
   }
 } else {
   return Astro.redirect('/');

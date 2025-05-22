@@ -6,6 +6,8 @@ export interface IRepository<T> {
   delete(id: string): Promise<boolean>;
 }
 
+import { AppError, ErrorCode } from '../utils/errorHandling';
+
 export abstract class BaseRepository<T> implements IRepository<T> {
   protected baseUrl: string;
 
@@ -15,8 +17,42 @@ export abstract class BaseRepository<T> implements IRepository<T> {
 
   protected async handleResponse(response: Response): Promise<any> {
     if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || 'Something went wrong');
+      let errorData: any = {};
+      try {
+        errorData = await response.json();
+      } catch (e) {
+        // If parsing JSON fails, use a generic error message based on status
+        errorData = { message: `API Error: ${response.statusText || response.status}` };
+      }
+
+      let errorCode: ErrorCode;
+      switch (response.status) {
+        case 400:
+          errorCode = ErrorCode.BAD_REQUEST;
+          break;
+        case 401:
+          errorCode = ErrorCode.UNAUTHORIZED;
+          break;
+        case 403:
+          errorCode = ErrorCode.FORBIDDEN;
+          break;
+        case 404:
+          errorCode = ErrorCode.NOT_FOUND;
+          break;
+        case 422:
+          errorCode = ErrorCode.VALIDATION_ERROR;
+          break;
+        case 500:
+        default:
+          errorCode = ErrorCode.SERVER_ERROR;
+          break;
+      }
+      throw new AppError(
+        errorData.message || errorData.error || 'An unexpected API error occurred',
+        errorCode,
+        response.status,
+        errorData.details || errorData
+      );
     }
     return response.json();
   }

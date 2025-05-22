@@ -6,7 +6,8 @@ import { SearchResults } from './SearchResults';
 import type { SearchResult } from '@/lib/types/SearchResultItem';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import searchRepository from '@/lib/repositories/SearchRepository';
+import { searchRepository } from '@/lib/repositories';
+import { AppError } from '@/lib/utils/errorHandling';
 
 const initialResults: SearchResult = {
   songs: [],
@@ -32,10 +33,14 @@ export const SearchPage = () => {
       const data = await searchRepository.searchAll(query.trim());
       setResults(data);
       setErrorMessage('');
-    } catch (error) {
-      setErrorMessage(
-        'An error occurred while searching. Please try again later.'
-      );
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        console.error(`Search error (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+        setErrorMessage(error.message || 'An error occurred during the search.');
+      } else {
+        console.error('Search error:', error?.message || error);
+        setErrorMessage('An unexpected error occurred while searching. Please try again later.');
+      }
     } finally {
       setIsLoading(false);
     }

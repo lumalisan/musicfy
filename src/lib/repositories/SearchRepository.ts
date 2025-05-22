@@ -51,15 +51,10 @@ export class SearchRepository extends BaseRepository<SearchResult> {
 
     try {
       const response = await fetch(`${this.baseUrl}.json?${params.toString()}`);
-
-      if (!response.ok) {
-        throw new Error(`Search failed with status: ${response.status}`);
-      }
-
-      return await response.json();
+      return this.handleResponse(response);
     } catch (error) {
-      console.error('Search error:', error);
-      throw new Error('Failed to perform search. Please try again later.');
+      console.error('Search fetch error:', error);
+      throw error; 
     }
   }
 

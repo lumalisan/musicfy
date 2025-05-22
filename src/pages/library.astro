@@ -4,7 +4,8 @@ import { CreatePlaylistModal } from '@/components/library/CreatePlaylistModal';
 import type { MediaItem } from '@/lib/types/MediaItem';
 import MediaSection from '@/components/MediaSection.astro';
 import Alert from '@/components/shared/Alert.astro';
-import playlistRepository from '@/lib/repositories/PlaylistRepository';
+import { playlistRepository } from '@/lib/repositories';
+import { AppError } from '@/lib/utils/errorHandling';
 import type { PlaylistResult } from '@/lib/types/SearchResultItem';
 
 const { userId: clerkUserId, sessionId } = Astro.locals.auth();
@@ -29,8 +30,13 @@ try {
     color: p.color,
   }));
 } catch (error: any) {
-  console.error('Error fetching user playlists in library.astro:', error.message || error);
-  fetchError = 'Could not load your playlists.';
+  if (error instanceof AppError) {
+    console.error(`Error fetching user playlists (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+    fetchError = `Could not load your playlists: ${error.message}`;
+  } else {
+    console.error('Error fetching user playlists in library.astro:', error.message || error);
+    fetchError = 'Could not load your playlists. An unexpected error occurred.';
+  }
 }
 ---
 

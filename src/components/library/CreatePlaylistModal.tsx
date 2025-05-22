@@ -10,8 +10,8 @@ import {
 
 import type { Song } from '@/lib/types/Song';
 import type { SongResult } from '@/lib/types/SearchResultItem';
-import songRepository from '@/lib/repositories/SongRepository';
-import playlistRepository from '@/lib/repositories/PlaylistRepository';
+import { songRepository, playlistRepository } from '@/lib/repositories';
+import { AppError } from '@/lib/utils/errorHandling';
 import { debounce } from '@/lib/utils/debounce';
 import { cn } from '@/lib/utils/cn';
 
@@ -73,10 +73,13 @@ export const CreatePlaylistModal = () => {
       const results: SongResult[] = await songRepository.search(query);
       setSearchedSongs(results.map(mapSongResultToSong));
     } catch (err: any) {
-      console.error(err);
-      setSongSearchError(
-        err.message || 'An unexpected error occurred while fetching songs.'
-      );
+      if (err instanceof AppError) {
+        console.error(`Error searching songs (Code: ${err.code}, Status: ${err.statusCode}): ${err.message}`, err.details);
+        setSongSearchError(err.message || 'Failed to fetch songs due to a server error.');
+      } else {
+        console.error('Error searching songs:', err?.message || err);
+        setSongSearchError('An unexpected error occurred while fetching songs.');
+      }
       setSearchedSongs([]);
     } finally {
       setIsSearchingSongs(false);
@@ -127,9 +130,14 @@ export const CreatePlaylistModal = () => {
         );
         window.location.reload();
       }
-    } catch (error) {
-      console.error('Error creating playlist:', error);
-      setCreatePlaylistError('Could not create playlist.');
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        console.error(`Error creating playlist (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+        setCreatePlaylistError(error.message || 'Failed to create playlist due to a server error.');
+      } else {
+        console.error('Error creating playlist:', error?.message || error);
+        setCreatePlaylistError('An unexpected error occurred while trying to create the playlist.');
+      }
     } finally {
       setIsCreatingPlaylist(false);
     }

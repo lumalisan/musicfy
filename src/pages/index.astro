@@ -4,8 +4,9 @@ import Layout from '@/layouts/Layout.astro';
 import Alert from '@/components/shared/Alert.astro';
 import MediaSection from '@/components/MediaSection.astro';
 import Greetings from '@/components/Greetings';
-import albumRepository from '@/lib/repositories/AlbumRepository';
-import playlistRepository from '@/lib/repositories/PlaylistRepository';
+import { albumRepository, playlistRepository } from '@/lib/repositories';
+
+import { AppError } from '@/lib/utils/errorHandling';
 import type { AlbumResult, PlaylistResult } from '@/lib/types/SearchResultItem';
 
 let albums: MediaItem[] = [];
@@ -26,8 +27,13 @@ try {
     color: a.color,
   }));
 } catch (error: any) {
-  console.error('Error fetching albums in index.astro:', error.message || error);
-  fetchAlbumsError = 'An error occurred while fetching albums.';
+  if (error instanceof AppError) {
+    console.error(`Error fetching albums (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+    fetchAlbumsError = `Could not load albums: ${error.message}`;
+  } else {
+    console.error('Error fetching albums in index.astro:', error.message || error);
+    fetchAlbumsError = 'Could not load albums at this time. An unexpected error occurred.';
+  }
 }
 
 // 2. Fetch playlists
@@ -43,8 +49,16 @@ try {
     color: p.color,
   }));
 } catch (error: any) {
-  console.error('Error fetching playlists in index.astro:', error.message || error);
-  fetchPlaylistsError = 'An error occurred while fetching playlists.';
+  const playlistErrorMessage = 'Could not load playlists at this time.';
+  let newPlaylistErrorMessage: string;
+  if (error instanceof AppError) {
+    console.error(`Error fetching playlists (Code: ${error.code}, Status: ${error.statusCode}): ${error.message}`, error.details);
+    newPlaylistErrorMessage = `Could not load playlists: ${error.message}`;
+  } else {
+    console.error('Error fetching playlists in index.astro:', error.message || error);
+    newPlaylistErrorMessage = `${playlistErrorMessage} An unexpected error occurred.`;
+  }
+  fetchPlaylistsError = newPlaylistErrorMessage;
 }
 ---
 
