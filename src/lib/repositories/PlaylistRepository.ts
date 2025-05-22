@@ -21,11 +21,22 @@ export class PlaylistRepository extends BaseRepository<PlaylistResult> {
   }
 
   /**
+   * Get all global playlists
+   * @param limit Optional limit of playlists to fetch
+   * @returns Promise with an array of global playlists
+   */
+  async getGlobalPlaylists(origin: string, limit: number = 50): Promise<PlaylistResult[]> {
+    // Fetches general playlists, not user-specific ones
+    const response = await fetch(`${origin}/api/playlists.json?limit=${limit}`);
+    return this.handleResponse(response);
+  }
+
+  /**
    * Get all user playlists
    * @returns Promise with an array of the current user's playlists
    */
-  async getUserPlaylists(): Promise<PlaylistResult[]> {
-    const response = await fetch(`/api/user-playlists.json`);
+  async getUserPlaylists(origin: string, headers?: HeadersInit): Promise<PlaylistResult[]> {
+    const response = await fetch(`${origin}/api/user-playlists.json`, { headers });
     return this.handleResponse(response);
   }
 

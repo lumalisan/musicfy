@@ -23,8 +23,8 @@ export class AlbumRepository extends BaseRepository<AlbumResult> {
    * Get all albums
    * @returns Promise with an array of all albums
    */
-  async getAll(): Promise<AlbumResult[]> {
-    const response = await fetch(`${this.baseUrl}.json`);
+  async getAll(origin: string): Promise<AlbumResult[]> {
+    const response = await fetch(`${origin}${this.baseUrl}.json`);
     return this.handleResponse(response);
   }
 

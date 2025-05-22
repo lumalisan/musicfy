@@ -14,7 +14,8 @@ import {
   UserButton,
 } from '@clerk/astro/components';
 
-import { API_BASE_URL } from '@/lib/constants';
+import playlistRepository from '@/lib/repositories/PlaylistRepository';
+import type { PlaylistResult } from '@/lib/types/SearchResultItem';
 
 import { LibraryLoginPopover } from './LibraryLoginPopover';
 import SideMenuItem from './SideMenuItem.astro';
@@ -24,23 +25,26 @@ let playlists: MediaItem[] = [];
 
 // Fetch playlists
 try {
-  const playlistsResponse = await fetch(
-    `${Astro.url.origin}${API_BASE_URL}/playlists.json`
+  const results: PlaylistResult[] = await playlistRepository.getGlobalPlaylists(
+    Astro.url.origin.toString()
   );
-  if (playlistsResponse.ok) {
-    playlists = await playlistsResponse.json();
-  } else {
-    const errorData = await playlistsResponse
-      .json()
-      .catch(() => ({ error: 'Failed to parse playlists error' }));
-    console.error(
-      'Failed to fetch playlists:',
-      playlistsResponse.status,
-      errorData.error
-    );
-  }
+  playlists = results.map(
+    (p: PlaylistResult): MediaItem => ({
+      id: p.id,
+      title: p.title,
+      href: p.href,
+      coverArtUrl: p.coverArtUrl,
+      type: 'playlist' as const,
+      artists: p.artists,
+      color: p.color,
+    })
+  );
 } catch (error: any) {
-  console.error('Error fetching playlists in index.astro:', error);
+  console.error(
+    'Error fetching playlists in AsideMenu.astro:',
+    error.message || error
+  );
+  playlists = [];
 }
 ---
 

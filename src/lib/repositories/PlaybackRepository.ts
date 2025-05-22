@@ -8,6 +8,7 @@ export interface PlaybackItemInfo {
   artists: string[] | null;
   coverArtUrl: string | null;
   color: string | null;
+  creatorUserId?: string;
 }
 
 export interface PlaybackDetailsResponse {
@@ -21,11 +22,14 @@ export class PlaybackRepository extends BaseRepository<PlaybackDetailsResponse> 
   }
 
   async getPlaybackDetails(
+    origin: string,
     itemId: string,
-    itemType: 'playlist' | 'album'
+    itemType: 'playlist' | 'album',
+    headers?: HeadersInit
   ): Promise<PlaybackDetailsResponse> {
     const response = await fetch(
-      `${this.baseUrl}/${itemId}.json?type=${encodeURIComponent(itemType)}`
+      `${origin}${this.baseUrl}/${itemId}.json?type=${encodeURIComponent(itemType)}`,
+      { headers }
     );
     return this.handleResponse(response);
   }

@@ -21,8 +21,9 @@ export abstract class BaseRepository<T> implements IRepository<T> {
     return response.json();
   }
 
-  async getAll(): Promise<T[]> {
-    const response = await fetch(this.baseUrl);
+  async getAll(origin?: string): Promise<T[]> {
+    const fetchUrl = origin ? `${origin}${this.baseUrl}` : this.baseUrl;
+    const response = await fetch(fetchUrl);
     return this.handleResponse(response);
   }
 

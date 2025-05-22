@@ -4,7 +4,8 @@ import { CreatePlaylistModal } from '@/components/library/CreatePlaylistModal';
 import type { MediaItem } from '@/lib/types/MediaItem';
 import MediaSection from '@/components/MediaSection.astro';
 import Alert from '@/components/shared/Alert.astro';
-import { API_BASE_URL } from '@/lib/constants';
+import playlistRepository from '@/lib/repositories/PlaylistRepository';
+import type { PlaylistResult } from '@/lib/types/SearchResultItem';
 
 const { userId: clerkUserId, sessionId } = Astro.locals.auth();
 
@@ -16,23 +17,19 @@ if (!clerkUserId || !sessionId) {
 }
 
 try {
-  const response = await fetch(
-    `${Astro.url.origin}${API_BASE_URL}/user-playlists.json`,
-    {
-      headers: Astro.request.headers,
-    }
-  );
-
-  if (!response.ok) {
-    const errorData = await response
-      .json()
-      .catch(() => ({ error: 'Failed to parse error from API' }));
-    throw new Error(errorData.error || `API Error: ${response.status}`);
-  }
-
-  playlists = await response.json();
-} catch (error) {
-  console.error('Error fetching user playlists in library.astro:', error);
+  const playlistResults: PlaylistResult[] = await playlistRepository.getUserPlaylists(Astro.url.origin.toString(), Astro.request.headers);
+  console.log('playlistResults', playlistResults)
+  playlists = playlistResults.map((p: PlaylistResult): MediaItem => ({
+    id: p.id,
+    title: p.title,
+    href: p.href,
+    coverArtUrl: p.coverArtUrl,
+    type: 'playlist' as const,
+    artists: p.artists ? p.artists : [],
+    color: p.color,
+  }));
+} catch (error: any) {
+  console.error('Error fetching user playlists in library.astro:', error.message || error);
   fetchError = 'Could not load your playlists.';
 }
 ---

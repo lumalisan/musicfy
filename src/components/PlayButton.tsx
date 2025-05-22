@@ -40,7 +40,7 @@ const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
     } else {
       try {
         const { songs, itemDetails } =
-          await playbackRepository.getPlaybackDetails(itemId, itemType);
+          await playbackRepository.getPlaybackDetails('', itemId, itemType);
 
         if (songs && songs.length > 0) {
           const currentItemInfo = {
