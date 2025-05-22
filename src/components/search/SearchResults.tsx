@@ -114,7 +114,7 @@ export const SearchResults = ({
           renderItem={(item) => (
             <div
               onClick={(e) => handlePlaySong(item, e)}
-              className='group hover:bg-accent/10 border-accent/50 flex w-full cursor-pointer items-center gap-4 rounded-md border p-2 text-left transition-colors'
+              className='flex w-full items-center gap-4 text-left transition-colors'
             >
               {item.image ? (
                 <img
@@ -149,10 +149,7 @@ export const SearchResults = ({
           icon={faCompactDisc}
           items={results.albums}
           renderItem={(item) => (
-            <a
-              href={item.url}
-              className='group hover:bg-accent/10 border-accent/50 flex flex-col gap-2 rounded-md border p-3 transition-colors'
-            >
+            <a href={item.url}>
               <div className='relative aspect-square w-full overflow-hidden rounded-md'>
                 {item.image ? (
                   <img
@@ -174,7 +171,7 @@ export const SearchResults = ({
                 <h3 className='group-hover:text-accent truncate font-medium'>
                   {item.title}
                 </h3>
-                <p className='text-accent/70 truncate text-sm'>{item.artist}</p>
+                <p className='text-accent/70 truncate text-xs'>{item.artist}</p>
               </div>
             </a>
           )}
@@ -187,10 +184,7 @@ export const SearchResults = ({
           icon={faList}
           items={results.playlists}
           renderItem={(item) => (
-            <a
-              href={item.url}
-              className='group hover:bg-accent/10 border-accent/50 flex flex-col gap-2 rounded-md border p-3 transition-colors'
-            >
+            <a href={item.url}>
               <div className='relative aspect-square w-full overflow-hidden rounded-md bg-gradient-to-br from-purple-500 to-blue-500'>
                 {item.image ? (
                   <img
@@ -211,11 +205,11 @@ export const SearchResults = ({
                   </div>
                 )}
               </div>
-              <div>
+              <div className='mt-2'>
                 <h3 className='group-hover:text-accent truncate font-medium'>
                   {item.title}
                 </h3>
-                <p className='text-accent/70 truncate text-sm'>
+                <p className='text-accent/70 truncate text-xs'>
                   {item.description || 'Playlist'}
                 </p>
               </div>
@@ -257,15 +251,16 @@ const SearchResultSection = <T,>({
       <div
         className={cn(
           'grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6',
-          isSong
-            ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
-            : ''
+          isSong && 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'
         )}
       >
         {items.map((item, index) => (
-          <div key={index} className='w-full'>
+          <article
+            key={index}
+            className='group p-2 cursor-pointer hover:bg-secondary bg-secondary/30 relative w-full rounded-md shadow-lg transition-all duration-300 hover:shadow-xl'
+          >
             {renderItem(item)}
-          </div>
+          </article>
         ))}
       </div>
     </section>
