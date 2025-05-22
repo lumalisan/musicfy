@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils/cn';
 import { PlaybackControls } from './PlaybackControls';
 import AudioController from './AudioController';
 
-interface MobileExpandedPlayerProps {
+export interface MobileExpandedPlayerProps {
   currentMusic: CurrentMusic;
   isPlaying: boolean;
   isRandom: boolean;

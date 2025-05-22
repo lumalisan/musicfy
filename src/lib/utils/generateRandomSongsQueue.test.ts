@@ -16,7 +16,9 @@ describe('generateRandomSongsQueue', () => {
   const song2 = createMockSong('2', 'Song Two');
   const song3 = createMockSong('3', 'Song Three');
   const song4 = createMockSong('4', 'Song Four');
-  const allSongs = [song1, song2, song3, song4];
+  const song5 = createMockSong('5', 'Song Five');
+  const song6 = createMockSong('6', 'Song Six');
+  const allSongs = [song1, song2, song3, song4, song5, song6];
 
   it('should place the current song at the beginning of the queue', () => {
     const queue = generateRandomSongsQueue(allSongs, song2);
