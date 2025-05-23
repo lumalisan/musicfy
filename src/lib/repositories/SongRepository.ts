@@ -1,7 +1,8 @@
-import BaseRepository from './BaseRepository';
-import { searchRepository } from './SearchRepository';
 import type { SongResult } from '../types/SearchResultItem';
 import { AppError, ErrorCode } from '../utils/errorHandling';
+
+import BaseRepository from './BaseRepository';
+import { searchRepository } from './SearchRepository';
 
 export class SongRepository extends BaseRepository<SongResult> {
   constructor() {

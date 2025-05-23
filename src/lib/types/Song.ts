@@ -1,4 +1,4 @@
-export interface Song {
+export type Song = {
   id: string;
   title: string;
   image: string | null;
@@ -6,4 +6,4 @@ export interface Song {
   album: string | null;
   duration: number;
   url?: string;
-}
+};

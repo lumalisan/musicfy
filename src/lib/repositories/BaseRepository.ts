@@ -1,12 +1,12 @@
-export interface IRepository<T> {
+import { AppError, ErrorCode } from '../utils/errorHandling';
+
+export type IRepository<T> = {
   getAll(): Promise<T[]>;
   getById(id: string): Promise<T | null>;
   create(item: Omit<T, 'id'>): Promise<T>;
   update(id: string, item: Partial<T>): Promise<T | null>;
   delete(id: string): Promise<boolean>;
-}
-
-import { AppError, ErrorCode } from '../utils/errorHandling';
+};
 
 export abstract class BaseRepository<T> implements IRepository<T> {
   protected baseUrl: string;
@@ -20,10 +20,10 @@ export abstract class BaseRepository<T> implements IRepository<T> {
       let errorData: any = {};
       try {
         errorData = await response.json();
-      } catch (e) {
+      } catch (e: any) {
         // If parsing JSON fails, use a generic error message based on status
         errorData = {
-          message: `API Error: ${response.statusText || response.status}`,
+          message: `API Error: ${response.statusText || response.status || e.message}`,
         };
       }
 

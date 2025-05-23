@@ -1,9 +1,4 @@
 import {
-  forwardRef,
-  type ComponentRef,
-  type ComponentPropsWithoutRef,
-} from 'react';
-import {
   Root as SliderRoot,
   Track,
   type Root,
@@ -11,6 +6,11 @@ import {
   Thumb,
 } from '@radix-ui/react-slider';
 import cn from 'clsx';
+import {
+  forwardRef,
+  type ComponentRef,
+  type ComponentPropsWithoutRef,
+} from 'react';
 
 export const Slider = forwardRef<
   ComponentRef<typeof Root>,

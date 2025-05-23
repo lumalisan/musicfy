@@ -8,7 +8,9 @@ describe('Library Page', () => {
     const password = Cypress.env('CLERK_TEST_USER_PASSWORD');
 
     if (!email || !password) {
-      throw new Error('CLERK_TEST_USER_EMAIL or CLERK_TEST_USER_PASSWORD not set in cypress.env.json');
+      throw new Error(
+        'CLERK_TEST_USER_EMAIL or CLERK_TEST_USER_PASSWORD not set in cypress.env.json'
+      );
     }
 
     // Sign in using Clerk custom command
@@ -36,7 +38,9 @@ describe('Library Page', () => {
   it('should display playlists if available (verifying SSR data)', () => {
     cy.get('article.group.max-w-52', { timeout: 10000 }).should('exist');
 
-    cy.contains('Your library is empty. Start by creating a new playlist!').should('not.exist');
+    cy.contains(
+      'Your library is empty. Start by creating a new playlist!'
+    ).should('not.exist');
     cy.contains('Could not load your playlists').should('not.exist');
   });
 });

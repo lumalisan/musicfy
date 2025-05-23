@@ -1,18 +1,19 @@
-import BaseRepository from './BaseRepository';
-import { AppError, ErrorCode } from '../utils/errorHandling';
 import type {
   SearchResult,
   SongResult,
   AlbumResult,
   PlaylistResult,
 } from '../types/SearchResultItem';
+import { AppError, ErrorCode } from '../utils/errorHandling';
 
-export interface SearchOptions {
+import BaseRepository from './BaseRepository';
+
+export type SearchOptions = {
   query: string;
   type?: 'all' | 'songs' | 'albums' | 'playlists';
   limit?: number;
   offset?: number;
-}
+};
 
 export class SearchRepository extends BaseRepository<SearchResult> {
   private static instance: SearchRepository;

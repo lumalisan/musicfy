@@ -1,4 +1,4 @@
-export interface ItemInfo {
+export type ItemInfo = {
   id: string;
   type: 'playlist' | 'album';
   name?: string;
@@ -7,4 +7,4 @@ export interface ItemInfo {
   color?: string | null;
   description?: string;
   creatorUserId?: string;
-}
+};

@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faVolumeHigh,
   faVolumeLow,
   faVolumeXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState } from 'react';
+
 import { usePlayerStore } from '@/store/playerStore';
+
 import { Slider } from '../shared/Slider';
 
 const VolumeController = () => {

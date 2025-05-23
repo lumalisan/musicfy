@@ -1,4 +1,4 @@
-export interface Album {
+export type Album = {
   id: string;
   title: string;
   coverArtUrl?: string;
@@ -6,4 +6,4 @@ export interface Album {
   releaseDate?: string;
   artistId?: string;
   artists?: { name: string };
-}
+};

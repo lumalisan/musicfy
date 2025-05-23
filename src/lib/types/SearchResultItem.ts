@@ -1,7 +1,7 @@
 /**
  * Base interface for all search result items
  */
-export interface SearchResultItem {
+export type SearchResultItem = {
   /** Unique identifier for the item */
   id: string;
   /** Type of the media item */
@@ -14,12 +14,12 @@ export interface SearchResultItem {
   url: string;
   /** Additional properties that might be present on the item */
   [key: string]: any;
-}
+};
 
 /**
  * Represents a song in search results
  */
-export interface SongResult extends SearchResultItem {
+export type SongResult = {
   type: 'song';
   /** Name(s) of the artist(s) */
   artists: string[];
@@ -35,12 +35,12 @@ export interface SongResult extends SearchResultItem {
   albumId?: string;
   /** Optional artist ID for navigation */
   artistId?: string;
-}
+} & SearchResultItem;
 
 /**
  * Represents an album in search results
  */
-export interface AlbumResult extends SearchResultItem {
+export type AlbumResult = {
   type: 'album';
   /** Name(s) of the artist(s) */
   artists: string[];
@@ -52,12 +52,12 @@ export interface AlbumResult extends SearchResultItem {
   artistId?: string;
   /** Optional track count */
   trackCount?: number;
-}
+} & SearchResultItem;
 
 /**
  * Represents a playlist in search results
  */
-export interface PlaylistResult extends SearchResultItem {
+export type PlaylistResult = {
   type: 'playlist';
   /** Playlist description */
   description: string;
@@ -69,12 +69,12 @@ export interface PlaylistResult extends SearchResultItem {
   creatorName?: string;
   /** Optional track count */
   trackCount?: number;
-}
+} & SearchResultItem;
 
 /**
  * Collection of search results grouped by type
  */
-export interface SearchResult {
+export type SearchResult = {
   /** Array of song results */
   songs: SongResult[];
   /** Array of album results */
@@ -87,4 +87,4 @@ export interface SearchResult {
     albums?: string;
     playlists?: string;
   };
-}
+};

@@ -10,22 +10,20 @@ import {
 // Mock dependencies
 jest.mock('@/store/playerStore');
 jest.mock('../shared/Slider', () => ({
-  Slider: jest.fn(
-    ({ onValueChange, value, max, min, step, defaultValue }) => (
-      <div data-testid='mock-slider'>
-        <input
-          type='range'
-          min={min}
-          max={max}
-          step={step}
-          value={value?.[0] ?? defaultValue?.[0] ?? 0}
-          onChange={(e) => onValueChange([parseFloat(e.target.value)])}
-          data-testid='mock-slider-input'
-        />
-        <span data-testid='slider-value'>{value?.[0]}</span>
-      </div>
-    )
-  ),
+  Slider: jest.fn(({ onValueChange, value, max, min, step, defaultValue }) => (
+    <div data-testid='mock-slider'>
+      <input
+        type='range'
+        min={min}
+        max={max}
+        step={step}
+        value={value?.[0] ?? defaultValue?.[0] ?? 0}
+        onChange={(e) => onValueChange([parseFloat(e.target.value)])}
+        data-testid='mock-slider-input'
+      />
+      <span data-testid='slider-value'>{value?.[0]}</span>
+    </div>
+  )),
 }));
 jest.mock('@fortawesome/react-fontawesome', () => ({
   FontAwesomeIcon: jest.fn((props) => (

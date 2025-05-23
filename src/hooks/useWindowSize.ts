@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 
-interface WindowSize {
+type WindowSize = {
   width: number | undefined;
   height: number | undefined;
-}
+};
 
 /**
  * Custom React hook to get the current window size.

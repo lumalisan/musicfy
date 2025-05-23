@@ -1,12 +1,12 @@
-import * as Popover from '@radix-ui/react-popover';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as Popover from '@radix-ui/react-popover';
 
-interface LibraryLoginPopoverProps {
+type LibraryLoginPopoverProps = {
   triggerClassName?: string;
   side?: 'top' | 'right' | 'bottom' | 'left';
   sideOffset?: number;
-}
+};
 
 export const LibraryLoginPopover = ({
   triggerClassName,

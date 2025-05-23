@@ -1,8 +1,9 @@
-import BaseRepository from './BaseRepository';
 import type { Song } from '../types/Song';
 import { AppError, ErrorCode } from '../utils/errorHandling';
 
-export interface PlaybackItemInfo {
+import BaseRepository from './BaseRepository';
+
+export type PlaybackItemInfo = {
   id: string;
   type: 'playlist' | 'album';
   name: string;
@@ -10,12 +11,12 @@ export interface PlaybackItemInfo {
   coverArtUrl: string | null;
   color: string | null;
   creatorUserId?: string;
-}
+};
 
-export interface PlaybackDetailsResponse {
+export type PlaybackDetailsResponse = {
   songs: Song[];
   itemDetails: PlaybackItemInfo;
-}
+};
 
 export class PlaybackRepository extends BaseRepository<PlaybackDetailsResponse> {
   constructor() {

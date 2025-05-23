@@ -1,15 +1,15 @@
 import { useEffect, useRef, useCallback, useMemo, useState } from 'react';
 
+import { useWindowSize } from '@/hooks/useWindowSize';
 import { DefaultAudioService } from '@/lib/services/DefaultAudioService';
 import { usePlayerStore } from '@/store/playerStore';
-import { useWindowSize } from '@/hooks/useWindowSize';
 
-import CurrentSong from './CurrentSong';
-import VolumeController from './VolumeController';
 import AudioController from './AudioController';
-import { PlaybackControls } from './PlaybackControls';
-import { MobilePlayButton } from './MobilePlayButton';
+import CurrentSong from './CurrentSong';
 import MobileExpandedPlayer from './MobileExpandedPlayer';
+import { MobilePlayButton } from './MobilePlayButton';
+import { PlaybackControls } from './PlaybackControls';
+import VolumeController from './VolumeController';
 
 const ANIMATION_DURATION_MS = 300;
 const PLAYER_ENTER_ANIMATION = 'animate-slideEnterUp';
@@ -96,7 +96,14 @@ const Player = () => {
       audio.src = '';
       currentLoadedSongIdRef.current = null;
     }
-  }, [currentMusic.song, currentMusic.itemInfo?.id, isPlaying, volume]);
+  }, [
+    audioService,
+    currentMusic.itemInfo,
+    currentMusic.song,
+    currentMusic.itemInfo?.id,
+    isPlaying,
+    volume,
+  ]);
 
   // EFFECT FOR VOLUME CHANGES
   useEffect(() => {
@@ -104,7 +111,7 @@ const Player = () => {
     if (audio && audio.volume !== volume && currentMusic.song) {
       audioService.setVolume(audio, volume);
     }
-  }, [volume, currentMusic.song]);
+  }, [audioService, volume, currentMusic.song]);
 
   const handleSongEnded = useCallback(() => {
     if (isRepeat) {
@@ -144,6 +151,7 @@ const Player = () => {
 
   // EFFECT TO HANDLE PLAYER MOUNTING AND ANIMATION
   useEffect(() => {
+    // eslint-disable-next-line no-undef
     let timer: NodeJS.Timeout;
 
     if (isExpandedIntent) {
@@ -166,7 +174,9 @@ const Player = () => {
   }, [isExpandedIntent, isPlayerMounted]);
 
   const handlePlayerBarClick = (
-    event?: React.MouseEvent<HTMLDivElement>
+    event?:
+      | React.MouseEvent<HTMLDivElement>
+      | React.KeyboardEvent<HTMLDivElement>
   ): void => {
     if (
       event &&
@@ -218,6 +228,7 @@ const Player = () => {
           'md:bg-secondary flex h-auto flex-row items-center justify-between rounded-t-lg bg-amber-900/80 p-2 backdrop-blur-sm transition-colors duration-300 md:h-[80px] md:w-full md:px-4 md:py-2 md:backdrop-blur-none'
         }
         onClick={handlePlayerBarClick}
+        onKeyDown={handlePlayerBarClick}
         role={isMobileView ? 'button' : undefined}
         tabIndex={isMobileView ? 0 : undefined}
         aria-expanded={isMobileView ? isExpandedIntent : undefined}
@@ -264,6 +275,7 @@ const Player = () => {
           <VolumeController />
         </div>
 
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <audio ref={audioRef} />
       </div>
     </>

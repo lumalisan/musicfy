@@ -1,13 +1,13 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronDown, faEllipsisH } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import type { CurrentMusic } from '@/lib/types/CurrentMusic';
 import { cn } from '@/lib/utils/cn';
 
-import { PlaybackControls } from './PlaybackControls';
 import AudioController from './AudioController';
+import { PlaybackControls } from './PlaybackControls';
 
-export interface MobileExpandedPlayerProps {
+export type MobileExpandedPlayerProps = {
   currentMusic: CurrentMusic;
   isPlaying: boolean;
   isRandom: boolean;
@@ -20,7 +20,7 @@ export interface MobileExpandedPlayerProps {
   onToggleRepeat: () => void;
   onClose: (event: React.MouseEvent<HTMLButtonElement>) => void;
   animationClassName?: string;
-}
+};
 
 const MobileExpandedPlayer = ({
   currentMusic,

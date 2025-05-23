@@ -1,10 +1,11 @@
-import React from 'react';
-import * as DialogPrimitive from '@radix-ui/react-dialog';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import * as DialogPrimitive from '@radix-ui/react-dialog';
+import React from 'react';
+
 import { cn } from '@/lib/utils/cn';
 
-interface DialogProps extends DialogPrimitive.DialogProps {}
+type DialogProps = DialogPrimitive.DialogProps;
 
 const Dialog = ({ children, ...props }: DialogProps) => {
   return <DialogPrimitive.Root {...props}>{children}</DialogPrimitive.Root>;
@@ -83,7 +84,7 @@ const DialogDescription = React.forwardRef<
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 
-interface DialogFooterProps extends React.HTMLAttributes<HTMLDivElement> {}
+type DialogFooterProps = React.HTMLAttributes<HTMLDivElement>;
 
 const DialogFooter = ({ className, children, ...props }: DialogFooterProps) => (
   <div

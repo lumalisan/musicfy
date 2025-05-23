@@ -1,4 +1,4 @@
-export interface MediaItem {
+export type MediaItem = {
   id: string | number;
   title: string;
   coverArtUrl: string | null;
@@ -6,4 +6,4 @@ export interface MediaItem {
   href: string;
   type: 'playlist' | 'album';
   color?: string | null;
-}
+};

@@ -1,19 +1,19 @@
-export interface ApiSongResult {
+export type ApiSongResult = {
   songId: string;
   status: 'added' | 'duplicate' | 'error' | 'forbidden';
   message: string;
-}
+};
 
-export interface ApiSummary {
+export type ApiSummary = {
   totalProcessed: number;
   successfullyAdded: number;
   duplicates: number;
   forbidden: number;
   errors: number;
-}
+};
 
-export interface ApiBatchResponse {
+export type ApiBatchResponse = {
   results: ApiSongResult[];
   summary: ApiSummary;
   error?: string;
-}
+};

@@ -1,17 +1,18 @@
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import type { ItemInfo } from '@/lib/types/ItemInfo';
 import type { Song } from '@/lib/types/Song';
-import { usePlayerStore } from '@/store/playerStore';
 import { cn } from '@/lib/utils/cn';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { formatSongDuration } from '@/lib/utils/formatSongDuration';
+import { usePlayerStore } from '@/store/playerStore';
 
-interface Props {
+type Props = {
   itemInfo: ItemInfo;
   songsInView: Song[];
   song: Song;
   index: number;
-}
+};
 
 const SongInfo = ({ itemInfo, songsInView, song, index }: Props) => {
   const { currentMusic, loadAndPlayMusic, isPlaying, setIsPlaying } =

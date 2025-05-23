@@ -1,20 +1,20 @@
-import { useState, useCallback, type ChangeEvent } from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faPlus,
   faSearch,
   faSpinner,
   faMusic,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState, useCallback, type ChangeEvent } from 'react';
 
-import type { Song } from '@/lib/types/Song';
-import type { SongResult } from '@/lib/types/SearchResultItem';
 import { songRepository, playlistRepository } from '@/lib/repositories';
-import { AppError } from '@/lib/utils/errorHandling';
-import { debounce } from '@/lib/utils/debounce';
+import type { SongResult } from '@/lib/types/SearchResultItem';
+import type { Song } from '@/lib/types/Song';
 import { cn } from '@/lib/utils/cn';
+import { debounce } from '@/lib/utils/debounce';
+import { AppError } from '@/lib/utils/errorHandling';
 
+import { LoadingSearch } from '../shared/LoadingSearch';
 import {
   Dialog,
   DialogClose,
@@ -24,7 +24,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../ui/Dialog';
-import { LoadingSearch } from '../shared/LoadingSearch';
 
 export const CreatePlaylistModal = () => {
   const [showModal, setShowModal] = useState(false);
@@ -93,9 +92,7 @@ export const CreatePlaylistModal = () => {
     }
   }, []);
 
-  const debouncedSearchSongs = useCallback(debounce(handleSearchSongs, 500), [
-    handleSearchSongs,
-  ]);
+  const debouncedSearchSongs = debounce(handleSearchSongs, 500);
 
   const handleSongSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
@@ -122,14 +119,15 @@ export const CreatePlaylistModal = () => {
     try {
       await playlistRepository.createPlaylist(
         newPlaylistName.trim(),
-        selectedSongId!
+        selectedSongId
       );
 
       resetModalStateAndClose();
 
-      // @ts-ignore navigate is injected globally by Astro View Transitions
+      // @ts-expect-error navigate is injected globally by Astro View Transitions
       if (typeof navigate === 'function') {
-        // @ts-ignore
+        // @ts-expect-error navigate is injected globally by Astro View Transitions
+        // eslint-disable-next-line no-undef
         navigate(window.location.pathname, { history: 'replace' });
       } else {
         console.warn(
@@ -234,6 +232,13 @@ export const CreatePlaylistModal = () => {
                   <div
                     key={song.id}
                     onClick={() => handleSelectSong(song.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        handleSelectSong(song.id);
+                      }
+                    }}
+                    role='button'
+                    tabIndex={0}
                     className={cn(
                       'hover:bg-accent/10 flex cursor-pointer items-center gap-3 rounded-md p-2.5 transition-colors',
                       selectedSongId === song.id &&

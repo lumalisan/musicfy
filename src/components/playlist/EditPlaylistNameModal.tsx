@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import playlistRepository from '@/lib/repositories/PlaylistRepository';
 
@@ -14,7 +13,7 @@ import {
   DialogTitle,
 } from '../ui/Dialog';
 
-interface EditPlaylistNameModalProps {
+type EditPlaylistNameModalProps = {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   playlistId: string;
@@ -22,7 +21,7 @@ interface EditPlaylistNameModalProps {
   coverArtUrl: string;
   color?: string;
   onActionComplete: () => void;
-}
+};
 
 export const EditPlaylistNameModal: React.FC<EditPlaylistNameModalProps> = ({
   isOpen,
@@ -112,7 +111,6 @@ export const EditPlaylistNameModal: React.FC<EditPlaylistNameModalProps> = ({
               value={editingPlaylistName}
               onChange={(e) => setEditingPlaylistName(e.target.value)}
               className='bg-primary focus:ring-accent w-full rounded-md p-3 placeholder-gray-400 outline-none focus:ring-2'
-              autoFocus
             />
           </div>
 

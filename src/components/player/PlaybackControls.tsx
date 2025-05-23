@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faBackwardStep,
   faForwardStep,
@@ -7,10 +6,11 @@ import {
   faPause,
   faPlay,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { cn } from '@/lib/utils/cn';
 
-export interface PlaybackControlsProps {
+export type PlaybackControlsProps = {
   isPlaying: boolean;
   isRandom: boolean;
   isRepeat: boolean;
@@ -20,7 +20,7 @@ export interface PlaybackControlsProps {
   onPrevious: () => void;
   onToggleShuffle: () => void;
   onToggleRepeat: () => void;
-}
+};
 
 export const PlaybackControls = ({
   isPlaying,

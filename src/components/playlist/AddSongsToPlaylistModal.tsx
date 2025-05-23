@@ -1,14 +1,16 @@
-import React, { useEffect, useCallback } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSearch,
   faSpinner,
   faMusic,
   faCheckCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import { cn } from '@/lib/utils/cn';
-import type { Song } from '@/lib/types/Song';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useCallback } from 'react';
 
+import type { Song } from '@/lib/types/Song';
+import { cn } from '@/lib/utils/cn';
+
+import { LoadingSearch } from '../shared/LoadingSearch';
 import {
   Dialog,
   DialogContent,
@@ -17,21 +19,21 @@ import {
   DialogHeaderCloseButton,
   DialogDescription,
 } from '../ui/Dialog';
-import { LoadingSearch } from '../shared/LoadingSearch';
+
 import {
   useAddSongsToPlaylist,
   type AddSongsStatusReport,
 } from './hooks/useAddSongsToPlaylist';
-import { useSongSelection } from './hooks/useSongSelection';
 import { useSongSearch } from './hooks/useSongSearch';
+import { useSongSelection } from './hooks/useSongSelection';
 
-interface AddSongsToPlaylistModalProps {
+type AddSongsToPlaylistModalProps = {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   playlistId: string;
   currentPlaylistName: string;
   onSongsAdded: () => void;
-}
+};
 
 export const AddSongsToPlaylistModal: React.FC<
   AddSongsToPlaylistModalProps
@@ -164,7 +166,6 @@ export const AddSongsToPlaylistModal: React.FC<
                 onChange={handleSearchInputChange}
                 className='bg-primary focus:ring-accent w-full rounded-md p-3 pl-10 placeholder-gray-400 outline-none focus:ring-2'
                 disabled={isAdding}
-                autoFocus
               />
               <FontAwesomeIcon
                 icon={faSearch}
@@ -187,6 +188,13 @@ export const AddSongsToPlaylistModal: React.FC<
                     <div
                       key={song.id}
                       onClick={() => toggleSongSelection(song.id)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          toggleSongSelection(song.id);
+                        }
+                      }}
+                      role='button'
+                      tabIndex={0}
                       className={cn(
                         'mb-1 flex cursor-pointer items-center justify-between gap-3 rounded-md p-2.5 transition-all duration-150 ease-in-out',
                         isSelected

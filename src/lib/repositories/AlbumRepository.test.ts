@@ -152,9 +152,7 @@ describe('AlbumRepository', () => {
         .fn()
         .mockRejectedValue(apiError);
 
-      await expect(albumRepository.getAll(origin)).rejects.toThrow(
-        apiError
-      );
+      await expect(albumRepository.getAll(origin)).rejects.toThrow(apiError);
       expect(global.fetch).toHaveBeenCalledWith(`${origin}${baseUrl}.json`);
 
       Object.getPrototypeOf(albumRepository).handleResponse =
@@ -165,9 +163,7 @@ describe('AlbumRepository', () => {
       const networkError = new Error('Network failed');
       (global.fetch as jest.Mock).mockRejectedValueOnce(networkError);
 
-      await expect(albumRepository.getAll(origin)).rejects.toThrow(
-        AppError
-      );
+      await expect(albumRepository.getAll(origin)).rejects.toThrow(AppError);
       expect(global.fetch).toHaveBeenCalledWith(`${origin}${baseUrl}.json`);
     });
   });

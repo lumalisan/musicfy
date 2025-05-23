@@ -1,5 +1,6 @@
 import { useAudioTime } from '@/hooks/useAudioTime';
 import { formatDuration } from '@/lib/utils/formatDuration';
+
 import { Slider } from '../shared/Slider';
 
 const AudioController = ({

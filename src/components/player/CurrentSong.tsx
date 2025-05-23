@@ -1,8 +1,8 @@
-interface Props {
+type Props = {
   image?: string;
   title?: string;
   artists?: string[];
-}
+};
 
 const CurrentSong = ({ image, title, artists }: Props) => {
   return (

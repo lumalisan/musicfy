@@ -1,11 +1,11 @@
 import albumRepositoryInstance from './AlbumRepository';
-import playlistRepositoryInstance from './PlaylistRepository';
-import songRepositoryInstance from './SongRepository';
-import searchRepositoryInstance from './SearchRepository';
 import playbackRepositoryInstance, {
   type PlaybackDetailsResponse,
   type PlaybackItemInfo,
 } from './PlaybackRepository';
+import playlistRepositoryInstance from './PlaylistRepository';
+import searchRepositoryInstance from './SearchRepository';
+import songRepositoryInstance from './SongRepository';
 
 export const albumRepository = albumRepositoryInstance;
 export const playlistRepository = playlistRepositoryInstance;

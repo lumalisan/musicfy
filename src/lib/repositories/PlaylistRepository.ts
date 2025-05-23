@@ -1,8 +1,9 @@
+import type { ApiBatchResponse } from '../types/PlaylistSongsAPI';
+import type { PlaylistResult } from '../types/SearchResultItem';
+import { AppError, ErrorCode } from '../utils/errorHandling';
+
 import BaseRepository from './BaseRepository';
 import { searchRepository } from './SearchRepository';
-import type { PlaylistResult } from '../types/SearchResultItem';
-import type { ApiBatchResponse } from '../types/PlaylistSongsAPI';
-import { AppError, ErrorCode } from '../utils/errorHandling';
 
 export class PlaylistRepository extends BaseRepository<PlaylistResult> {
   constructor() {

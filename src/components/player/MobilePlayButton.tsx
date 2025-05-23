@@ -1,10 +1,10 @@
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-export interface MobilePlayButtonProps {
+export type MobilePlayButtonProps = {
   isPlaying: boolean;
   onClick: () => void;
-}
+};
 
 export const MobilePlayButton = ({
   isPlaying,

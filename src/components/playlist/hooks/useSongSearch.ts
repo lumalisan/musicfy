@@ -1,7 +1,8 @@
 import { useState, useCallback, type ChangeEvent } from 'react';
-import { debounce } from '@/lib/utils/debounce';
-import type { Song } from '@/lib/types/Song';
+
 import songRepository from '@/lib/repositories/SongRepository';
+import type { Song } from '@/lib/types/Song';
+import { debounce } from '@/lib/utils/debounce';
 
 export function useSongSearch() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -40,9 +41,7 @@ export function useSongSearch() {
     }
   }, []);
 
-  const debouncedSearchSongs = useCallback(debounce(fetchSongs, 500), [
-    fetchSongs,
-  ]);
+  const debouncedSearchSongs = debounce(fetchSongs, 500);
 
   const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;

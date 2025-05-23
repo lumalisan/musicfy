@@ -1,13 +1,13 @@
+import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState, useCallback, useEffect } from 'react';
 
 import { SearchInput } from '@/components/ui/SearchInput';
+import { searchRepository } from '@/lib/repositories';
+import type { SearchResult } from '@/lib/types/SearchResultItem';
+import { AppError } from '@/lib/utils/errorHandling';
 
 import { SearchResults } from './SearchResults';
-import type { SearchResult } from '@/lib/types/SearchResultItem';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import { searchRepository } from '@/lib/repositories';
-import { AppError } from '@/lib/utils/errorHandling';
 
 const initialResults: SearchResult = {
   songs: [],

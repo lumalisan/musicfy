@@ -1,26 +1,27 @@
 import { useState, useCallback } from 'react';
-import type { Song } from '@/lib/types/Song';
+
 import playlistRepository from '@/lib/repositories/PlaylistRepository';
 import type { ApiBatchResponse } from '@/lib/types/PlaylistSongsAPI';
+import type { Song } from '@/lib/types/Song';
 
-export interface SongAddStatusItem {
+export type SongAddStatusItem = {
   songId: string;
   songTitle: string;
   success: boolean;
   message: string;
-}
+};
 
-export interface AddSongsStatusReport {
+export type AddSongsStatusReport = {
   successCount: number;
   errorCount: number;
   errors: { songId: string; songTitle: string; message: string }[];
   individualResults: SongAddStatusItem[];
-}
+};
 
-interface UseAddSongsToPlaylistParams {
+type UseAddSongsToPlaylistParams = {
   playlistId: string;
   onBatchComplete: (report: AddSongsStatusReport) => void;
-}
+};
 
 export function useAddSongsToPlaylist({
   playlistId,

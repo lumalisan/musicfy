@@ -6,15 +6,18 @@ export const useAudioTime = (
   const [currentTime, setCurrentTime] = useState(0);
 
   useEffect(() => {
+    const audioRefCurrent = audioRef.current;
+    if (!audioRefCurrent) return;
+
     const handleTimeUpdate = () => {
-      audioRef.current && setCurrentTime(audioRef.current.currentTime);
+      setCurrentTime(audioRefCurrent.currentTime);
     };
 
-    audioRef.current?.addEventListener('timeupdate', handleTimeUpdate);
+    audioRefCurrent.addEventListener('timeupdate', handleTimeUpdate);
     return () => {
-      audioRef.current?.removeEventListener('timeupdate', handleTimeUpdate);
+      audioRefCurrent.removeEventListener('timeupdate', handleTimeUpdate);
     };
-  }, []);
+  }, [audioRef]);
 
   const audioDuration = audioRef.current?.duration ?? 0;
 

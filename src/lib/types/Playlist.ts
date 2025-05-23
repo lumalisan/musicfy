@@ -1,4 +1,4 @@
-export interface Playlist {
+export type Playlist = {
   id: string;
   name: string;
   userId: string;
@@ -7,4 +7,4 @@ export interface Playlist {
   createdAt: string;
   updatedAt: string;
   color?: string;
-}
+};

@@ -1,11 +1,12 @@
-import React, { useState, useCallback } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faEllipsisV,
   faEdit,
   faTrash,
   faPlusCircle,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useCallback } from 'react';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,11 +15,11 @@ import {
   DropdownMenuTrigger,
 } from '../ui/DropdownMenu';
 
-import { EditPlaylistNameModal } from './EditPlaylistNameModal';
-import { DeletePlaylistModal } from './DeletePlaylistModal';
 import { AddSongsToPlaylistModal } from './AddSongsToPlaylistModal';
+import { DeletePlaylistModal } from './DeletePlaylistModal';
+import { EditPlaylistNameModal } from './EditPlaylistNameModal';
 
-interface PlaylistOptionsMenuProps {
+type PlaylistOptionsMenuProps = {
   playlistId: string;
   itemType: string;
   currentName?: string;
@@ -26,7 +27,7 @@ interface PlaylistOptionsMenuProps {
   color?: string;
   isOwner: boolean;
   onActionComplete?: () => void;
-}
+};
 
 const PlaylistOptionsMenu: React.FC<PlaylistOptionsMenuProps> = ({
   playlistId,

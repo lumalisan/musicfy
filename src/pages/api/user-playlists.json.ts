@@ -2,8 +2,8 @@ import type { APIRoute, APIContext } from 'astro';
 import { getAverageColor } from 'fast-average-color-node';
 
 import { supabaseAdmin } from '@/lib/db/supabase';
-import type { Playlist } from '@/lib/types/Playlist';
 import type { MediaItem } from '@/lib/types/MediaItem';
+import type { Playlist } from '@/lib/types/Playlist';
 
 // Get all playlists of the authenticated user
 export const GET: APIRoute = async (context: APIContext) => {

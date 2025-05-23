@@ -1,14 +1,15 @@
+import { faClock } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import type { ItemInfo } from '@/lib/types/ItemInfo';
 import type { Song } from '@/lib/types/Song';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock } from '@fortawesome/free-solid-svg-icons';
 
 import SongInfo from './SongInfo';
 
-interface Props {
+type Props = {
   itemInfo: ItemInfo;
   songs: Song[];
-}
+};
 
 const SongsTable = ({ itemInfo, songs }: Props) => {
   return (

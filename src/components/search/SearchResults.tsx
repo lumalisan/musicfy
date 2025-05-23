@@ -1,28 +1,28 @@
-import { useCallback } from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faMusic,
   faCompactDisc,
   faList,
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useCallback } from 'react';
 
-import { formatDuration } from '@/lib/utils/formatDuration';
-import { usePlayerStore } from '@/store/playerStore';
 import type {
   SearchResult as SearchResultType,
   SongResult,
 } from '@/lib/types/SearchResultItem';
 import type { Song } from '@/lib/types/Song';
+import { formatDuration } from '@/lib/utils/formatDuration';
+import { usePlayerStore } from '@/store/playerStore';
 
 import { LoadingSearch } from '../shared/LoadingSearch';
+
 import { SearchResultSection } from './SearchResultSection';
 
-interface SearchResultsProps {
+type SearchResultsProps = {
   results: SearchResultType;
   isLoading: boolean;
   query: string;
-}
+};
 
 export const SearchResults = ({
   results,
@@ -33,7 +33,10 @@ export const SearchResults = ({
     usePlayerStore();
 
   const handlePlaySong = useCallback(
-    (song: SearchResultType['songs'][number], e: React.MouseEvent) => {
+    (
+      song: SearchResultType['songs'][number],
+      e: React.MouseEvent | React.KeyboardEvent
+    ) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -117,6 +120,9 @@ export const SearchResults = ({
           renderItem={(item) => (
             <div
               onClick={(e) => handlePlaySong(item as SongResult, e)}
+              onKeyDown={(e) => handlePlaySong(item as SongResult, e)}
+              role='button'
+              tabIndex={0}
               className='flex w-full items-center gap-4 text-left transition-colors'
             >
               {item.image ? (

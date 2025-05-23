@@ -1,9 +1,10 @@
-import { useState, useCallback, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState, useEffect } from 'react';
+
 import { debounce } from '@/lib/utils/debounce';
 
-interface SearchInputProps {
+type SearchInputProps = {
   placeholder?: string;
   onSearch: (query: string) => void;
   debounceTime?: number;
@@ -11,7 +12,7 @@ interface SearchInputProps {
   className?: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-}
+};
 
 export const SearchInput = ({
   placeholder = 'Search...',
@@ -31,13 +32,10 @@ export const SearchInput = ({
   }, [externalValue]);
 
   // Create debounced search function
-  const debouncedSearch = useCallback(
-    debounce((searchQuery: string) => {
-      onSearch(searchQuery);
-      setIsTyping(false);
-    }, debounceTime),
-    [onSearch, debounceTime]
-  );
+  const debouncedSearch = debounce((searchQuery: string) => {
+    onSearch(searchQuery);
+    setIsTyping(false);
+  }, debounceTime);
 
   // Handle input change with debounce
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

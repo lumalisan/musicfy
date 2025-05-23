@@ -23,7 +23,7 @@ try {
       Astro.url.origin.toString(),
       Astro.request.headers
     );
-  console.log('playlistResults', playlistResults);
+
   playlists = playlistResults.map(
     (p: PlaylistResult): MediaItem => ({
       id: p.id,

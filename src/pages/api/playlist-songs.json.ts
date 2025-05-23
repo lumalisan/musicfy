@@ -1,11 +1,12 @@
 import type { APIRoute, APIContext } from 'astro';
+
 import { supabaseAdmin } from '@/lib/db/supabase';
 
-interface SongAddResult {
+type SongAddResult = {
   songId: string;
   status: 'added' | 'duplicate' | 'error' | 'forbidden';
   message: string;
-}
+};
 
 // Add songs to a playlist
 export const POST: APIRoute = async (context: APIContext) => {

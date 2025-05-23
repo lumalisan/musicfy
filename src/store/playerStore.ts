@@ -2,10 +2,10 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
 import type { CurrentMusic } from '@/lib/types/CurrentMusic';
-import type { Song } from '@/lib/types/Song';
 import type { ItemInfo } from '@/lib/types/ItemInfo';
+import type { Song } from '@/lib/types/Song';
 
-interface PlayerStore {
+type PlayerStore = {
   volume: number;
   isPlaying: boolean;
   currentMusic: CurrentMusic;
@@ -23,7 +23,7 @@ interface PlayerStore {
   }) => void;
   playNext: () => void;
   playPrevious: () => void;
-}
+};
 
 export const usePlayerStore = create<PlayerStore>()(
   persist(
@@ -71,7 +71,9 @@ export const usePlayerStore = create<PlayerStore>()(
         if (!songsQueue || songsQueue.length === 0 || !currentSong || !itemInfo)
           return;
 
-        let currentIndex = songsQueue.findIndex((s) => s.id === currentSong.id);
+        const currentIndex = songsQueue.findIndex(
+          (s) => s.id === currentSong.id
+        );
         let nextIndex: number;
 
         if (isRandom) {
@@ -113,10 +115,11 @@ export const usePlayerStore = create<PlayerStore>()(
         if (!songsQueue || songsQueue.length === 0 || !currentSong || !itemInfo)
           return;
 
-        let currentIndex = songsQueue.findIndex((s) => s.id === currentSong.id);
-        let prevIndex: number;
+        const currentIndex = songsQueue.findIndex(
+          (s) => s.id === currentSong.id
+        );
 
-        prevIndex = currentIndex - 1;
+        const prevIndex = currentIndex - 1;
 
         if (prevIndex < 0) {
           set({ isPlaying: false });

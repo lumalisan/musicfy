@@ -1,13 +1,13 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import { cn } from '@/lib/utils/cn';
 import type {
   AlbumResult,
   PlaylistResult,
   SongResult,
 } from '@/lib/types/SearchResultItem';
+import { cn } from '@/lib/utils/cn';
 
-interface SearchResultSectionProps {
+type SearchResultSectionProps = {
   title: string;
   icon: any;
   items: SongResult[] | AlbumResult[] | PlaylistResult[];
@@ -15,7 +15,7 @@ interface SearchResultSectionProps {
   renderItem: (
     item: SongResult | AlbumResult | PlaylistResult
   ) => React.ReactNode;
-}
+};
 
 export const SearchResultSection = ({
   title,

@@ -27,7 +27,7 @@ describe('generateRandomSongsQueue', () => {
 
   it('should return a queue with the same length as the original songs list', () => {
     const queue = generateRandomSongsQueue(allSongs, song3);
-    expect(queue.length).toBe(allSongs.length);
+    expect(queue).toHaveLength(allSongs.length);
   });
 
   it('should contain all original songs and no duplicates or extra songs', () => {
@@ -55,12 +55,12 @@ describe('generateRandomSongsQueue', () => {
     const currentSong = createMockSong('current');
     const queue = generateRandomSongsQueue([], currentSong);
     expect(queue).toEqual([currentSong]);
-    expect(queue.length).toBe(1);
+    expect(queue).toHaveLength(1);
   });
 
   it('should handle a list with only the current song', () => {
     const queue = generateRandomSongsQueue([song1], song1);
     expect(queue).toEqual([song1]);
-    expect(queue.length).toBe(1);
+    expect(queue).toHaveLength(1);
   });
 });

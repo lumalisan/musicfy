@@ -1,16 +1,17 @@
-import { memo, useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
-import { usePlayerStore } from '@/store/playerStore';
-import { cn } from '@/lib/utils/cn';
-import { playbackRepository } from '@/lib/repositories';
-import { AppError } from '@/lib/utils/errorHandling';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { memo, useEffect, useState } from 'react';
 
-interface Props {
+import { playbackRepository } from '@/lib/repositories';
+import { cn } from '@/lib/utils/cn';
+import { AppError } from '@/lib/utils/errorHandling';
+import { usePlayerStore } from '@/store/playerStore';
+
+type Props = {
   itemId: string;
   itemType: 'playlist' | 'album';
   size?: 'large' | 'base';
-}
+};
 
 const PlayButton = ({ itemId, itemType, size = 'base' }: Props) => {
   const { isPlaying, currentMusic, setIsPlaying, loadAndPlayMusic } =

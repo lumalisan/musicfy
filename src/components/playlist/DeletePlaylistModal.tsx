@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useCallback } from 'react';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { playlistRepository } from '@/lib/repositories';
 import { AppError } from '@/lib/utils/errorHandling';
@@ -15,13 +14,13 @@ import {
   DialogTitle,
 } from '../ui/Dialog';
 
-interface DeletePlaylistModalProps {
+type DeletePlaylistModalProps = {
   isOpen: boolean;
   onOpenChange: (isOpen: boolean) => void;
   playlistId: string;
   playlistName?: string;
   onActionComplete: () => void;
-}
+};
 
 export const DeletePlaylistModal: React.FC<DeletePlaylistModalProps> = ({
   isOpen,
