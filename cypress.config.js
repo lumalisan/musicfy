@@ -3,10 +3,10 @@ import { defineConfig } from 'cypress';
 
 export default defineConfig({
   e2e: {
-    setupNodeEvents(on, config) {
+    setupNodeEvents(_, config) {
       return clerkSetup({ config });
     },
     baseUrl: 'http://localhost:4321',
     supportFile: 'cypress/support/e2e.ts',
-  }
-})
+  },
+});
