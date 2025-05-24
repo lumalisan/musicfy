@@ -13,6 +13,7 @@ Feel free to inspect the code and see how I made it possible! 😊
 - Dynamic Playlist System: Immerse yourself in a playlist system that allows you to curate and explore songs with ease. Choose from a variety of playlists and select your preferred songs within each playlist.
 - Aside Menu for Playlist Selection: Navigate through playlists using the aside menu, providing a user-friendly experience.
 - Web Animations: Experience animations crafted using Astro built system, adding life and dynamism to the web.
+- Accessibility Focus: Designed with accessibility in mind to ensure an inclusive and usable experience for all users.
 
 ## :rocket: Technologies used
 
@@ -21,5 +22,9 @@ Feel free to inspect the code and see how I made it possible! 😊
 - [Tailwind CSS](https://tailwindcss.com/)
 - [Zustand](https://zustand-demo.pmnd.rs/)
 - [Typescript](https://www.typescriptlang.org/)
+- [Supabase](https://supabase.com/)
+- [Clerk](https://clerk.com/)
+- [Jest](https://jestjs.io/)
+- [Cypress](https://www.cypress.io/)
 - [Font Awesome](https://fontawesome.com/)
 - [Netlify](https://www.netlify.com/)
